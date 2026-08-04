@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order Management</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            overflow-x: hidden;
+        }
+
+        /*=========================
+            MAIN CONTENT
+        =========================*/
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        /*=========================
+            PAGE HEADER
+        =========================*/
+
+        .page-header {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /*=========================
+            FILTER
+        =========================*/
+
+        .filter-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+            margin-bottom: 25px;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-form select {
+            flex: 1;
+            min-width: 220px;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .filter-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .filter-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /*=========================
+            TABLE
+        =========================*/
+
+        .table-wrapper {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0f172a;
+        }
+
+        th {
+            color: #fff;
+            padding: 18px;
+            text-align: center;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .product-item img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+
+        .product-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #111827;
+        }
+
+        .price {
+            color: #16a34a;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .pending {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .delivered {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        .cancelled {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .shipped {
+            background: #DBEAFE;
+            color: #2563EB;
+        }
+
+        .action-box {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            color: #fff;
+            text-decoration: none;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: .3s;
+        }
+
+        .view-btn {
+            background: #2563eb;
+        }
+
+        .deliver-btn {
+            background: #16a34a;
+        }
+
+        .cancel-btn {
+            background: #dc2626;
+        }
+
+        .view-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .deliver-btn:hover {
+            background: #15803d;
+        }
+
+        .cancel-btn:hover {
+            background: #b91c1c;
+        }
+
+        .empty {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+            font-size: 20px;
+        }
+
+        @media(max-width:768px) {
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .filter-form {
+                flex-direction: column;
+            }
+
+            .filter-form select,
+            .filter-btn {
+                width: 100%;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <%- include("../../partials/admin/navbar") %>
+        <%- include("../../partials/admin/sidebar") %>
+
+            <div class="main-content">
+
+                <div class="page-header">
+                    <h1>Order Management</h1>
+                    <p>Manage all customer orders from here.</p>
+                </div>
+
+                <div class="filter-card">
+
+                    <form action="/admin/order" method="GET" class="filter-form">
+
+                        <select name="category">
+
+                            <option value="">All Categories</option>
+
+                            <option value="MENS" <%=category==="MENS" ? "selected" : "" %>>
+                                MENS
+                            </option>
+
+                            <option value="FEMALE" <%=category==="FEMALE" ? "selected" : "" %>>
+                                FEMALE
+                            </option>
+
+                            <option value="KIDS" <%=category==="KIDS" ? "selected" : "" %>>
+                                KIDS
+                            </option>
+
+                            <option value="SHOES" <%=category==="SHOES" ? "selected" : "" %>>
+                                SHOES
+                            </option>
+
+                        </select>
+                        <select name="status">
+                            <option value="">All Status</option>
+                            <option value="Pending" <%=status==="Pending" ? "selected" : "" %>>
+                                Pending
+                            </option>
+                            <option value="Delivered" <%=status==="Delivered" ? "selected" : "" %>>
+                                Delivered
+                            </option>
+                            <option value="Cancelled" <%=status==="Cancelled" ? "selected" : "" %>>
+                                Cancelled
+                            </option>
+                            <option value="Shipped" <%=status==="Shipped" ? "selected" : "" %>>
+                                Shipped
+                            </option>
+                        </select>
+                        <button type="submit" class="filter-btn">
+                            <i class="fa-solid fa-filter"></i>
+                            Filter
+                        </button>
+                    </form>
+                </div>
+                <% if(orders && orders.length> 0){ %>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Products</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% orders.forEach(order=>{ %>
+                                    <tr>
+                                        <td>
+                                            <% if(order.products && order.products.length){ %>
+                                                <% order.products.forEach(product=>{ %>
+                                                    <div class="product-item">
+                                                        <% if(product.images){ %>
+                                                            <img src="<%= product.images %>" alt="">
+                                                            <% } %>
+                                                                <div>
+                                                                    <strong>
+                                                                        <%= product.name %>
+                                                                    </strong>
+                                                                    <p>
+                                                                        Qty :
+                                                                        <%= product.qty %>
+                                                                    </p>
+
+                                                                </div>
+                                                    </div>
+                                                    <% }) %>
+                                                        <% } %>
+                                        </td>
+                                        <td class="price">
+                                            ₹ <%= order.total %>
+                                        </td>
+                                        <td>
+                                            <span class="status <%= order.status.toLowerCase() %>">
+                                                <%= order.status %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="action-box">
+                                                <a href="/admin/order/view/<%= order._id %>" class="btn view-btn">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                    View
+                                                </a>
+                                                <% if(order.status==="Pending" ){ %>
+                                                    <a href="/admin/order/delivered/<%= order._id %>"
+                                                        class="btn deliver-btn">
+                                                        <i class="fa-solid fa-truck"></i>
+                                                        Delivered
+                                                    </a>
+                                                    <a href="/admin/order/cancel/<%= order._id %>"
+                                                        class="btn cancel-btn">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                        Cancel
+                                                    </a>
+                                                    <% } %>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                        <div class="empty">
+                            <i class="fa-solid fa-box-open"
+                                style="font-size:55px;color:#9ca3af;margin-bottom:15px;"></i>
+                            <h2 style="margin-bottom:10px;">No Orders Found</h2>
+                            <p style="color:#6b7280;">
+                                There are no orders available at the moment.
+                            </p>
+                        </div>
+                        <% } %>
+            </div>
+            <%- include("../../partials/admin/footer") %>
+</body>
+
+</html>

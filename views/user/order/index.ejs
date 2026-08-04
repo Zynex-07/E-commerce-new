@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Orders</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #edf2f7, #dbeafe);
+            min-height: 100vh;
+            /* Extra space at bottom to prevent fixed footer from hiding content */
+            padding-bottom: 80px;
+        }
+
+        /* ==========================
+        NAVBAR
+        ========================== */
+        .navbar {
+            width: 100%;
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 150px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 45px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 6px;
+            background: transparent;
+            color: #fff;
+            font-size: 26px;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            transition: .3s;
+        }
+
+        .nav-links a:hover {
+            color: #fbbf24;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-form input {
+            width: 220px;
+            padding: 10px;
+            border: none;
+            outline: none;
+            border-radius: 8px;
+        }
+
+        .search-form button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #f59e0b;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .search-form button:hover {
+            background: #d97706;
+        }
+
+        .cart-btn {
+            background: linear-gradient(90deg, #10b981, #059669);
+            padding: 10px 18px;
+            border-radius: 8px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        /* ==========================
+        CONTAINER & BACK BTN
+        ========================== */
+        .back-btn {
+            display: inline-block;
+            margin: 30px 0 20px 40px;
+            padding: 12px 22px;
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: 20px auto 40px auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 25px;
+        }
+
+        .pending-box {
+            width: fit-content;
+            margin: 0 auto 40px;
+            background: #fff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ef4444;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+        }
+
+        /* ==========================
+        ORDER CARDS (GRID SYSTEM)
+        ========================== */
+        .orders {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        .card {
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
+            transition: .3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+        }
+
+        /* ==========================
+        STATUS & DETAILS
+        ========================== */
+        .status {
+            align-self: flex-start;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .delivered {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .total {
+            font-size: 26px;
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 12px;
+        }
+
+        .date {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            flex-grow: 1;
+            /* Pushes buttons to bottom */
+        }
+
+        /* ==========================
+        BUTTONS
+        ========================== */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            /* Both buttons take 50% width */
+            text-align: center;
+            text-decoration: none;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            color: #fff;
+            padding: 12px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: .3s;
+        }
+
+        .btn-dark {
+            background: #111827;
+            /* Alternate dark style for second button */
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, .35);
+        }
+
+        .btn-dark:hover {
+            box-shadow: 0 5px 15px rgba(17, 24, 39, .35);
+        }
+
+        /* ==========================
+        EMPTY
+        ========================== */
+        .empty {
+            text-align: center;
+            background: #fff;
+            padding: 50px 20px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #64748b;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
+            margin-top: 20px;
+        }
+
+        /* ==========================
+        RESPONSIVE TABLET
+        ========================== */
+        @media (max-width:992px) {
+            .orders {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                gap: 18px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255, 255, 255, .15);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .search-form {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-form input,
+            .search-form button {
+                width: 100%;
+            }
+
+            .cart-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .back-btn {
+                margin: 20px 0 20px 20px;
+            }
+        }
+
+        /* ==========================
+        RESPONSIVE MOBILE
+        ========================== */
+        @media (max-width:768px) {
+            .orders {
+                grid-template-columns: 1fr;
+                /* 1 Column on Mobile */
+                gap: 18px;
+            }
+
+            .logo img {
+                width: 120px;
+                height: 50px;
+            }
+
+            .container {
+                width: 95%;
+                margin: 15px auto 30px auto;
+            }
+
+            .title {
+                font-size: 32px;
+                margin-bottom: 20px;
+            }
+
+            .pending-box {
+                width: 100%;
+                text-align: center;
+                font-size: 16px;
+                padding: 12px;
+                margin-bottom: 25px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .total {
+                font-size: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                /* Stack buttons vertically on small phones */
+            }
+
+            .empty {
+                font-size: 20px;
+                padding: 30px 15px;
+            }
+
+            .back-btn {
+                margin: 20px 0 10px 10px;
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include("../../partials/user/navbar") %>
+
+        <a href="/product" class="back-btn">
+            ← Back To Products
+        </a>
+
+        <div class="container">
+            <h1 class="title">My Orders</h1>
+
+            <div class="pending-box">
+                Pending Orders :
+                <%= orders.filter(order=> order.status === "Pending").length %>
+            </div>
+
+            <% if(orders.length> 0){ %>
+                <div class="orders">
+                    <% orders.forEach(order=> { %>
+                        <div class="card">
+                            <div class="status <%= order.status.toLowerCase() %>">
+                                <%= order.status %>
+                            </div>
+                            <div class="total">
+                                ₹ <%= order.total %>
+                            </div>
+                            <div class="date">
+                                Ordered On:<br>
+                                <strong>
+                                    <%= new Date(order.createdAt).toDateString() %>
+                                </strong>
+                            </div>
+
+                            <div class="action-buttons">
+                                <a href="/order/view/<%= order._id %>" class="btn">
+                                    View Order
+                                </a>
+                                <a href="/address" class="btn btn-dark">
+                                    View Address
+                                </a>
+                            </div>
+
+                        </div>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <div class="empty">
+                        No Orders Found
+                    </div>
+                    <% } %>
+        </div>
+
+        <%- include("../../partials/user/footer") %>
+</body>
+
+</html>

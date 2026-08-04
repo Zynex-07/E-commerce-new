@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Address</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #edf2f7, #dbeafe);
+            min-height: 100vh;
+            padding-bottom: 120px;
+            /* Space for fixed footer */
+        }
+
+        /* ===========================
+           NAVBAR
+        =========================== */
+        .navbar {
+            width: 100%;
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .4);
+            color: #fff;
+            width: 45px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 26px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: .3s;
+        }
+
+        .nav-links a:hover {
+            color: #fbbf24;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-form input {
+            width: 220px;
+            padding: 10px;
+            border: none;
+            outline: none;
+            border-radius: 8px;
+        }
+
+        .search-form button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #f59e0b;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cart-btn-nav {
+            background: linear-gradient(90deg, #10b981, #059669);
+            padding: 10px 18px;
+            border-radius: 8px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        /* ===========================
+           LAYOUT & CONTAINER
+        =========================== */
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+
+        /* Using Flexbox to put Map on Left and Form on Right for Desktop */
+        .grid-layout {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .map-section {
+            flex: 1;
+        }
+
+        .form-section {
+            flex: 1;
+        }
+
+        /* ===========================
+           FORM ELEMENTS
+        =========================== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            background: #f9fafb;
+        }
+
+        textarea {
+            resize: none;
+            height: 110px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* ===========================
+           MAP & SEARCH
+        =========================== */
+        #searchLocation {
+            margin-bottom: 10px;
+        }
+
+        #map {
+            width: 100%;
+            height: 450px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ===========================
+           BUTTONS
+        =========================== */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .form-btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            padding: 14px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .save-btn {
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .location-btn {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            margin-bottom: 20px;
+        }
+
+        .location-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .cart-btn {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* ===========================
+           RESPONSIVE TABLET
+        =========================== */
+        /* ===========================
+           RESPONSIVE TABLET & MOBILE FIX
+        =========================== */
+        @media(max-width:992px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255, 255, 255, .15);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .search-form {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .search-form input,
+            .search-form button {
+                width: 100%;
+            }
+
+            /* MAP AUR FORM KO FULL WIDTH KARNE KE LIYE FIX */
+            .grid-layout {
+                flex-direction: column;
+                align-items: stretch;
+                /* Yeh add karne se squish nahi hoga */
+                gap: 25px;
+            }
+
+            .map-section,
+            .form-section {
+                width: 100%;
+                /* Dono sections 100% width lenge */
+            }
+
+            #map {
+                height: 350px;
+            }
+        }
+
+        @media(max-width:768px) {
+            .container {
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .form-btn-group {
+                flex-direction: column;
+            }
+
+            #map {
+                height: 300px;
+                /* Mobile par thoda height theek rakha hai */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include("../../partials/user/navbar") %>
+
+        <div class="container">
+            <div class="card">
+                <h1>Edit Address</h1>
+
+                <form action="/address/save" method="POST" onsubmit="return checkForm()">
+
+                    <div class="grid-layout">
+
+                        <div class="map-section">
+                            <div class="form-group">
+                                <label>Search Location</label>
+                                <input type="text" id="searchLocation" placeholder="Search your address">
+                            </div>
+
+                            <div id="map"></div>
+
+                            <input type="hidden" name="latitude" id="latitude"
+                                value="<%= user.address?.latitude || '' %>">
+                            <input type="hidden" name="longitude" id="longitude"
+                                value="<%= user.address?.longitude || '' %>">
+
+                            <div class="btn-group">
+                                <button type="button" id="currentLocation" class="btn location-btn">
+                                    📍 Use Current Location
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" name="mobile" value="<%= user.address?.mobile || '' %>" required
+                                    placeholder="Enter 10 digit number">
+                            </div>
+                            <div class="form-group">
+                                <label>Full Address</label>
+                                <textarea id="address" name="address" required
+                                    placeholder="House No, Building, Street Area"><%= user.address?.address || '' %></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="city" name="city" value="<%= user.address?.city || '' %>"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" id="state" name="state" value="<%= user.address?.state || '' %>"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" id="pincode" name="pincode"
+                                    value="<%= user.address?.pincode || '' %>" required>
+                            </div>
+
+                            <div class="form-btn-group">
+                                <button type="submit" class="btn save-btn">
+                                    Update Address
+                                </button>
+                                <a href="/cart" class="btn cart-btn">
+                                    Back To Cart
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <%- include("../../partials/user/footer") %>
+
+            <script>
+                let map;
+                let marker;
+                let geocoder;
+                let autocomplete;
+                function initMap() {
+                    geocoder = new google.maps.Geocoder();
+                    const lat = Number("<%= user.address && user.address.latitude ? user.address.latitude : 21.1702 %>");
+                    const lng = Number("<%= user.address && user.address.longitude ? user.address.longitude : 72.8311 %>");
+                    const location = { lat, lng };
+                    map = new google.maps.Map(document.getElementById("map"), {
+                        center: location,
+                        zoom: 15
+                    });
+                    marker = new google.maps.Marker({
+                        position: location,
+                        map: map,
+                        draggable: true
+                    });
+                    document.getElementById("latitude").value = lat;
+                    document.getElementById("longitude").value = lng;
+                    autocomplete = new google.maps.places.Autocomplete(
+                        document.getElementById("searchLocation")
+                    );
+                    autocomplete.bindTo("bounds", map);
+                    autocomplete.addListener("place_changed", function () {
+                        const place = autocomplete.getPlace();
+                        if (!place.geometry) return;
+                        const newLocation = place.geometry.location;
+                        map.setCenter(newLocation);
+                        map.setZoom(16);
+                        marker.setPosition(newLocation);
+                        document.getElementById("latitude").value = newLocation.lat();
+                        document.getElementById("longitude").value = newLocation.lng();
+                        fillAddress(newLocation.lat(), newLocation.lng());
+                    });
+                    marker.addListener("dragend", function (event) {
+                        const lat = event.latLng.lat();
+                        const lng = event.latLng.lng();
+                        document.getElementById("latitude").value = lat;
+                        document.getElementById("longitude").value = lng;
+                        fillAddress(lat, lng);
+                    });
+                    document.getElementById("currentLocation").addEventListener("click", function () {
+                        if (!navigator.geolocation) {
+                            alert("Geolocation is not supported.");
+                            return;
+                        }
+                        navigator.geolocation.getCurrentPosition(
+                            function (position) {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                const current = { lat, lng };
+                                map.setCenter(current);
+                                map.setZoom(16);
+                                marker.setPosition(current);
+                                document.getElementById("latitude").value = lat;
+                                document.getElementById("longitude").value = lng;
+                                fillAddress(lat, lng);
+                            },
+                            function (error) {
+                                alert("Unable to get current location.");
+                                console.log(error);
+                            }
+                        );
+                    });
+                }
+                function fillAddress(lat, lng) {
+                    geocoder.geocode(
+                        {
+                            location: { lat, lng }
+                        },
+                        function (results, status) {
+                            if (status === "OK" && results.length > 0) {
+                                document.getElementById("address").value =
+                                    results[0].formatted_address;
+                                let city = "";
+                                let state = "";
+                                let pincode = "";
+                                results[0].address_components.forEach(function (component) {
+                                    if (component.types.includes("locality")) {
+                                        city = component.long_name;
+                                    }
+                                    if (component.types.includes("administrative_area_level_1")) {
+                                        state = component.long_name;
+                                    }
+                                    if (component.types.includes("postal_code")) {
+                                        pincode = component.long_name;
+                                    }
+                                });
+                                document.getElementById("city").value = city;
+                                document.getElementById("state").value = state;
+                                document.getElementById("pincode").value = pincode;
+                            }
+                        }
+                    );
+                }
+
+                function checkForm() {
+                    return true;
+                }
+            </script>
+            <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvqqyj13jPKSK6Npx6Kko1q_OPJHkcDGg&libraries=places&callback=initMap">
+                </script>
+</body>
+
+</html>

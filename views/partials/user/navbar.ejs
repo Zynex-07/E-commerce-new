@@ -1,0 +1,202 @@
+<style>
+    /* Navbar styling */
+    .navbar {
+        width: 100%;
+        background: linear-gradient(90deg, #0f172a, #1e293b);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo img {
+        width: 130px;
+        height: 55px;
+        object-fit: contain;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, .4);
+        color: #fff;
+        width: 45px;
+        height: 40px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 26px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: 0.3s;
+        white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+        background: #2563eb;
+    }
+
+    /* Dropdown CSS */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #1e293b;
+        min-width: 180px;
+        border-radius: 8px;
+        padding: 10px 0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: white;
+        width: 100%;
+    }
+
+    .dropdown-menu a:hover {
+        background: #2563eb;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .search-form input {
+        width: 180px;
+        padding: 8px;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    .search-form button {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 6px;
+        background: #f59e0b;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #1e293b;
+            flex-direction: column;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .nav-links a {
+            width: 100%;
+            text-align: center;
+        }
+
+        .dropdown-menu {
+            position: static;
+            background: #2d3748;
+            box-shadow: none;
+        }
+
+        .search-form {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .search-form input,
+        .search-form button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="navbar">
+    <div class="logo">
+        <a href="/"><img src="/images/logo1.png" alt="Logo"></a>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle" type="button">☰</button>
+
+    <div class="nav-links" id="navLinks">
+        <a href="/">Home</a>
+        <a href="/product">Product</a>
+
+        <div class="dropdown">
+            <a href="#">Categories ▼</a>
+            <div class="dropdown-menu">
+                <% if (typeof category !=='undefined' && category.length) { %>
+                    <% category.forEach(function(cat){ %>
+                        <a href="/product/category/<%= cat._id %>">
+                            <%= cat.name %>
+                        </a>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+
+        <a href="/cart">🛒 Cart</a>
+        <a href="/order">Order</a>
+        <a href="/wishlist">❤️ Wishlist</a>
+
+        <form action="/" method="GET" class="search-form">
+            <input type="text" name="search" placeholder="Search..."
+                value="<%= typeof search !== 'undefined' ? search : '' %>">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    if (menuToggle) {
+        menuToggle.addEventListener("click", function () {
+            navLinks.classList.toggle("active");
+        });
+    }
+</script>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Categories</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: #111827;
+        }
+
+        .page-header p {
+            margin-top: 8px;
+            color: #6b7280;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            background: #fff;
+            border-radius: 15px;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+        }
+
+        .table-wrapper td a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .table-wrapper td a:hover {
+            color: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #0f172a;
+            color: #fff;
+            padding: 16px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            background: #16a34a;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .btn,
+        .edit-btn,
+        .delete-btn {
+            transition: .3s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .edit-btn:hover {
+            background: #15803d;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        @media(max-width:768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include("../../partials/admin/navbar") %>
+        <%- include("../../partials/admin/sidebar") %>
+
+            <div class="main-content">
+
+                <div class="page-header">
+                    <h1>Category Management</h1>
+                    <p>Manage all product categories from here.</p>
+                </div>
+
+                <div class="top-bar">
+                    <h2>All Categories</h2>
+
+                    <a href="/admin/category/add" class="btn">
+                        <i class="fa-solid fa-plus"></i> Add Category
+                    </a>
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% category.forEach(function(cat){ %>
+
+                                <tr>
+
+                                    <td>
+                                        <a href="/admin/product/category/<%= cat._id %>">
+                                            <%= cat.name %>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="/admin/category/edit/<%= cat._id %>" class="edit-btn">
+                                            Edit
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="/admin/category/delete/<%= cat._id %>" class="delete-btn">
+                                            Delete
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                                <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <%- include("../../partials/admin/footer") %>
+
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            overflow-x: hidden;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            padding: 30px;
+            transition: .3s;
+            width: calc(100% - 250px);
+        }
+
+        .title {
+            font-size: 35px;
+            color: #111827;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #6b7280;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .card h1 {
+            color: #111827;
+            font-size: 42px;
+        }
+
+        @media(max-width:768px) {
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .title {
+                text-align: center;
+                font-size: 28px;
+            }
+
+            .card h2 {
+                font-size: 18px;
+            }
+
+            .card h1 {
+                font-size: 34px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <%- include("../../partials/admin/navbar") %>
+        <!-- Sidebar -->
+        <%- include("../../partials/admin/sidebar") %>
+            <!-- Main Content -->
+            <div class="main-content">
+                <h1 class="title">Dashboard</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h2>Total Users</h2>
+                        <h1>
+                            <%= totalUsers %>
+                        </h1>
+                    </div>
+                    <div class="card">
+                        <h2>Total Products</h2>
+                        <h1>
+                            <%= totalProducts %>
+                        </h1>
+                    </div>
+                    <div class="card">
+                        <h2>Total Orders</h2>
+                        <h1>
+                            <%= totalOrders %>
+                        </h1>
+                    </div>
+                    <div class="card">
+                        <h2>Pending Orders</h2>
+                        <h1>
+                            <%= pendingOrders %>
+                        </h1>
+                    </div>
+                    <div class="card">
+                        <h2>Monthly Revenue</h2>
+                        <h1>₹ <%= totalRevenue %>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <%- include("../../partials/admin/footer") %>
+</body>
+
+</html>

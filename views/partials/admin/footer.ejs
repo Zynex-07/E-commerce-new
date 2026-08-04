@@ -1,0 +1,37 @@
+<footer class="admin-footer">
+    <p>
+        © <%= new Date().getFullYear() %> Shoe Factory Admin Panel |
+            All Rights Reserved.
+    </p>
+</footer>
+
+<style>
+    .admin-footer {
+        width: 100%;
+        background: #111827;
+        color: #fff;
+        text-align: center;
+        padding: 18px 15px;
+        margin-top: 40px;
+        border-top: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .admin-footer p {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: .3px;
+    }
+
+    @media (max-width:768px) {
+
+        .admin-footer {
+            padding: 15px 10px;
+        }
+
+        .admin-footer p {
+            font-size: 13px;
+            line-height: 22px;
+        }
+
+    }
+</style>

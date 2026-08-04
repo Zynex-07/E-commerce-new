@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order Details</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #111827;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+            margin-bottom: 25px;
+        }
+
+        .info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .product {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .product:last-child {
+            border-bottom: none;
+        }
+
+        .product img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .qty {
+            color: #64748b;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .status-form {
+            margin-top: 25px;
+        }
+
+        select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 250px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            background: #111827;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        @media(max-width:768px) {
+
+            .info {
+                grid-template-columns: 1fr;
+            }
+
+            .product {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .total-box {
+                text-align: center;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/admin/order" class="back-btn">
+            Back To Orders
+        </a>
+        <h1 class="title">Order Details</h1>
+        <div class="card">
+            <div class="info">
+                <div class="info-box">
+                    <div class="label">Customer Name</div>
+                    <div>
+                        <%= order.userName %>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Customer Email</div>
+                    <div>
+                        <%= order.userEmail %>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Order Status</div>
+                    <div>
+                        <%= order.status %>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Order Date</div>
+                    <div>
+                        <%= new Date(order.createdAt).toDateString() %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 style="margin-bottom:20px;">
+                Products
+            </h2>
+            <% order.products.forEach(product=> { %>
+                <div class="product">
+                    <% if(product.images){ %>
+                        <img src="<%= product.images %>" alt="">
+                        <% } %>
+                            <div class="product-details">
+                                <div class="product-name">
+                                    <%= product.name %>
+                                </div>
+                                <div class="price">
+                                    Price : ₹ <%= product.price %>
+                                </div>
+                                <div class="qty">
+                                    Quantity : <%= product.qty %>
+                                </div>
+                                <div class="qty">
+                                    Product Total : ₹ <%= product.total %>
+                                </div>
+                            </div>
+                </div>
+                <% }) %>
+                    <div class="total-box">
+                        Grand Total : ₹ <%= order.total %>
+                    </div>
+                    <div class="status-form">
+                        <form method="POST" action="/admin/order/status/<%= order._id %>">
+                            <select name="status">
+                                <option value="Pending" <%=order.status==="Pending" ? "selected" : "" %>>
+                                    Pending
+                                </option>
+                                <option value="Processing" <%=order.status==="Processing" ? "selected" : "" %>>
+                                    Processing
+                                </option>
+                                <option value="Shipped" <%=order.status==="Shipped" ? "selected" : "" %>>
+                                    Shipped
+                                </option>
+                                <option value="Delivered" <%=order.status==="Delivered" ? "selected" : "" %>>
+                                    Delivered
+                                </option>
+                                <option value="Cancelled" <%=order.status==="Cancelled" ? "selected" : "" %>>
+                                    Cancelled
+                                </option>
+                            </select>
+                            <button type="submit">
+                                Update Status
+                            </button>
+                        </form>
+                    </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All Users</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #edf2f7, #dbeafe);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            width: 100%;
+            background: #111827;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .15);
+        }
+
+        .logo {
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav .btn {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .nav .btn:hover {
+            background: #fff;
+            color: #111827;
+            transform: translateY(-3px);
+        }
+
+        .logout:hover {
+            background: #dc2626 !important;
+            color: #fff !important;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            width: 95%;
+            max-width: 1300px;
+            margin: 40px auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 42px;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .count {
+            width: fit-content;
+            margin: 0 auto 30px;
+            background: #2563eb;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-box {
+            background: #fff;
+            border-radius: 18px;
+            overflow-x: auto;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+        }
+
+        th {
+            color: #fff;
+            padding: 18px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 18px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            transition: .3s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .cart-count {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:768px) {
+
+            .navbar {
+                justify-content: center;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .logo {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav {
+                justify-content: center;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0 10px;
+            }
+
+            .title {
+                font-size: 30px;
+            }
+
+            .count {
+                font-size: 16px;
+                padding: 8px 18px;
+            }
+
+            table {
+                min-width: 700px;
+            }
+
+            th,
+            td {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
+
+        @media(max-width:480px) {
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .nav {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .nav .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .count {
+                font-size: 15px;
+            }
+
+            table {
+                min-width: 650px;
+            }
+
+            th,
+            td {
+                padding: 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1 class="logo">
+            User Page
+        </h1>
+        <div class="nav">
+            <a href="/admin/category" class="btn">📂 Category</a>
+            <a href="/admin/product" class="btn">📦 Product</a>
+            <a href="/admin/order" class="btn"> 🛒 Orders</a>
+            <a href="/admin/user" class="btn">👥 Users</a>
+            <a href="/admin/dashboard" class="btn">🏠 Dashboard</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 class="title">
+            All Users
+        </h1>
+        <div class="count">
+            Total Users : <%= users.length %>
+        </div>
+        <div class="table-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Cart Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user=> { %>
+                        <tr>
+                            <td>
+                                <%= user.name %>
+                            </td>
+                            <td>
+                                <%= user.email %>
+                            </td>
+                            <td class="cart-count">
+                                <%= user.cartItems ? user.cartItems.length : 0 %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

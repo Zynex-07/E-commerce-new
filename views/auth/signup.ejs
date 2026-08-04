@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background:
+                linear-gradient(135deg,
+                    #edf2f7,
+                    #dbeafe);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 450px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.12);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #111827;
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+            background: #f9fafb;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #f59e0b;
+            background: white;
+            box-shadow:
+                0 0 8px rgba(245, 158, 11, 0.35);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background:
+                linear-gradient(90deg,
+                    #f59e0b,
+                    #ef4444);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow:
+                0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 10px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .link {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            font-size: 15px;
+
+            color: #4b5563;
+        }
+
+        .link a {
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Signup</h1>
+        <form action="/auth/signup" method="POST">
+            <input type="text" name="name" placeholder="Name">
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">
+                Signup
+            </button>
+        </form>
+    </div>
+</body>
+
+</html>

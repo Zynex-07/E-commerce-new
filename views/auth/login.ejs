@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background:
+                linear-gradient(135deg,
+                    #0f172a,
+                    #1e293b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 430px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #111827;
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+            background: #f9fafb;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow:
+                0 0 8px rgba(59, 130, 246, 0.35);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background:
+                linear-gradient(90deg,
+                    #2563eb,
+                    #7c3aed);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow:
+                0 5px 15px rgba(37, 99, 235, 0.35);
+        }
+
+        button:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 10px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #4b5563;
+        }
+
+        .link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        .link {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #4b5563;
+        }
+
+        .link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="/auth/login" method="POST">
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="password" placeholder="Password">
+            <div class="link">
+                Don't have an account?
+                <a href="/auth/signup">
+                    Signup
+                </a>
+            </div>
+            <button type="submit">
+                Login
+            </button>
+        </form>
+    </div>
+</body>
+
+</html>
