@@ -24,19 +24,18 @@
 // }
 // module.exports = { connectDB, getDB };
 
-
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
-const mongoUrl =
-    process.env.MONGO_URL ||
-    process.env.MONGO_URI ||
-    process.env.MONGODB_URI;
+const mongoUrl = process.env.MONGO_URL;
+const dbName = process.env.DB_NAME;
 
 if (!mongoUrl) {
-    throw new Error(
-        "MongoDB URL is missing. Please set MONGO_URL in Heroku Config Vars."
-    );
+    throw new Error("MONGO_URL is not defined");
+}
+
+if (!dbName) {
+    throw new Error("DB_NAME is not defined");
 }
 
 const client = new MongoClient(mongoUrl);
@@ -47,10 +46,10 @@ async function connectDB() {
     try {
         await client.connect();
 
-        db = client.db(process.env.DB_NAME);
+        db = client.db(dbName);
 
         console.log("✅ MongoDB Connected");
-        console.log("Database:", process.env.DB_NAME);
+        console.log("Database:", dbName);
     } catch (error) {
         console.error("❌ MongoDB Connection Error:", error.message);
         throw error;
