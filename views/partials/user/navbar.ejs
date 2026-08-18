@@ -1,73 +1,127 @@
 <style>
-    /* Navbar styling */
+    /* ==========================
+       NAVBAR
+    ========================== */
+
     .navbar {
         width: 100%;
         background: linear-gradient(90deg, #0f172a, #1e293b);
-        padding: 15px 20px;
+        padding: 12px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: sticky;
         top: 0;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ==========================
+       LOGO
+    ========================== */
+
+    .logo {
+        flex-shrink: 0;
+    }
+
+    .logo a {
+        display: flex;
+        align-items: center;
     }
 
     .logo img {
         width: 130px;
         height: 55px;
         object-fit: contain;
+        display: block;
     }
+
+    /* ==========================
+       MENU BUTTON
+    ========================== */
 
     .menu-toggle {
         display: none;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, .4);
-        color: #fff;
         width: 45px;
         height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: 6px;
-        cursor: pointer;
+        background: transparent;
+        color: #fff;
         font-size: 26px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
     }
+
+    .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ==========================
+       NAV LINKS
+    ========================== */
 
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 10px;
     }
 
-    .nav-links a {
+    .nav-links>a {
         color: #fff;
         text-decoration: none;
         font-size: 14px;
+        font-weight: 500;
         padding: 8px 12px;
         border-radius: 6px;
         transition: 0.3s;
         white-space: nowrap;
     }
 
-    .nav-links a:hover {
+    .nav-links>a:hover {
         background: #2563eb;
     }
 
-    /* Dropdown CSS */
+    /* ==========================
+       DROPDOWN
+    ========================== */
+
     .dropdown {
         position: relative;
+    }
+
+    .dropdown>a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: block;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .dropdown>a:hover {
+        background: #2563eb;
     }
 
     .dropdown-menu {
         display: none;
         position: absolute;
-        top: 100%;
+        top: calc(100% + 5px);
         left: 0;
         background: #1e293b;
         min-width: 180px;
         border-radius: 8px;
-        padding: 10px 0;
+        padding: 8px 0;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        z-index: 1001;
+        z-index: 1100;
     }
+
+    /* Desktop hover */
 
     .dropdown:hover .dropdown-menu {
         display: block;
@@ -75,30 +129,42 @@
 
     .dropdown-menu a {
         display: block;
-        padding: 10px 15px;
-        color: white;
         width: 100%;
+        padding: 10px 15px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+        white-space: nowrap;
     }
 
     .dropdown-menu a:hover {
         background: #2563eb;
     }
 
+    /* ==========================
+       SEARCH
+    ========================== */
+
     .search-form {
         display: flex;
-        gap: 8px;
         align-items: center;
+        gap: 8px;
+        margin-left: 5px;
     }
 
     .search-form input {
         width: 180px;
-        padding: 8px;
+        height: 38px;
+        padding: 8px 10px;
         border: none;
         border-radius: 6px;
         outline: none;
+        font-size: 14px;
     }
 
     .search-form button {
+        height: 38px;
         padding: 8px 15px;
         border: none;
         border-radius: 6px;
@@ -106,14 +172,53 @@
         color: #fff;
         cursor: pointer;
         font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
     }
 
-    /* Responsive */
+    .search-form button:hover {
+        background: #d97706;
+    }
+
+    /* ==========================
+       TABLET
+    ========================== */
+
+    @media (max-width: 1100px) {
+
+        .navbar {
+            padding: 12px 15px;
+        }
+
+        .nav-links {
+            gap: 5px;
+        }
+
+        .nav-links>a,
+        .dropdown>a {
+            font-size: 13px;
+            padding: 7px 8px;
+        }
+
+        .search-form input {
+            width: 150px;
+        }
+    }
+
+    /* ==========================
+       MOBILE / TABLET MENU
+    ========================== */
+
     @media (max-width: 1024px) {
+
+        .navbar {
+            position: sticky;
+            top: 0;
+        }
+
         .menu-toggle {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-left: auto;
         }
 
         .nav-links {
@@ -124,79 +229,366 @@
             width: 100%;
             background: #1e293b;
             flex-direction: column;
-            padding: 20px;
-            gap: 10px;
+            align-items: stretch;
+            gap: 0;
+            padding: 15px 20px 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            max-height: calc(100vh - 75px);
+            overflow-y: auto;
         }
 
         .nav-links.active {
             display: flex;
         }
 
-        .nav-links a {
+        .nav-links>a {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            margin: 2px 0;
+            font-size: 15px;
+        }
+
+        /* ==========================
+           MOBILE DROPDOWN
+        ========================== */
+
+        .dropdown {
             width: 100%;
             text-align: center;
         }
 
+        .dropdown>a {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            font-size: 15px;
+        }
+
         .dropdown-menu {
             position: static;
+            width: 100%;
+            min-width: 0;
             background: #2d3748;
             box-shadow: none;
+            border-radius: 6px;
+            padding: 5px 0;
         }
+
+        /*
+           Hover disabled on mobile.
+           JavaScript will open dropdown.
+        */
+
+        .dropdown:hover .dropdown-menu {
+            display: none;
+        }
+
+        .dropdown.mobile-open .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* ==========================
+           MOBILE SEARCH
+        ========================== */
 
         .search-form {
             width: 100%;
+            display: flex;
             flex-direction: column;
+            gap: 8px;
+            margin: 12px 0 0;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .search-form input,
+        .search-form input {
+            width: 100%;
+            height: 40px;
+            font-size: 14px;
+        }
+
         .search-form button {
             width: 100%;
+            height: 40px;
+            font-size: 14px;
+        }
+    }
+
+    /* ==========================
+       SMALL MOBILE
+    ========================== */
+
+    @media (max-width: 600px) {
+
+        .navbar {
+            padding: 10px 15px;
+        }
+
+        .logo img {
+            width: 110px;
+            height: 48px;
+        }
+
+        .menu-toggle {
+            width: 44px;
+            height: 40px;
+            font-size: 25px;
+        }
+
+        .nav-links {
+            padding: 15px 20px 20px;
+        }
+    }
+
+    /* ==========================
+       VERY SMALL MOBILE
+    ========================== */
+
+    @media (max-width: 400px) {
+
+        .logo img {
+            width: 100px;
+            height: 45px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 38px;
+            font-size: 23px;
+        }
+
+        .nav-links {
+            padding-left: 15px;
+            padding-right: 15px;
         }
     }
 </style>
 
+<!-- ==========================
+     NAVBAR HTML
+========================== -->
+
 <div class="navbar">
+
+    ```
+    <!-- LOGO -->
     <div class="logo">
-        <a href="/"><img src="/images/logo1.png" alt="Logo"></a>
+        <a href="/">
+            <img src="/images/logo1.png" alt="Logo">
+        </a>
     </div>
 
-    <button class="menu-toggle" id="menuToggle" type="button">☰</button>
 
+    <!-- MOBILE MENU BUTTON -->
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open Menu" aria-expanded="false">
+        ☰
+    </button>
+
+
+    <!-- NAVIGATION -->
     <div class="nav-links" id="navLinks">
-        <a href="/">Home</a>
-        <a href="/product">Product</a>
 
-        <div class="dropdown">
-            <a href="#">Categories ▼</a>
+        <a href="/">
+            Home
+        </a>
+
+        <a href="/product">
+            Product
+        </a>
+
+
+        <!-- CATEGORIES -->
+        <div class="dropdown" id="categoryDropdown">
+
+            <a href="#" id="categoryToggle" onclick="toggleCategory(event)">
+                Categories ▼
+            </a>
+
             <div class="dropdown-menu">
+
                 <% if (typeof category !=='undefined' && category.length) { %>
-                    <% category.forEach(function(cat){ %>
+
+                    <% category.forEach(function(cat) { %>
+
                         <a href="/product/category/<%= cat._id %>">
                             <%= cat.name %>
                         </a>
+
                         <% }) %>
+
                             <% } %>
+
             </div>
+
         </div>
 
-        <a href="/cart">🛒 Cart</a>
-        <a href="/order">Order</a>
-        <a href="/wishlist">❤️ Wishlist</a>
 
+        <a href="/cart">
+            🛒 Cart
+        </a>
+
+        <a href="/order">
+            Order
+        </a>
+
+        <a href="/wishlist">
+            ❤️ Wishlist
+        </a>
+
+
+        <!-- SEARCH -->
         <form action="/" method="GET" class="search-form">
+
             <input type="text" name="search" placeholder="Search..."
                 value="<%= typeof search !== 'undefined' ? search : '' %>">
-            <button type="submit">Search</button>
+
+            <button type="submit">
+                Search
+            </button>
+
         </form>
+
     </div>
+    ```
+
 </div>
 
 <script>
-    const menuToggle = document.getElementById("menuToggle");
-    const navLinks = document.getElementById("navLinks");
-    if (menuToggle) {
+    /* ==========================
+       MOBILE MENU
+    ========================== */
+
+    const menuToggle =
+        document.getElementById("menuToggle");
+
+    const navLinks =
+        document.getElementById("navLinks");
+
+
+    if (menuToggle && navLinks) {
+
         menuToggle.addEventListener("click", function () {
-            navLinks.classList.toggle("active");
+
+            const isOpen =
+                navLinks.classList.toggle("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+            menuToggle.innerHTML =
+                isOpen ? "✕" : "☰";
+
         });
+
     }
+
+
+    /* ==========================
+       CATEGORY DROPDOWN
+    ========================== */
+
+    function toggleCategory(event) {
+
+        event.preventDefault();
+
+        const dropdown =
+            document.getElementById("categoryDropdown");
+
+        if (!dropdown) return;
+
+        /*
+         * Only use click dropdown on
+         * tablet/mobile.
+         */
+
+        if (window.innerWidth <= 1024) {
+
+            dropdown.classList.toggle("mobile-open");
+
+        }
+
+    }
+
+
+    /* ==========================
+       CLOSE MENU AFTER LINK CLICK
+    ========================== */
+
+    document.querySelectorAll(
+        '.nav-links > a'
+    ).forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                if (window.innerWidth <= 1024) {
+
+                    navLinks.classList.remove("active");
+
+                    if (menuToggle) {
+
+                        menuToggle.innerHTML = "☰";
+
+                        menuToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* ==========================
+       RESET MOBILE MENU
+       WHEN WINDOW BECOMES DESKTOP
+    ========================== */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (window.innerWidth > 1024) {
+
+                if (navLinks) {
+                    navLinks.classList.remove("active");
+                }
+
+                if (menuToggle) {
+
+                    menuToggle.innerHTML = "☰";
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+                const dropdown =
+                    document.getElementById("categoryDropdown");
+
+                if (dropdown) {
+                    dropdown.classList.remove("mobile-open");
+                }
+
+            }
+
+        }
+    );
 </script>

@@ -27,101 +27,6 @@
         }
 
         /* ==========================
-       NAVBAR
-    ========================== */
-
-        .navbar {
-            width: 100%;
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo img {
-            width: 150px;
-            height: 60px;
-            object-fit: contain;
-        }
-
-        .menu-toggle {
-            display: none;
-            width: 45px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, .4);
-            border-radius: 6px;
-            background: transparent;
-            color: #fff;
-            font-size: 26px;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, .1);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            transition: .3s;
-        }
-
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .search-form input {
-            width: 220px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-form button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            background: #f59e0b;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .search-form button:hover {
-            background: #d97706;
-        }
-
-        .cart-btn {
-            background: linear-gradient(90deg, #10b981, #059669);
-            padding: 10px 18px;
-            border-radius: 8px;
-            color: #fff !important;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* ==========================
        BACK BUTTON
     ========================== */
 
@@ -383,19 +288,6 @@
     ========================== */
 
         @media (max-width: 1000px) {
-
-            .navbar {
-                flex-wrap: wrap;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .search-form input {
-                width: 170px;
-            }
-
             .container {
                 width: 94%;
                 padding: 28px;
@@ -428,34 +320,6 @@
     ========================== */
 
         @media (max-width: 900px) {
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                gap: 18px;
-                margin-top: 20px;
-                padding-top: 20px;
-                border-top: 1px solid rgba(255, 255, 255, .2);
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .search-form {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .search-form input,
-            .search-form button {
-                width: 100%;
-            }
 
             .container {
                 flex-direction: column;
@@ -495,15 +359,6 @@
     ========================== */
 
         @media (max-width: 600px) {
-
-            .navbar {
-                padding: 10px 15px;
-            }
-
-            .logo img {
-                width: 110px;
-                height: 48px;
-            }
 
             .container {
                 width: 95%;
