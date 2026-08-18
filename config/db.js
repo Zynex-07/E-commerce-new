@@ -60,7 +60,6 @@ function getDB() {
     if (!db) {
         throw new Error("Database not connected. Call connectDB() first.");
     }
-
     return db;
 }
 
