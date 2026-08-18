@@ -14,6 +14,7 @@
         top: 0;
         z-index: 1000;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        margin: 0;
     }
 
     /* ==========================
@@ -22,11 +23,15 @@
 
     .logo {
         flex-shrink: 0;
+        margin: 0;
+        padding: 0;
     }
 
     .logo a {
         display: flex;
         align-items: center;
+        margin: 0;
+        padding: 0;
     }
 
     .logo img {
@@ -34,6 +39,8 @@
         height: 55px;
         object-fit: contain;
         display: block;
+        margin: 0;
+        padding: 0;
     }
 
     /* ==========================
@@ -53,6 +60,8 @@
         align-items: center;
         justify-content: center;
         line-height: 1;
+        margin: 0;
+        padding: 0;
     }
 
     .menu-toggle:hover {
@@ -60,13 +69,15 @@
     }
 
     /* ==========================
-       NAV LINKS
+       NAV LINKS - DESKTOP
     ========================== */
 
     .nav-links {
         display: flex;
         align-items: center;
         gap: 10px;
+        margin: 0;
+        padding: 0;
     }
 
     .nav-links>a {
@@ -78,6 +89,7 @@
         border-radius: 6px;
         transition: 0.3s;
         white-space: nowrap;
+        margin: 0;
     }
 
     .nav-links>a:hover {
@@ -90,6 +102,8 @@
 
     .dropdown {
         position: relative;
+        margin: 0;
+        padding: 0;
     }
 
     .dropdown>a {
@@ -102,6 +116,7 @@
         display: block;
         white-space: nowrap;
         cursor: pointer;
+        margin: 0;
     }
 
     .dropdown>a:hover {
@@ -117,11 +132,10 @@
         min-width: 180px;
         border-radius: 8px;
         padding: 8px 0;
+        margin: 0;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         z-index: 1100;
     }
-
-    /* Desktop hover */
 
     .dropdown:hover .dropdown-menu {
         display: block;
@@ -136,6 +150,7 @@
         font-size: 14px;
         transition: 0.3s;
         white-space: nowrap;
+        margin: 0;
     }
 
     .dropdown-menu a:hover {
@@ -150,7 +165,8 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-left: 5px;
+        margin: 0 0 0 5px;
+        padding: 0;
     }
 
     .search-form input {
@@ -161,6 +177,7 @@
         border-radius: 6px;
         outline: none;
         font-size: 14px;
+        margin: 0;
     }
 
     .search-form button {
@@ -174,6 +191,7 @@
         font-weight: 600;
         font-size: 14px;
         transition: 0.3s;
+        margin: 0;
     }
 
     .search-form button:hover {
@@ -188,6 +206,7 @@
 
         .navbar {
             padding: 12px 15px;
+            margin: 0;
         }
 
         .nav-links {
@@ -206,7 +225,7 @@
     }
 
     /* ==========================
-       MOBILE / TABLET MENU
+       MOBILE / TABLET
     ========================== */
 
     @media (max-width: 1024px) {
@@ -214,6 +233,11 @@
         .navbar {
             position: sticky;
             top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0 !important;
+            padding: 10px 15px;
+            z-index: 1000;
         }
 
         .menu-toggle {
@@ -221,20 +245,41 @@
             margin-left: auto;
         }
 
+        /* ==========================
+           MOBILE MENU
+        ========================== */
+
         .nav-links {
             display: none;
+
             position: absolute;
-            top: 100%;
+
+            /* Menu exactly below navbar */
+            top: calc(100% - 1px);
+
             left: 0;
+            right: 0;
+
             width: 100%;
+
+            margin: 0 !important;
+
             background: #1e293b;
+
             flex-direction: column;
             align-items: stretch;
+
             gap: 0;
+
             padding: 15px 20px 20px;
+
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-            max-height: calc(100vh - 75px);
+
+            max-height: calc(100vh - 70px);
+
             overflow-y: auto;
+
+            z-index: 9999;
         }
 
         .nav-links.active {
@@ -244,9 +289,14 @@
         .nav-links>a {
             width: 100%;
             text-align: center;
+
             padding: 12px;
+
             margin: 2px 0;
+
             font-size: 15px;
+
+            border-radius: 6px;
         }
 
         /* ==========================
@@ -256,6 +306,8 @@
         .dropdown {
             width: 100%;
             text-align: center;
+            margin: 0;
+            padding: 0;
         }
 
         .dropdown>a {
@@ -263,35 +315,42 @@
             text-align: center;
             padding: 12px;
             font-size: 15px;
+            margin: 0;
         }
 
         .dropdown-menu {
             position: static;
+
             width: 100%;
             min-width: 0;
+
             background: #2d3748;
+
             box-shadow: none;
+
             border-radius: 6px;
+
             padding: 5px 0;
+
+            margin: 0;
         }
 
-        /*
-           Hover disabled on mobile.
-           JavaScript will open dropdown.
-        */
-
+        /* Disable desktop hover on mobile */
         .dropdown:hover .dropdown-menu {
             display: none;
         }
 
+        /* Open through JavaScript */
         .dropdown.mobile-open .dropdown-menu {
             display: block;
         }
 
         .dropdown-menu a {
+            width: 100%;
             text-align: center;
             padding: 10px;
             font-size: 14px;
+            margin: 0;
         }
 
         /* ==========================
@@ -300,11 +359,16 @@
 
         .search-form {
             width: 100%;
+
             display: flex;
             flex-direction: column;
+
             gap: 8px;
-            margin: 12px 0 0;
-            padding-top: 12px;
+
+            margin: 12px 0 0 !important;
+
+            padding: 12px 0 0;
+
             border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
 
@@ -312,12 +376,14 @@
             width: 100%;
             height: 40px;
             font-size: 14px;
+            margin: 0;
         }
 
         .search-form button {
             width: 100%;
             height: 40px;
             font-size: 14px;
+            margin: 0;
         }
     }
 
@@ -328,7 +394,9 @@
     @media (max-width: 600px) {
 
         .navbar {
+            width: 100%;
             padding: 10px 15px;
+            margin: 0 !important;
         }
 
         .logo img {
@@ -343,6 +411,7 @@
         }
 
         .nav-links {
+            top: calc(100% - 1px);
             padding: 15px 20px 20px;
         }
     }
@@ -352,6 +421,10 @@
     ========================== */
 
     @media (max-width: 400px) {
+
+        .navbar {
+            padding: 10px 15px;
+        }
 
         .logo img {
             width: 100px;
@@ -365,11 +438,13 @@
         }
 
         .nav-links {
+            top: calc(100% - 1px);
             padding-left: 15px;
             padding-right: 15px;
         }
     }
 </style>
+
 
 <!-- ==========================
      NAVBAR HTML
@@ -377,7 +452,6 @@
 
 <div class="navbar">
 
-    ```
     <!-- LOGO -->
     <div class="logo">
         <a href="/">
@@ -456,8 +530,6 @@
         </form>
 
     </div>
-    ```
-
 </div>
 
 <script>
