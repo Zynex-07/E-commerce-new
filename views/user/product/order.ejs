@@ -1,11 +1,25 @@
-<!-- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Order Success</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
+        /* =========================
+           RESET
+        ========================= */
+
         * {
             margin: 0;
             padding: 0;
@@ -13,30 +27,40 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        body {
+        /* =========================
+           BODY
+        ========================= */
 
-            background:
-                linear-gradient(135deg,
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg,
                     #edf2f7,
                     #dbeafe);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .order-page {
+            min-height: calc(100vh - 80px);
 
             display: flex;
             justify-content: center;
             align-items: center;
 
-            min-height: 100vh;
+            padding: 40px 20px;
         }
 
-
         /* =========================
-   ORDER BOX
-========================= */
+           ORDER BOX
+        ========================= */
 
         .box {
+            width: 100%;
+            max-width: 500px;
 
-            width: 500px;
-
-            background: white;
+            background: #ffffff;
 
             padding: 50px 40px;
 
@@ -50,161 +74,31 @@
             animation: fadeIn 0.8s ease;
         }
 
-
         /* =========================
-   HEADING
-========================= */
+           SUCCESS ICON
+        ========================= */
 
-        .box h1 {
+        .success-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #dcfce7;
+
+            border: 4px solid #bbf7d0;
 
             color: #16a34a;
 
-            margin-bottom: 20px;
-
             font-size: 42px;
-
             font-weight: 700;
         }
-
-
-        /* =========================
-   PARAGRAPH
-========================= */
-
-        .box p {
-
-            margin-bottom: 35px;
-
-            font-size: 18px;
-
-            color: #4b5563;
-
-            line-height: 28px;
-        }
-
-
-        /* =========================
-   BUTTON
-========================= */
-
-        .btn {
-
-            display: inline-block;
-
-            background:
-                linear-gradient(90deg,
-                    #f59e0b,
-                    #ef4444);
-
-            color: white;
-
-            padding: 14px 24px;
-
-            text-decoration: none;
-
-            border-radius: 10px;
-
-            font-size: 15px;
-            font-weight: 600;
-
-            transition: 0.3s;
-
-            box-shadow:
-                0 5px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        .btn:hover {
-
-            transform: translateY(-4px);
-
-            box-shadow:
-                0 10px 20px rgba(239, 68, 68, 0.5);
-        }
-
-
-        /* =========================
-   ANIMATION
-========================= */
-
-        @keyframes fadeIn {
-
-            from {
-
-                opacity: 0;
-                transform: translateY(40px);
-
-            }
-
-            to {
-
-                opacity: 1;
-                transform: translateY(0px);
-
-            }
-
-        }
-    </style>
-
-</head>
-
-<body>
-    <div class="box">
-        <h1>
-            Order Successful
-        </h1>
-        <p>
-            Thank You For Shopping
-        </p>
-        <a href="/" class="btn">
-            Back To Home
-        </a>
-    </div>
-</body>
-
-</html> -->
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>Order Success</title>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #edf2f7, #dbeafe);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            /* Mobile par screen edges se dur rakhne ke liye */
-        }
-
-        /* =========================
-           ORDER BOX
-        ========================= */
-
-        .box {
-            width: 500px;
-            max-width: 100%;
-            /* Mobile par bahar na nikalne de */
-            background: white;
-            padding: 50px 40px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-            animation: fadeIn 0.8s ease;
-        }
-
 
         /* =========================
            HEADING
@@ -212,52 +106,90 @@
 
         .box h1 {
             color: #16a34a;
-            margin-bottom: 20px;
-            font-size: 42px;
+
+            font-size: 40px;
+            line-height: 1.2;
+
+            margin-bottom: 15px;
+
             font-weight: 700;
         }
 
-
         /* =========================
-           PARAGRAPH
+           MESSAGE
         ========================= */
 
         .box p {
-            margin-bottom: 35px;
-            font-size: 18px;
             color: #4b5563;
-            line-height: 28px;
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            margin-bottom: 30px;
         }
 
-
         /* =========================
-           BUTTON
+           BUTTONS
         ========================= */
 
+        .buttons {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
         .btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #f59e0b, #ef4444);
-            color: white;
-            padding: 14px 24px;
-            text-decoration: none;
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 48px;
+
+            padding: 13px 24px;
+
             border-radius: 10px;
+
+            background: linear-gradient(90deg,
+                    #f59e0b,
+                    #ef4444);
+
+            color: #ffffff;
+
+            text-decoration: none;
+
             font-size: 15px;
+
             font-weight: 600;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+
+            box-shadow:
+                0 5px 15px rgba(239, 68, 68, 0.3);
+
+            transition: 0.3s ease;
         }
 
         .btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.5);
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 20px rgba(239, 68, 68, 0.4);
         }
 
+        .btn:active {
+            transform: scale(0.97);
+        }
 
         /* =========================
            ANIMATION
         ========================= */
 
         @keyframes fadeIn {
+
             from {
                 opacity: 0;
                 transform: translateY(40px);
@@ -265,53 +197,223 @@
 
             to {
                 opacity: 1;
-                transform: translateY(0px);
+                transform: translateY(0);
             }
+
         }
 
         /* =========================
-           RESPONSIVE (Mobile)
+           TABLET
         ========================= */
-        @media (max-width: 600px) {
+
+        @media (max-width: 768px) {
+
+            .order-page {
+                padding: 35px 18px;
+            }
+
             .box {
-                padding: 40px 20px;
-                /* Padding kam ki taaki chote phone me fit ho */
+                max-width: 520px;
+
+                padding: 42px 30px;
+            }
+
+            .success-icon {
+                width: 68px;
+                height: 68px;
+
+                font-size: 36px;
             }
 
             .box h1 {
-                font-size: 32px;
-                /* Text thoda chota kiya */
-                margin-bottom: 15px;
+                font-size: 34px;
             }
 
             .box p {
-                font-size: 16px;
+                font-size: 17px;
+            }
+
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .order-page {
+                min-height: calc(100vh - 70px);
+
+                padding: 25px 15px;
+            }
+
+            .box {
+                width: 100%;
+
+                padding: 35px 20px;
+
+                border-radius: 15px;
+            }
+
+            .success-icon {
+                width: 62px;
+                height: 62px;
+
+                margin-bottom: 16px;
+
+                font-size: 32px;
+
+                border-width: 3px;
+            }
+
+            .box h1 {
+                font-size: 29px;
+
+                line-height: 1.25;
+
+                margin-bottom: 14px;
+            }
+
+            .box p {
+                font-size: 15px;
+
+                line-height: 1.6;
+
                 margin-bottom: 25px;
             }
 
-            .btn {
-                padding: 12px 20px;
-                font-size: 14px;
+            .buttons {
                 width: 100%;
-                /* Mobile me button full width accha lagta hai */
+
+                flex-direction: column;
+
+                gap: 10px;
             }
+
+            .btn {
+                width: 100%;
+
+                min-height: 48px;
+
+                padding: 12px 18px;
+
+                font-size: 14px;
+            }
+
+        }
+
+        /* =========================
+           SMALL MOBILE
+        ========================= */
+
+        @media (max-width: 400px) {
+
+            .order-page {
+                padding: 20px 12px;
+            }
+
+            .box {
+                padding: 30px 16px;
+            }
+
+            .success-icon {
+                width: 58px;
+                height: 58px;
+
+                font-size: 29px;
+            }
+
+            .box h1 {
+                font-size: 25px;
+            }
+
+            .box p {
+                font-size: 14px;
+            }
+
+            .btn {
+                min-height: 46px;
+
+                font-size: 13px;
+            }
+
+        }
+
+        /* =========================
+           VERY SMALL MOBILE
+        ========================= */
+
+        @media (max-width: 320px) {
+
+            .box {
+                padding: 25px 13px;
+            }
+
+            .box h1 {
+                font-size: 23px;
+            }
+
+            .box p {
+                font-size: 13px;
+            }
+
         }
     </style>
 
 </head>
 
 <body>
-    <div class="box">
-        <h1>
-            Order Successful
-        </h1>
-        <p>
-            Thank You For Shopping
-        </p>
-        <a href="/" class="btn">
-            Back To Home
-        </a>
-    </div>
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <%- include("../../partials/user/navbar") %>
+
+
+        <!-- =========================
+         ORDER SUCCESS
+    ========================= -->
+
+        <main class="order-page">
+
+            <div class="box">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h1>
+                    Order Successful
+                </h1>
+
+                <p>
+                    Thank You For Shopping
+                </p>
+
+                <div class="buttons">
+
+                    <a href="/" class="btn">
+                        Back To Home
+                    </a>
+
+                    <a href="/order" class="btn">
+                        View Orders
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- =========================
+         FOOTER
+    ========================= -->
+
+        <%- include("../../partials/user/footer") %>
+
 </body>
 
 </html>

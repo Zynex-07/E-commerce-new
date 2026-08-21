@@ -39,13 +39,13 @@ router.get("/place", async (req, res) => {
             });
 
             console.log("PRODUCT =", product);
-            
+
             if (product) {
                 const category = await db.collection("category").findOne({
                     _id: product.categoryId
                 });
                 console.log("CATRGORY = ", category);
-                
+
                 item.category = category ? category.name : "";
 
                 console.log("ITEM AFTER CATREGORY = ", item);
@@ -87,7 +87,7 @@ router.get("/place", async (req, res) => {
                 }
             }
         );
-        res.redirect("/order");
+        res.render("user/product/order");
     } catch (error) {
         console.log(error);
         res.send("Place Order Error");

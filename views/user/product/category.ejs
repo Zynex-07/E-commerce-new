@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-    <title>Category Product</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Category Products</title>
 
     <style>
+        /* =========================
+           GLOBAL
+        ========================= */
+
         * {
             margin: 0;
             padding: 0;
@@ -13,327 +21,608 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        body {
-            background: linear-gradient(135deg, #edf2f7, #dbeafe);
-            min-height: 100vh;
-        }
-
-        /* =========================
-           Navbar
-        ========================= */
-
-        .navbar {
+        html {
             width: 100%;
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            overflow-x: hidden;
         }
 
-        .logo img {
-            width: 150px;
-            height: 60px;
-            object-fit: contain;
-        }
-
-        .menu-toggle {
-            display: none;
-            width: 45px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, .4);
-            border-radius: 6px;
-            background: transparent;
-            color: #fff;
-            font-size: 26px;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-            transition: .3s;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, .1);
-        }
-
-        .menu-toggle:active {
-            transform: scale(.95);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 15px;
-            font-weight: 500;
-            transition: .3s;
-        }
-
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-form input {
-            width: 220px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-form button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            background: #f59e0b;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .search-form button:hover {
-            background: #d97706;
-        }
-
-        .cart-btn {
-            background: linear-gradient(90deg, #10b981, #059669);
-            padding: 10px 18px;
-            border-radius: 8px;
-            color: white !important;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, .3);
-        }
-
-        .cart-btn:hover {
-            transform: translateY(-3px);
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg,
+                    #edf2f7,
+                    #dbeafe);
+            overflow-x: hidden;
         }
 
         /* =========================
-           Container
+           MAIN CONTAINER
         ========================= */
 
         .container {
-            width: 92%;
-            max-width: 1250px;
-            margin: 60px auto;
+            width: min(92%, 1250px);
+            margin: 45px auto 60px;
         }
 
         /* =========================
-           Title
+           TITLE
         ========================= */
 
         .title {
             text-align: center;
+
             margin-bottom: 25px;
-            font-size: 42px;
-            font-weight: 700;
+
             color: #0f172a;
+
+            font-size: clamp(28px, 4vw, 42px);
+
+            font-weight: 700;
+
+            line-height: 1.25;
+
+            overflow-wrap: anywhere;
         }
 
         /* =========================
-           Back Button
+           BACK BUTTON
         ========================= */
 
         .back-btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(90deg,
+                    #3b82f6,
+                    #2563eb);
+
             color: white;
+
             text-decoration: none;
+
             padding: 12px 20px;
+
+            min-height: 44px;
+
             border-radius: 8px;
+
+            font-size: 15px;
+
             font-weight: 600;
+
             margin-bottom: 35px;
-            transition: .3s;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 5px 12px rgba(37,
+                    99,
+                    235,
+                    0.25);
         }
 
         .back-btn:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 18px rgba(37,
+                    99,
+                    235,
+                    0.35);
         }
 
         /* =========================
-           Products
+           PRODUCT GRID
         ========================= */
 
         .product {
-            display: flex;
-            flex-wrap: wrap;
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3,
+                    minmax(0, 1fr));
+
             gap: 25px;
-            justify-content: center;
+
+            align-items: stretch;
         }
 
+        /* =========================
+           PRODUCT CARD
+        ========================= */
+
         .card {
-            width: 280px;
-            background: white;
+            width: 100%;
+
+            min-width: 0;
+
+            background: #ffffff;
+
             border-radius: 16px;
+
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, .1);
-            transition: .3s;
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.10);
+
+            display: flex;
+
+            flex-direction: column;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-7px);
+
+            box-shadow:
+                0 16px 30px rgba(0, 0, 0, 0.14);
         }
 
+        /* =========================
+           PRODUCT IMAGE
+        ========================= */
+
         .card img {
+            display: block;
+
             width: 100%;
+
             height: 260px;
+
             object-fit: cover;
+
+            background: #e5e7eb;
         }
+
+        /* =========================
+           CONTENT
+        ========================= */
 
         .content {
             padding: 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            flex-grow: 1;
+
+            min-width: 0;
         }
 
+        /* =========================
+           PRODUCT NAME
+        ========================= */
+
         .content h2 {
-            font-size: 24px;
             color: #111827;
+
+            font-size: 22px;
+
+            font-weight: 600;
+
+            line-height: 1.35;
+
             margin-bottom: 12px;
+
+            overflow-wrap: anywhere;
         }
+
+        /* =========================
+           PRICE
+        ========================= */
 
         .price {
             color: #16a34a;
+
             font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
+
+            font-weight: 700;
+
+            line-height: 1.2;
+
+            margin-bottom: 18px;
         }
 
+        /* =========================
+           BUTTON
+        ========================= */
+
         .btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 100%;
+
+            min-height: 44px;
+
+            background:
+                linear-gradient(90deg,
+                    #f59e0b,
+                    #ef4444);
+
             color: white;
+
             text-decoration: none;
-            padding: 12px 18px;
+
+            padding: 11px 18px;
+
             border-radius: 8px;
+
+            font-size: 14px;
+
             font-weight: 600;
-            transition: .3s;
+
+            text-align: center;
+
+            margin-top: auto;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 4px 10px rgba(239, 68, 68, 0.20);
         }
 
         .btn:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 7px 15px rgba(239, 68, 68, 0.35);
         }
 
         /* =========================
-           Footer
+           EMPTY PRODUCTS
         ========================= */
 
-        footer {
-            margin-top: 70px;
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            color: white;
+        .empty-message {
+            width: 100%;
+
             text-align: center;
-            padding: 25px;
+
+            background: white;
+
+            padding: 35px 20px;
+
+            border-radius: 14px;
+
+            color: #64748b;
+
+            font-size: 17px;
+
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.06);
         }
 
         /* =========================
-           Responsive
+           LARGE TABLET
         ========================= */
 
-        @media(max-width:900px) {
+        @media (max-width: 1100px) {
 
-            .navbar {
-                flex-wrap: wrap;
+            .container {
+                width: 94%;
             }
 
-            .menu-toggle {
-                display: flex;
+            .product {
+                grid-template-columns:
+                    repeat(2,
+                        minmax(0, 1fr));
+
+                gap: 22px;
             }
 
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: center;
-                gap: 18px;
-                margin-top: 20px;
-                padding-top: 20px;
-                border-top: 1px solid rgba(255, 255, 255, .15);
+            .card img {
+                height: 240px;
             }
 
-            .nav-links.active {
-                display: flex;
+            .content h2 {
+                font-size: 20px;
             }
 
-            .search-form {
-                width: 100%;
-                flex-direction: column;
+            .price {
+                font-size: 22px;
             }
+        }
 
-            .search-form input,
-            .search-form button {
-                width: 100%;
-            }
+        /* =========================
+           TABLET
+        ========================= */
 
-            .cart-btn {
-                width: 100%;
-                text-align: center;
+        @media (max-width: 768px) {
+
+            .container {
+                width: 92%;
+
+                margin: 30px auto 45px;
             }
 
             .title {
                 font-size: 32px;
-            }
 
-            .card {
-                width: 100%;
-                max-width: 340px;
-            }
-        }
-
-        @media(max-width:600px) {
-
-            .logo img {
-                width: 120px;
-                height: 50px;
-            }
-
-            .container {
-                width: 95%;
-                margin: 30px auto;
-            }
-
-            .title {
-                font-size: 28px;
+                margin-bottom: 22px;
             }
 
             .back-btn {
                 width: 100%;
-                text-align: center;
+
                 margin-bottom: 25px;
             }
 
+            .product {
+                grid-template-columns:
+                    repeat(2,
+                        minmax(0, 1fr));
+
+                gap: 16px;
+            }
+
             .card {
-                width: 100%;
+                border-radius: 13px;
             }
 
             .card img {
-                height: 220px;
+                height: 210px;
+            }
+
+            .content {
+                padding: 15px;
             }
 
             .content h2 {
-                font-size: 22px;
+                font-size: 18px;
+
+                margin-bottom: 9px;
             }
 
             .price {
                 font-size: 20px;
+
+                margin-bottom: 14px;
             }
 
             .btn {
-                display: block;
+                min-height: 42px;
+
+                padding: 10px;
+
+                font-size: 13px;
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: calc(100% - 24px);
+
+                margin: 25px auto 40px;
+            }
+
+            .title {
+                font-size: 27px;
+
+                line-height: 1.3;
+
+                margin-bottom: 20px;
+            }
+
+            .back-btn {
+                min-height: 42px;
+
+                padding: 10px 15px;
+
+                font-size: 14px;
+
+                margin-bottom: 20px;
+            }
+
+            .product {
+                grid-template-columns:
+                    repeat(2,
+                        minmax(0, 1fr));
+
+                gap: 12px;
+            }
+
+            .card {
+                border-radius: 10px;
+
+                box-shadow:
+                    0 5px 14px rgba(0, 0, 0, 0.08);
+            }
+
+            .card:hover {
+                transform: none;
+            }
+
+            .card img {
                 width: 100%;
-                text-align: center;
+
+                height: 160px;
+            }
+
+            .content {
+                padding: 11px;
+            }
+
+            .content h2 {
+                font-size: 14px;
+
+                line-height: 1.3;
+
+                margin-bottom: 7px;
+
+                display: -webkit-box;
+
+                -webkit-line-clamp: 2;
+
+                -webkit-box-orient: vertical;
+
+                overflow: hidden;
+            }
+
+            .price {
+                font-size: 17px;
+
+                margin-bottom: 11px;
+            }
+
+            .btn {
+                min-height: 38px;
+
+                padding: 8px 5px;
+
+                font-size: 11px;
+
+                border-radius: 6px;
+            }
+
+            .btn:hover {
+                transform: none;
+
+                box-shadow: none;
+            }
+        }
+
+        /* =========================
+           SMALL MOBILE
+        ========================= */
+
+        @media (max-width: 400px) {
+
+            .container {
+                width: calc(100% - 18px);
+
+                margin-top: 20px;
+            }
+
+            .title {
+                font-size: 24px;
+
+                margin-bottom: 17px;
+            }
+
+            .back-btn {
+                min-height: 40px;
+
+                font-size: 13px;
+
+                padding: 9px 12px;
+
+                margin-bottom: 17px;
+            }
+
+            .product {
+                gap: 9px;
+            }
+
+            .card {
+                border-radius: 8px;
+            }
+
+            .card img {
+                height: 135px;
+            }
+
+            .content {
+                padding: 8px;
+            }
+
+            .content h2 {
+                font-size: 12px;
+
+                margin-bottom: 5px;
+            }
+
+            .price {
+                font-size: 15px;
+
+                margin-bottom: 8px;
+            }
+
+            .btn {
+                min-height: 34px;
+
+                padding: 7px 3px;
+
+                font-size: 9px;
+
+                border-radius: 5px;
+            }
+        }
+
+        /* =========================
+           VERY SMALL PHONE
+        ========================= */
+
+        @media (max-width: 330px) {
+
+            .container {
+                width: calc(100% - 14px);
+            }
+
+            .product {
+                grid-template-columns: 1fr;
+
+                gap: 14px;
+            }
+
+            .card img {
+                height: 200px;
+            }
+
+            .content {
+                padding: 14px;
+            }
+
+            .content h2 {
+                font-size: 16px;
+            }
+
+            .price {
+                font-size: 18px;
+            }
+
+            .btn {
+                min-height: 40px;
+
+                font-size: 12px;
+            }
+        }
+
+        /* =========================
+           TOUCH DEVICES
+        ========================= */
+
+        @media (hover: none) {
+
+            .card:hover {
+                transform: none;
+            }
+
+            .btn:hover {
+                transform: none;
+
+                box-shadow:
+                    0 4px 10px rgba(239,
+                        68,
+                        68,
+                        0.20);
             }
         }
     </style>
@@ -341,36 +630,85 @@
 </head>
 
 <body>
+
+    <!-- Existing Responsive Navbar -->
+
     <%- include("../../partials/user/navbar") %>
+
+
+        <!-- =========================
+         MAIN CONTENT
+    ========================= -->
+
         <div class="container">
+
             <h1 class="title">
+
                 <%= category.name %> Products
                     (<%= product.length %>)
+
             </h1>
+
+
             <a href="/product" class="back-btn">
-                Back To Products
+                ← Back To Products
             </a>
+
+
             <div class="product">
-                <% product.forEach(function(item){ %>
-                    <div class="card">
-                        <img src="<%= item.images && item.images.length ? item.images[0] : '/images/no-image.png' %>"
-                            alt="<%= item.name %>">
-                        <div class="content">
-                            <h2>
-                                <%= item.name %>
-                            </h2>
-                            <div class="price">
-                                ₹ <%= item.price %>
+
+                <% if (product && product.length) { %>
+
+                    <% product.forEach(function(item) { %>
+
+                        <div class="card">
+
+                            <img src="<%= item.images && item.images.length ? item.images[0] : '/images/no-image.png' %>"
+                                alt="<%= item.name %>">
+
+                            <div class="content">
+
+                                <h2>
+                                    <%= item.name %>
+                                </h2>
+
+
+                                <div class="price">
+
+                                    ₹ <%= item.price %>
+
+                                </div>
+
+
+                                <a href="/product/<%= item._id %>" class="btn">
+                                    View Product
+                                </a>
+
                             </div>
-                            <a href="/product/<%= item._id %>" class="btn">
-                                View Product
-                            </a>
+
                         </div>
-                    </div>
-                    <% }) %>
+
+                        <% }) %>
+
+                            <% } else { %>
+
+                                <div class="empty-message">
+
+                                    No products found in this category.
+
+                                </div>
+
+                                <% } %>
+
             </div>
+
         </div>
+
+
+        <!-- Existing Responsive Footer -->
+
         <%- include("../../partials/user/footer") %>
+
 </body>
 
 </html>

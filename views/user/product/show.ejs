@@ -2,12 +2,19 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Product Details</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* =========================
+           GLOBAL
+        ========================= */
 
         * {
             margin: 0;
@@ -17,234 +24,453 @@
         }
 
         html {
+            width: 100%;
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
         body {
-            background: linear-gradient(135deg, #edf2f7, #dbeafe);
+            width: 100%;
             min-height: 100vh;
+            background:
+                linear-gradient(135deg,
+                    #edf2f7,
+                    #dbeafe);
             color: #111827;
+            overflow-x: hidden;
         }
 
-        /* ==========================
-       BACK BUTTON
-    ========================== */
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-wrapper {
+            width: min(1150px, 92%);
+            margin: 25px auto 20px;
+        }
 
         .back-btn {
-            display: inline-block;
-            margin: 30px 0 20px 40px;
-            padding: 12px 22px;
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+
+            padding: 11px 20px;
+
+            background:
+                linear-gradient(90deg,
+                    #2563eb,
+                    #1d4ed8);
+
             color: #fff;
+
             text-decoration: none;
+
             border-radius: 8px;
+
+            font-size: 14px;
+
             font-weight: 600;
-            transition: .3s;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 5px 15px rgba(37, 99, 235, 0.25);
         }
 
         .back-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+
+            box-shadow:
+                0 8px 18px rgba(37, 99, 235, 0.35);
         }
 
-        /* ==========================
-       PRODUCT CONTAINER
-    ========================== */
+        /* =========================
+           PRODUCT CONTAINER
+        ========================= */
 
         .container {
-            width: 92%;
-            max-width: 1150px;
-            margin: 0 auto 50px auto;
+            width: min(92%, 1150px);
+
+            margin: 0 auto 50px;
+
             background: #fff;
+
             border-radius: 20px;
+
             padding: 35px;
-            display: flex;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr) minmax(0, 1fr);
+
             gap: 45px;
+
             align-items: stretch;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
-            animation: fadeIn .8s ease;
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.12);
+
+            animation: fadeIn 0.8s ease;
         }
 
-        /* ==========================
-       IMAGE SECTION
-    ========================== */
+        /* =========================
+           IMAGE SECTION
+        ========================= */
 
         .images {
-            width: 50%;
+            width: 100%;
             min-width: 0;
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
-            justify-content: flex-start;
         }
 
         .main-image-wrapper {
             width: 100%;
+
             height: 500px;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
-            background: #fff;
+
+            background: #f8fafc;
+
             border-radius: 15px;
+
             overflow: hidden;
         }
 
         .main-image {
             width: 100%;
             height: 100%;
+
             object-fit: contain;
+
             border-radius: 15px;
+
             display: block;
-            transition: transform .3s ease;
+
+            transition: transform 0.3s ease;
         }
 
         .main-image:hover {
             transform: scale(1.02);
         }
 
-        /* ==========================
-       IMAGE THUMBNAILS
-    ========================== */
+        /* =========================
+           GALLERY
+        ========================= */
 
         .gallery {
             width: 100%;
+
             margin-top: 18px;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
-            gap: 12px;
+
+            gap: 10px;
+
             flex-wrap: wrap;
         }
 
         .gallery-item {
-            width: 82px;
-            height: 82px;
+            width: 78px;
+            height: 78px;
+
+            flex: 0 0 auto;
+
             padding: 3px;
+
             background: #fff;
+
             border: 2px solid #ddd;
+
             border-radius: 10px;
+
             cursor: pointer;
-            transition: .25s ease;
+
+            transition: 0.25s ease;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
+
             object-fit: contain;
+
             border-radius: 7px;
+
             display: block;
         }
 
         .gallery-item:hover {
             border-color: #f59e0b;
+
             transform: translateY(-3px);
-            box-shadow: 0 5px 12px rgba(0, 0, 0, .12);
+
+            box-shadow:
+                0 5px 12px rgba(0, 0, 0, 0.12);
         }
 
         .gallery-item.active {
             border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
+
+            box-shadow:
+                0 0 0 2px rgba(37, 99, 235, 0.15);
         }
 
-        /* ==========================
-       PRODUCT CONTENT
-    ========================== */
+        /* =========================
+           PRODUCT CONTENT
+        ========================= */
 
         .content {
-            width: 50%;
+            width: 100%;
             min-width: 0;
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
         }
 
         .content h1 {
-            font-size: 42px;
+            font-size: clamp(28px, 4vw, 42px);
+
             color: #111827;
-            margin-bottom: 20px;
+
+            margin-bottom: 18px;
+
             line-height: 1.2;
-            word-break: break-word;
+
+            overflow-wrap: anywhere;
         }
 
         .price {
-            font-size: 34px;
+            font-size: clamp(25px, 3vw, 34px);
+
             color: #16a34a;
-            font-weight: bold;
-            margin-bottom: 20px;
+
+            font-weight: 700;
+
+            margin-bottom: 18px;
+
+            line-height: 1.2;
         }
 
         .stock {
             margin-bottom: 10px;
+
             color: #4b5563;
-            font-size: 16px;
+
+            font-size: 15px;
+
+            line-height: 1.5;
         }
 
         .desc {
-            margin: 20px 0;
+            margin: 18px 0;
+
             color: #555;
-            line-height: 1.6;
-            font-size: 17px;
+
+            line-height: 1.65;
+
+            font-size: 16px;
+
+            overflow-wrap: anywhere;
         }
 
-        /* ==========================
-       QUANTITY
-    ========================== */
+        /* =========================
+           QUANTITY
+        ========================= */
 
         .qty-group {
             display: flex;
+
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 25px;
+
+            align-items: flex-start;
+
+            gap: 9px;
+
+            margin: 5px 0 25px;
         }
 
         .qty-group label {
-            font-size: 18px;
+            font-size: 17px;
+
             font-weight: 600;
+
             color: #111827;
         }
 
+        .quantity-control {
+            display: flex;
+
+            align-items: center;
+
+            width: fit-content;
+
+            height: 48px;
+
+            border: 2px solid #d1d5db;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            background: #fff;
+
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .qty-btn {
+            width: 48px;
+            height: 48px;
+
+            border: none;
+
+            background: #f1f5f9;
+
+            color: #111827;
+
+            font-size: 23px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .qty-btn:active {
+            transform: scale(0.94);
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.4;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
         .qty {
-            width: 100px;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 18px;
-            text-align: center;
+            width: 65px;
+            height: 48px;
+
+            border: none;
+
+            border-left: 1px solid #e5e7eb;
+
+            border-right: 1px solid #e5e7eb;
+
             outline: none;
-            transition: border-color .3s;
+
+            text-align: center;
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            color: #111827;
+
+            background: #fff;
         }
 
-        .qty:focus {
-            border-color: #f59e0b;
+        /* Remove number arrows */
+
+        .qty::-webkit-inner-spin-button,
+        .qty::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        /* ==========================
-       BUTTONS
-    ========================== */
+        .qty[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
 
         .action-buttons {
+            width: 100%;
+
             display: flex;
+
             flex-direction: column;
-            gap: 13px;
+
+            gap: 12px;
         }
 
         .btn {
-            display: block;
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
             width: 250px;
+
+            min-height: 46px;
+
             text-align: center;
+
             text-decoration: none;
-            background: linear-gradient(90deg, #f59e0b, #ef4444);
+
+            background:
+                linear-gradient(90deg,
+                    #f59e0b,
+                    #ef4444);
+
             color: white;
-            padding: 14px;
+
+            padding: 12px 14px;
+
             border-radius: 10px;
+
             font-weight: 600;
-            transition: .3s;
+
+            transition: 0.3s;
+
             border: none;
+
             cursor: pointer;
-            font-size: 16px;
+
+            font-size: 15px;
         }
 
         .btn.secondary {
@@ -253,49 +479,120 @@
 
         .btn.disabled {
             background: #9ca3af;
+
             cursor: not-allowed;
+
             transform: none !important;
+
             box-shadow: none !important;
         }
 
         .btn:hover:not(.disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(239, 68, 68, .4);
+
+            box-shadow:
+                0 5px 15px rgba(239, 68, 68, 0.4);
         }
 
         .btn.secondary:hover:not(.disabled) {
-            box-shadow: 0 5px 15px rgba(17, 24, 39, .4);
+            box-shadow:
+                0 5px 15px rgba(17, 24, 39, 0.4);
         }
 
-        /* ==========================
-       ANIMATION
-    ========================== */
+        /* =========================
+           ANIMATION
+        ========================= */
 
         @keyframes fadeIn {
+
             from {
                 opacity: 0;
-                transform: translateY(40px);
+                transform: translateY(35px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
 
-        /* ==========================
-       TABLET
-    ========================== */
+        /* =========================
+           LARGE TABLET
+        ========================= */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1050px) {
+
             .container {
                 width: 94%;
+
                 padding: 28px;
+
                 gap: 30px;
             }
 
             .main-image-wrapper {
                 height: 430px;
+            }
+
+            .gallery-item {
+                width: 72px;
+                height: 72px;
+            }
+
+            .desc {
+                font-size: 15px;
+            }
+
+            .btn {
+                width: 230px;
+            }
+
+        }
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .back-wrapper {
+                width: 94%;
+
+                margin-top: 20px;
+            }
+
+            .container {
+                width: 94%;
+
+                grid-template-columns: 1fr;
+
+                gap: 30px;
+
+                padding: 28px;
+
+                border-radius: 16px;
+            }
+
+            .images,
+            .content {
+                width: 100%;
+            }
+
+            .images {
+                max-width: 650px;
+
+                margin: 0 auto;
+            }
+
+            .content {
+                max-width: 650px;
+
+                margin: 0 auto;
+            }
+
+            .main-image-wrapper {
+                height: 450px;
             }
 
             .content h1 {
@@ -306,80 +603,46 @@
                 font-size: 30px;
             }
 
-            .desc {
-                font-size: 15px;
-            }
-
-            .btn {
-                width: 230px;
-            }
         }
 
-        /* ==========================
-       TABLET / SMALL LAPTOP
-    ========================== */
-
-        @media (max-width: 900px) {
-
-            .container {
-                flex-direction: column;
-                align-items: center;
-                padding: 30px;
-            }
-
-            .images,
-            .content {
-                width: 100%;
-            }
-
-            .images {
-                max-width: 650px;
-            }
-
-            .content {
-                max-width: 650px;
-                align-items: flex-start;
-            }
-
-            .main-image-wrapper {
-                height: 450px;
-            }
-
-            .gallery {
-                margin-top: 15px;
-            }
-
-            .back-btn {
-                margin: 20px 0 20px 20px;
-            }
-        }
-
-        /* ==========================
-       MOBILE
-    ========================== */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 600px) {
 
-            .container {
-                width: 95%;
-                padding: 18px;
-                gap: 25px;
-                border-radius: 15px;
-                margin-bottom: 30px;
+            .back-wrapper {
+                width: calc(100% - 24px);
+
+                margin: 15px auto;
             }
 
             .back-btn {
-                margin: 15px 0 15px 15px;
-                padding: 10px 17px;
-                font-size: 14px;
+                width: 100%;
+
+                min-height: 42px;
+
+                padding: 10px 14px;
+
+                font-size: 13px;
             }
 
-            .images {
-                width: 100%;
+            .container {
+                width: calc(100% - 24px);
+
+                padding: 16px;
+
+                gap: 24px;
+
+                margin-bottom: 30px;
+
+                border-radius: 14px;
             }
 
             .main-image-wrapper {
-                height: 330px;
+                height: 320px;
+
+                border-radius: 10px;
             }
 
             .main-image {
@@ -387,27 +650,28 @@
             }
 
             .gallery {
-                gap: 8px;
-                margin-top: 12px;
+                gap: 7px;
+
+                margin-top: 10px;
             }
 
             .gallery-item {
-                width: 65px;
-                height: 65px;
-            }
+                width: 62px;
+                height: 62px;
 
-            .content {
-                width: 100%;
+                border-radius: 8px;
             }
 
             .content h1 {
-                font-size: 28px;
-                margin-bottom: 12px;
+                font-size: 27px;
+
+                margin-bottom: 11px;
             }
 
             .price {
-                font-size: 26px;
-                margin-bottom: 15px;
+                font-size: 25px;
+
+                margin-bottom: 13px;
             }
 
             .stock {
@@ -415,109 +679,266 @@
             }
 
             .desc {
-                font-size: 15px;
-                margin: 15px 0;
+                font-size: 14px;
+
+                margin: 14px 0;
+
                 line-height: 1.55;
             }
 
+            /* Quantity */
+
             .qty-group {
                 margin-bottom: 20px;
+
+                gap: 7px;
             }
 
             .qty-group label {
-                font-size: 16px;
+                font-size: 15px;
+            }
+
+            .quantity-control {
+                width: 135px;
+
+                height: 46px;
+            }
+
+            .qty-btn {
+                width: 43px;
+
+                height: 46px;
+
+                font-size: 21px;
             }
 
             .qty {
-                width: 90px;
-                font-size: 16px;
+                width: 49px;
+
+                height: 46px;
+
+                font-size: 17px;
             }
+
+            /* Buttons */
 
             .action-buttons {
                 width: 100%;
+
+                gap: 9px;
             }
 
             .btn {
                 width: 100%;
-                padding: 13px;
-                font-size: 15px;
+
+                min-height: 43px;
+
+                padding: 11px;
+
+                font-size: 14px;
             }
+
         }
 
-        /* ==========================
-       VERY SMALL MOBILE
-    ========================== */
+        /* =========================
+           SMALL MOBILE
+        ========================= */
 
         @media (max-width: 400px) {
 
+            .back-wrapper {
+                width: calc(100% - 18px);
+            }
+
             .container {
-                width: 96%;
-                padding: 14px;
+                width: calc(100% - 18px);
+
+                padding: 12px;
+
+                gap: 20px;
             }
 
             .main-image-wrapper {
                 height: 270px;
             }
 
+            .gallery {
+                gap: 6px;
+            }
+
             .gallery-item {
-                width: 58px;
-                height: 58px;
+                width: 55px;
+                height: 55px;
             }
 
             .content h1 {
-                font-size: 24px;
-            }
-
-            .price {
                 font-size: 23px;
             }
 
-            .desc {
-                font-size: 14px;
+            .price {
+                font-size: 22px;
             }
+
+            .desc {
+                font-size: 13px;
+            }
+
+            .quantity-control {
+                height: 44px;
+
+                width: 130px;
+            }
+
+            .qty-btn {
+                width: 42px;
+
+                height: 44px;
+            }
+
+            .qty {
+                width: 46px;
+
+                height: 44px;
+            }
+
+            .btn {
+                min-height: 40px;
+
+                font-size: 13px;
+            }
+
+        }
+
+        /* =========================
+           VERY SMALL PHONE
+        ========================= */
+
+        @media (max-width: 330px) {
+
+            .container {
+                width: calc(100% - 12px);
+
+                padding: 10px;
+            }
+
+            .main-image-wrapper {
+                height: 230px;
+            }
+
+            .gallery-item {
+                width: 49px;
+                height: 49px;
+            }
+
+            .content h1 {
+                font-size: 21px;
+            }
+
+            .price {
+                font-size: 20px;
+            }
+
+            .quantity-control {
+                width: 125px;
+            }
+
+            .qty-btn {
+                width: 40px;
+            }
+
+            .qty {
+                width: 45px;
+            }
+
+        }
+
+        /* =========================
+           TOUCH DEVICES
+        ========================= */
+
+        @media (hover: none) {
+
+            .main-image:hover {
+                transform: none;
+            }
+
+            .gallery-item:hover {
+                transform: none;
+
+                box-shadow: none;
+            }
+
+            .btn:hover:not(.disabled) {
+                transform: none;
+
+                box-shadow: none;
+            }
+
         }
     </style>
 
 </head>
 
+
 <body>
 
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
     <%- include("../../partials/user/navbar") %>
 
 
-        <!-- BACK BUTTON -->
-        <a href="/product" class="back-btn">
-            ← Back To Products
-        </a>
+        <!-- =========================
+         BACK BUTTON
+    ========================= -->
+
+        <div class="back-wrapper">
+
+            <a href="/product" class="back-btn">
+                ← Back To Products
+            </a>
+
+        </div>
 
 
-        <!-- PRODUCT CONTAINER -->
+        <!-- =========================
+         PRODUCT
+    ========================= -->
+
         <div class="container">
 
-            <!-- ==========================
-         PRODUCT IMAGES
-    ========================== -->
+
+            <!-- =========================
+             IMAGES
+        ========================= -->
 
             <div class="images">
 
                 <% if(product.images && Array.isArray(product.images) && product.images.length> 0){ %>
 
+
                     <!-- MAIN IMAGE -->
+
                     <div class="main-image-wrapper">
+
                         <img id="mainImage" class="main-image" src="<%= product.images[0] %>" alt="<%= product.name %>">
+
                     </div>
 
 
                     <!-- THUMBNAILS -->
+
                     <div class="gallery">
 
-                        <% product.images.slice(0, 4).forEach(function(img, index) { %>
+                        <% product.images .slice(0, 4) .forEach(function(img, index) { %>
 
                             <div class="gallery-item <%= index === 0 ? 'active' : '' %>"
                                 onclick="changeImage('<%= img %>', this)">
+
                                 <img src="<%= img %>" alt="<%= product.name %>">
+
                             </div>
 
                             <% }) %>
@@ -527,15 +948,22 @@
 
                     <% } else if(product.image){ %>
 
+
                         <!-- SINGLE IMAGE -->
+
                         <div class="main-image-wrapper">
+
                             <img id="mainImage" class="main-image" src="<%= product.image %>" alt="<%= product.name %>">
+
                         </div>
+
 
                         <div class="gallery">
 
                             <div class="gallery-item active" onclick="changeImage('<%= product.image %>', this)">
+
                                 <img src="<%= product.image %>" alt="<%= product.name %>">
+
                             </div>
 
                         </div>
@@ -543,22 +971,28 @@
 
                         <% } else { %>
 
+
                             <!-- NO IMAGE -->
+
                             <div class="main-image-wrapper">
+
                                 <img id="mainImage" class="main-image" src="https://via.placeholder.com/500"
                                     alt="No Image">
+
                             </div>
+
 
                             <% } %>
 
             </div>
 
 
-            <!-- ==========================
-         PRODUCT INFORMATION
-    ========================== -->
+            <!-- =========================
+             PRODUCT INFORMATION
+        ========================= -->
 
             <div class="content">
+
 
                 <h1>
                     <%= product.name %>
@@ -566,37 +1000,70 @@
 
 
                 <div class="price">
+
                     ₹ <%= product.price %>
+
                 </div>
 
 
                 <p class="stock">
+
                     <strong>Current Stock:</strong>
+
                     <%= product.stock %>
+
                 </p>
 
 
                 <div class="desc">
+
                     <%= product.description %>
+
                 </div>
 
 
-                <!-- QUANTITY -->
+                <!-- =========================
+                 QUANTITY
+            ========================= -->
+
                 <div class="qty-group">
 
                     <label for="qty">
                         Quantity
                     </label>
 
-                    <input type="number" value="1" min="1" max="<%= product.stock %>" id="qty" class="qty">
+
+                    <div class="quantity-control">
+
+
+                        <button type="button" class="qty-btn" id="minusBtn" aria-label="Decrease quantity">
+                            −
+                        </button>
+
+
+                        <input type="number" value="1" min="1" max="<%= product.stock %>" id="qty" class="qty"
+                            inputmode="numeric" aria-label="Quantity">
+
+
+                        <button type="button" class="qty-btn" id="plusBtn" aria-label="Increase quantity">
+                            +
+                        </button>
+
+
+                    </div>
 
                 </div>
 
 
-                <!-- ACTION BUTTONS -->
+                <!-- =========================
+                 ACTION BUTTONS
+            ========================= -->
+
                 <div class="action-buttons">
 
+
                     <% if(product.stock> 0){ %>
+
 
                         <a href="#" id="cartBtn" class="btn">
                             🛒 Add To Cart
@@ -611,123 +1078,407 @@
                         <a href="/wishlist/add/<%= product._id %>" class="btn secondary">
                             ❤️ Add To Wishlist
                         </a>
+
+
                         <% } else { %>
+
+
                             <button class="btn disabled" disabled>
                                 ❌ Out Of Stock
                             </button>
+
+
                             <% } %>
+
+
                 </div>
+
+
             </div>
+
         </div>
-        <!-- FOOTER -->
+
+
+        <!-- =========================
+         FOOTER
+    ========================= -->
+
         <%- include("../../partials/user/footer") %>
-            <!-- ==========================
-     JAVASCRIPT
-========================== -->
+
+
+            <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
             <script>
+
                 console.log("SHOW PAGE JS LOADED");
-                /* ==========================
+
+
+                /* =========================
                    CHANGE MAIN IMAGE
-                ========================== */
+                ========================= */
+
                 function changeImage(img, element) {
+
                     const mainImage =
                         document.getElementById("mainImage");
+
+
                     if (mainImage) {
+
                         mainImage.src = img;
+
                     }
-                    /* Remove active from all thumbnails */
+
+
                     document
                         .querySelectorAll(".gallery-item")
                         .forEach(function (item) {
+
                             item.classList.remove("active");
+
                         });
-                    /* Add active to clicked thumbnail */
+
+
                     if (element) {
+
                         element.classList.add("active");
+
                     }
+
                 }
-                /* ==========================
+
+
+                /* =========================
                    PRODUCT STOCK
-                ========================== */
+                ========================= */
+
                 const productStock =
-        <%= product.stock %>;
+            <%= product.stock %>;
+
+
                 console.log(
                     "Product ID:",
                     "<%= product._id %>"
                 );
+
+
                 console.log(
                     "Stock:",
                     productStock
                 );
-                /* ==========================
+
+
+                /* =========================
+                   QUANTITY ELEMENTS
+                ========================= */
+
+                const qtyInput =
+                    document.getElementById("qty");
+
+
+                const minusBtn =
+                    document.getElementById("minusBtn");
+
+
+                const plusBtn =
+                    document.getElementById("plusBtn");
+
+
+                /* =========================
+                   NORMALIZE QUANTITY
+                ========================= */
+
+                function normalizeQuantity() {
+
+                    let qty =
+                        parseInt(qtyInput.value, 10);
+
+
+                    if (isNaN(qty)) {
+
+                        qty = 1;
+
+                    }
+
+
+                    if (qty < 1) {
+
+                        qty = 1;
+
+                    }
+
+
+                    if (qty > productStock) {
+
+                        qty = productStock;
+
+                    }
+
+
+                    qtyInput.value = qty;
+
+
+                    updateQuantityButtons();
+
+                }
+
+
+                /* =========================
+                   BUTTON STATE
+                ========================= */
+
+                function updateQuantityButtons() {
+
+                    const qty =
+                        Number(qtyInput.value);
+
+
+                    if (minusBtn) {
+
+                        minusBtn.disabled =
+                            qty <= 1;
+
+                    }
+
+
+                    if (plusBtn) {
+
+                        plusBtn.disabled =
+                            qty >= productStock;
+
+                    }
+
+                }
+
+
+                /* =========================
+                   MINUS
+                ========================= */
+
+                if (minusBtn) {
+
+                    minusBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            let qty =
+                                Number(qtyInput.value);
+
+
+                            if (qty > 1) {
+
+                                qty--;
+
+                            }
+
+
+                            qtyInput.value = qty;
+
+                            updateQuantityButtons();
+
+                        }
+                    );
+
+                }
+
+
+                /* =========================
+                   PLUS
+                ========================= */
+
+                if (plusBtn) {
+
+                    plusBtn.addEventListener(
+                        "click",
+                        function () {
+
+                            let qty =
+                                Number(qtyInput.value);
+
+
+                            if (qty < productStock) {
+
+                                qty++;
+
+                            }
+
+
+                            qtyInput.value = qty;
+
+                            updateQuantityButtons();
+
+                        }
+                    );
+
+                }
+
+
+                /* =========================
+                   MANUAL INPUT
+                ========================= */
+
+                if (qtyInput) {
+
+                    qtyInput.addEventListener(
+                        "input",
+                        function () {
+
+                            normalizeQuantity();
+
+                        }
+                    );
+
+
+                    qtyInput.addEventListener(
+                        "blur",
+                        function () {
+
+                            normalizeQuantity();
+
+                        }
+                    );
+
+                }
+
+
+                updateQuantityButtons();
+
+
+                /* =========================
+                   GET QUANTITY
+                ========================= */
+
+                function getQuantity() {
+
+                    normalizeQuantity();
+
+                    return Number(
+                        qtyInput.value
+                    );
+
+                }
+
+
+                /* =========================
                    CART BUTTON
-                ========================== */
+                ========================= */
+
                 const cartBtn =
                     document.getElementById("cartBtn");
+
+
                 if (cartBtn) {
+
                     cartBtn.addEventListener(
                         "click",
                         function (e) {
+
                             e.preventDefault();
+
+
                             const qty =
-                                Number(
-                                    document.getElementById("qty").value
-                                );
+                                getQuantity();
+
+
                             if (qty < 1) {
-                                alert("Invalid Quantity");
+
+                                alert(
+                                    "Invalid Quantity"
+                                );
+
                                 return;
+
                             }
+
+
                             if (qty > productStock) {
+
                                 alert(
                                     "Only " +
                                     productStock +
                                     " items available"
                                 );
+
                                 return;
+
                             }
+
+
                             const url =
                                 "/cart/add/<%= product._id %>?qty=" +
                                 qty;
+
+
                             console.log(url);
-                            window.location.href = url;
+
+
+                            window.location.href =
+                                url;
+
                         }
                     );
+
                 }
-                /* ==========================
+
+
+                /* =========================
                    BUY NOW BUTTON
-                ========================== */
+                ========================= */
+
                 const buyBtn =
                     document.getElementById("buyBtn");
+
+
                 if (buyBtn) {
+
                     buyBtn.addEventListener(
                         "click",
                         function (e) {
+
                             e.preventDefault();
+
+
                             const qty =
-                                Number(
-                                    document.getElementById("qty").value
-                                );
+                                getQuantity();
+
 
                             if (qty < 1) {
-                                alert("Invalid Quantity");
+
+                                alert(
+                                    "Invalid Quantity"
+                                );
+
                                 return;
+
                             }
 
+
                             if (qty > productStock) {
+
                                 alert(
                                     "Only " +
                                     productStock +
                                     " items available"
                                 );
+
                                 return;
+
                             }
+
+
                             window.location.href =
                                 "/cart/add/<%= product._id %>?qty=" +
                                 qty;
+
                         }
                     );
+
                 }
+
             </script>
+
 
 </body>
 
