@@ -7,119 +7,177 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="description" content="Order successful">
+
     <title>Order Success</title>
 
+
+    <!-- Google Font -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+
     <style>
-        /* =========================
+        /* =====================================================
            RESET
-        ========================= */
+        ===================================================== */
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+
+            font-family:
+                'Poppins',
+                sans-serif;
         }
 
-        /* =========================
-           BODY
-        ========================= */
+
+        /* =====================================================
+           HTML / BODY
+        ===================================================== */
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+
+            overflow-x: hidden;
+        }
+
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg,
+
+            background:
+                linear-gradient(135deg,
                     #edf2f7,
                     #dbeafe);
+
+            color: #111827;
         }
 
-        /* =========================
-           MAIN
-        ========================= */
+
+        /* =====================================================
+           MAIN PAGE
+        ===================================================== */
 
         .order-page {
-            min-height: calc(100vh - 80px);
+
+            width: 100%;
+
+            min-height:
+                calc(100vh - 80px);
 
             display: flex;
+
             justify-content: center;
+
             align-items: center;
 
-            padding: 40px 20px;
+            padding:
+                50px 20px;
         }
 
-        /* =========================
-           ORDER BOX
-        ========================= */
+
+        /* =====================================================
+           ORDER SUCCESS BOX
+        ===================================================== */
 
         .box {
+
             width: 100%;
-            max-width: 500px;
+
+            max-width: 520px;
 
             background: #ffffff;
 
-            padding: 50px 40px;
+            padding:
+                55px 45px;
 
-            border-radius: 18px;
+            border-radius: 20px;
 
             text-align: center;
 
             box-shadow:
                 0 15px 35px rgba(0, 0, 0, 0.12);
 
-            animation: fadeIn 0.8s ease;
+            animation:
+                fadeIn 0.7s ease;
+
+            overflow: hidden;
         }
 
-        /* =========================
+
+        /* =====================================================
            SUCCESS ICON
-        ========================= */
+        ===================================================== */
 
         .success-icon {
-            width: 75px;
-            height: 75px;
 
-            margin: 0 auto 20px;
+            width: 80px;
+
+            height: 80px;
+
+            margin:
+                0 auto 22px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             border-radius: 50%;
 
             background: #dcfce7;
 
-            border: 4px solid #bbf7d0;
+            border:
+                4px solid #bbf7d0;
 
             color: #16a34a;
 
-            font-size: 42px;
+            font-size: 44px;
+
             font-weight: 700;
+
+            line-height: 1;
+
+            flex-shrink: 0;
         }
 
-        /* =========================
+
+        /* =====================================================
            HEADING
-        ========================= */
+        ===================================================== */
 
         .box h1 {
+
             color: #16a34a;
 
             font-size: 40px;
-            line-height: 1.2;
+
+            line-height: 1.25;
 
             margin-bottom: 15px;
 
             font-weight: 700;
+
+            overflow-wrap: anywhere;
         }
 
-        /* =========================
+
+        /* =====================================================
            MESSAGE
-        ========================= */
+        ===================================================== */
 
         .box p {
+
             color: #4b5563;
 
             font-size: 18px;
@@ -127,35 +185,56 @@
             line-height: 1.7;
 
             margin-bottom: 30px;
+
+            overflow-wrap: anywhere;
         }
 
-        /* =========================
-           BUTTONS
-        ========================= */
+
+        /* =====================================================
+           BUTTON CONTAINER
+        ===================================================== */
 
         .buttons {
+
+            width: 100%;
+
             display: flex;
 
             justify-content: center;
+
+            align-items: stretch;
 
             gap: 12px;
 
             flex-wrap: wrap;
         }
 
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
         .btn {
+
+            flex: 1;
+
+            min-width: 180px;
+
+            min-height: 50px;
+
             display: inline-flex;
 
             align-items: center;
+
             justify-content: center;
 
-            min-height: 48px;
-
-            padding: 13px 24px;
+            padding:
+                13px 20px;
 
             border-radius: 10px;
 
-            background: linear-gradient(90deg,
+            background:
+                linear-gradient(90deg,
                     #f59e0b,
                     #ef4444);
 
@@ -167,96 +246,214 @@
 
             font-weight: 600;
 
-            box-shadow:
-                0 5px 15px rgba(239, 68, 68, 0.3);
+            line-height: 1.3;
 
-            transition: 0.3s ease;
+            box-shadow:
+                0 5px 15px rgba(239, 68, 68, 0.30);
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
+
+            overflow-wrap: anywhere;
+
+            text-align: center;
         }
+
 
         .btn:hover {
-            transform: translateY(-3px);
+
+            transform:
+                translateY(-3px);
 
             box-shadow:
-                0 10px 20px rgba(239, 68, 68, 0.4);
+                0 10px 22px rgba(239, 68, 68, 0.40);
         }
+
 
         .btn:active {
-            transform: scale(0.97);
+
+            transform:
+                scale(0.97);
         }
 
-        /* =========================
+
+        /* =====================================================
            ANIMATION
-        ========================= */
+        ===================================================== */
 
         @keyframes fadeIn {
 
             from {
+
                 opacity: 0;
-                transform: translateY(40px);
+
+                transform:
+                    translateY(35px);
             }
 
             to {
-                opacity: 1;
-                transform: translateY(0);
-            }
 
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
         }
 
-        /* =========================
-           TABLET
-        ========================= */
 
-        @media (max-width: 768px) {
+        /* =====================================================
+           LARGE TABLET
+        ===================================================== */
+
+        @media (max-width: 900px) {
 
             .order-page {
-                padding: 35px 18px;
+
+                padding:
+                    45px 20px;
             }
+
 
             .box {
-                max-width: 520px;
 
-                padding: 42px 30px;
+                max-width: 500px;
+
+                padding:
+                    48px 35px;
             }
 
+
             .success-icon {
-                width: 68px;
-                height: 68px;
+
+                width: 74px;
+
+                height: 74px;
+
+                font-size: 40px;
+            }
+
+
+            .box h1 {
 
                 font-size: 36px;
             }
 
-            .box h1 {
-                font-size: 34px;
-            }
 
             .box p {
+
                 font-size: 17px;
             }
 
         }
 
-        /* =========================
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 768px) {
+
+            .order-page {
+
+                min-height:
+                    calc(100vh - 70px);
+
+                padding:
+                    35px 18px;
+            }
+
+
+            .box {
+
+                max-width: 500px;
+
+                padding:
+                    42px 30px;
+
+                border-radius: 17px;
+            }
+
+
+            .success-icon {
+
+                width: 68px;
+
+                height: 68px;
+
+                margin-bottom: 18px;
+
+                font-size: 36px;
+
+                border-width: 3px;
+            }
+
+
+            .box h1 {
+
+                font-size: 33px;
+
+                line-height: 1.25;
+            }
+
+
+            .box p {
+
+                font-size: 16px;
+
+                line-height: 1.6;
+
+                margin-bottom: 27px;
+            }
+
+
+            .btn {
+
+                min-height: 48px;
+
+                font-size: 14px;
+
+                padding:
+                    12px 17px;
+            }
+
+        }
+
+
+        /* =====================================================
            MOBILE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 600px) {
 
             .order-page {
-                min-height: calc(100vh - 70px);
 
-                padding: 25px 15px;
+                min-height:
+                    calc(100vh - 65px);
+
+                padding:
+                    25px 14px;
             }
+
 
             .box {
+
                 width: 100%;
 
-                padding: 35px 20px;
+                padding:
+                    35px 20px;
 
                 border-radius: 15px;
+
+                box-shadow:
+                    0 10px 25px rgba(0, 0, 0, 0.10);
             }
 
+
             .success-icon {
+
                 width: 62px;
+
                 height: 62px;
 
                 margin-bottom: 16px;
@@ -266,15 +463,19 @@
                 border-width: 3px;
             }
 
+
             .box h1 {
+
                 font-size: 29px;
 
                 line-height: 1.25;
 
-                margin-bottom: 14px;
+                margin-bottom: 13px;
             }
 
+
             .box p {
+
                 font-size: 15px;
 
                 line-height: 1.6;
@@ -282,7 +483,9 @@
                 margin-bottom: 25px;
             }
 
+
             .buttons {
+
                 width: 100%;
 
                 flex-direction: column;
@@ -290,71 +493,210 @@
                 gap: 10px;
             }
 
+
             .btn {
+
                 width: 100%;
+
+                min-width: 0;
+
+                flex: none;
 
                 min-height: 48px;
 
-                padding: 12px 18px;
+                padding:
+                    12px 15px;
 
                 font-size: 14px;
+
+                border-radius: 9px;
+            }
+
+
+            .btn:hover {
+
+                transform: none;
+
+                box-shadow:
+                    0 5px 15px rgba(239, 68, 68, 0.30);
+            }
+
+
+            .btn:active {
+
+                transform:
+                    scale(0.98);
             }
 
         }
 
-        /* =========================
+
+        /* =====================================================
            SMALL MOBILE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 400px) {
 
             .order-page {
-                padding: 20px 12px;
+
+                padding:
+                    20px 10px;
             }
+
 
             .box {
-                padding: 30px 16px;
+
+                padding:
+                    30px 16px;
+
+                border-radius: 13px;
             }
 
+
             .success-icon {
+
                 width: 58px;
+
                 height: 58px;
+
+                margin-bottom: 15px;
 
                 font-size: 29px;
             }
 
+
             .box h1 {
+
                 font-size: 25px;
+
+                line-height: 1.25;
             }
+
 
             .box p {
+
                 font-size: 14px;
+
+                line-height: 1.55;
+
+                margin-bottom: 22px;
             }
 
+
+            .buttons {
+
+                gap: 8px;
+            }
+
+
             .btn {
+
                 min-height: 46px;
 
                 font-size: 13px;
+
+                padding:
+                    11px 12px;
+
+                border-radius: 8px;
             }
 
         }
 
-        /* =========================
+
+        /* =====================================================
            VERY SMALL MOBILE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 320px) {
 
-            .box {
-                padding: 25px 13px;
+            .order-page {
+
+                padding:
+                    15px 7px;
             }
+
+
+            .box {
+
+                padding:
+                    25px 12px;
+
+                border-radius: 11px;
+            }
+
+
+            .success-icon {
+
+                width: 54px;
+
+                height: 54px;
+
+                font-size: 27px;
+
+                margin-bottom: 13px;
+            }
+
 
             .box h1 {
-                font-size: 23px;
+
+                font-size: 22px;
             }
 
+
             .box p {
+
                 font-size: 13px;
+
+                margin-bottom: 20px;
+            }
+
+
+            .btn {
+
+                min-height: 44px;
+
+                font-size: 12px;
+
+                padding:
+                    10px 9px;
+            }
+
+        }
+
+
+        /* =====================================================
+           TOUCH DEVICES
+        ===================================================== */
+
+        @media (hover: none) {
+
+            .btn:hover {
+
+                transform: none;
+
+                box-shadow:
+                    0 5px 15px rgba(239, 68, 68, 0.30);
+            }
+
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .box {
+
+                animation: none;
+            }
+
+
+            .btn {
+
+                transition: none;
             }
 
         }
@@ -362,57 +704,88 @@
 
 </head>
 
+
 <body>
 
-    <!-- =========================
+
+    <!-- =====================================================
          NAVBAR
-    ========================= -->
+    ===================================================== -->
 
     <%- include("../../partials/user/navbar") %>
 
 
-        <!-- =========================
+        <!-- =====================================================
          ORDER SUCCESS
-    ========================= -->
+    ===================================================== -->
 
         <main class="order-page">
 
+
             <div class="box">
 
+
+                <!-- SUCCESS ICON -->
+
                 <div class="success-icon">
+
                     ✓
+
                 </div>
 
+
+                <!-- HEADING -->
+
                 <h1>
+
                     Order Successful
+
                 </h1>
 
+
+                <!-- MESSAGE -->
+
                 <p>
+
                     Thank You For Shopping
+
                 </p>
+
+
+                <!-- BUTTONS -->
 
                 <div class="buttons">
 
+
                     <a href="/" class="btn">
+
                         Back To Home
+
                     </a>
 
+
                     <a href="/order" class="btn">
+
                         View Orders
+
                     </a>
+
 
                 </div>
 
+
             </div>
+
 
         </main>
 
 
-        <!-- =========================
+        <!-- =====================================================
          FOOTER
-    ========================= -->
+    ===================================================== -->
 
         <%- include("../../partials/user/footer") %>
+
 
 </body>
 

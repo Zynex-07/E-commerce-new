@@ -2,13 +2,20 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Add Category</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
+        /* =====================================================
+           RESET
+        ===================================================== */
+
         * {
             margin: 0;
             padding: 0;
@@ -16,221 +23,813 @@
             font-family: 'Poppins', sans-serif;
         }
 
+
+        html,
         body {
-            background: #f5f7fb;
+            width: 100%;
+            min-height: 100%;
             overflow-x: hidden;
         }
 
-        /* ==========================
-           Main Content
-        ========================== */
+
+        body {
+            background: #f5f7fb;
+            color: #111827;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
 
         .main-content {
+
+            width: calc(100% - 260px);
+
             margin-left: 260px;
             margin-top: 70px;
-            min-height: 100vh;
+
+            min-height: calc(100vh - 70px);
+
             padding: 30px;
+
+            overflow-x: hidden;
         }
 
-        /* ==========================
-           Page Header
-        ========================== */
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
 
         .page-header {
-            background: #fff;
+
+            width: 100%;
+
+            background: #ffffff;
+
             border-radius: 15px;
+
             padding: 25px 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+
             margin-bottom: 30px;
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, .08);
         }
+
 
         .page-header h1 {
-            font-size: 32px;
+
             color: #111827;
+
+            font-size:
+                clamp(25px, 3vw, 32px);
+
+            font-weight: 700;
+
+            line-height: 1.3;
+
             margin-bottom: 8px;
+
+            overflow-wrap: anywhere;
         }
+
 
         .page-header p {
+
             color: #6b7280;
+
             font-size: 15px;
+
+            line-height: 1.6;
+
+            overflow-wrap: anywhere;
         }
 
-        /* ==========================
-           Card
-        ========================== */
+
+        /* =====================================================
+           CARD
+        ===================================================== */
 
         .card {
+
+            width: 100%;
+
             max-width: 650px;
-            margin: auto;
-            background: #fff;
+
+            margin: 0 auto;
+
+            background: #ffffff;
+
             border-radius: 15px;
+
             padding: 35px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, .08);
         }
+
+
+        /* =====================================================
+           CARD HEADING
+        ===================================================== */
 
         .card h2 {
-            text-align: center;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
             color: #111827;
+
             margin-bottom: 25px;
-            font-size: 28px;
+
+            font-size:
+                clamp(22px, 3vw, 28px);
+
+            font-weight: 700;
+
+            line-height: 1.3;
+
+            text-align: center;
         }
 
+
+        .card h2 i {
+
+            color: #2563eb;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
         .form-group {
+
+            width: 100%;
+
             margin-bottom: 20px;
         }
 
+
         .form-group label {
+
             display: block;
+
             margin-bottom: 8px;
-            font-weight: 600;
+
             color: #374151;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            line-height: 1.4;
         }
+
+
+        /* =====================================================
+           INPUT
+        ===================================================== */
 
         .form-control {
+
+            display: block;
+
             width: 100%;
-            padding: 14px;
-            border: 1px solid #d1d5db;
+
+            min-height: 50px;
+
+            padding:
+                13px 14px;
+
+            border:
+                1px solid #d1d5db;
+
             border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #111827;
+
             font-size: 15px;
+
+            line-height: 1.4;
+
             outline: none;
-            transition: .3s;
+
+            appearance: none;
+
+            transition:
+                border-color .25s ease,
+                box-shadow .25s ease;
         }
+
+
+        .form-control::placeholder {
+
+            color: #9ca3af;
+        }
+
 
         .form-control:focus {
+
             border-color: #2563eb;
-            box-shadow: 0 0 6px rgba(37, 99, 235, .2);
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, .12);
         }
 
+
+        /* =====================================================
+           BUTTON GROUP
+        ===================================================== */
+
         .btn-group {
+
+            width: 100%;
+
             display: flex;
+
             gap: 15px;
+
             margin-top: 25px;
         }
 
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
         .btn {
+
             flex: 1;
-            padding: 14px;
+
+            min-height: 48px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding:
+                13px 16px;
+
             border: none;
+
             border-radius: 8px;
+
             text-decoration: none;
+
             text-align: center;
+
             font-size: 15px;
+
             font-weight: 600;
+
+            line-height: 1.3;
+
             cursor: pointer;
-            transition: .3s;
+
+            transition:
+                background .25s ease,
+                transform .2s ease,
+                box-shadow .25s ease;
         }
+
+
+        /* =====================================================
+           SAVE BUTTON
+        ===================================================== */
 
         .btn-save {
+
             background: #2563eb;
-            color: #fff;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 4px 10px rgba(37, 99, 235, .18);
         }
+
 
         .btn-save:hover {
+
             background: #1d4ed8;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 7px 15px rgba(37, 99, 235, .25);
         }
+
+
+        /* =====================================================
+           BACK BUTTON
+        ===================================================== */
 
         .btn-back {
+
             background: #6b7280;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 4px 10px rgba(107, 114, 128, .15);
         }
+
 
         .btn-back:hover {
+
             background: #4b5563;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 7px 15px rgba(75, 85, 99, .22);
         }
 
-        @media(max-width:768px) {
+
+        /* =====================================================
+           BUTTON ACTIVE
+        ===================================================== */
+
+        .btn:active {
+
+            transform:
+                scale(.97);
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 900px) {
 
             .main-content {
+
+                width: 100%;
+
                 margin-left: 0;
-                padding: 20px;
+
+                margin-top: 68px;
+
+                min-height:
+                    calc(100vh - 68px);
+
+                padding:
+                    25px 20px;
             }
 
-            .card {
-                padding: 25px;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-
-            .page-header h1 {
-                font-size: 28px;
-            }
-        }
-
-        @media(max-width:480px) {
 
             .page-header {
-                padding: 20px;
+
+                padding:
+                    22px 24px;
+
+                margin-bottom: 25px;
+
+                border-radius: 13px;
             }
+
 
             .card {
-                padding: 20px;
+
+                max-width: 620px;
+
+                padding: 30px;
             }
 
-            .page-header h1 {
-                font-size: 24px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .main-content {
+
+                margin-top: 65px;
+
+                min-height:
+                    calc(100vh - 65px);
+
+                padding:
+                    20px 12px;
             }
+
+
+            .page-header {
+
+                padding:
+                    20px 17px;
+
+                margin-bottom: 20px;
+
+                border-radius: 12px;
+            }
+
+
+            .page-header h1 {
+
+                font-size: 24px;
+
+                margin-bottom: 7px;
+            }
+
+
+            .page-header p {
+
+                font-size: 13px;
+
+                line-height: 1.6;
+            }
+
+
+            .card {
+
+                max-width: 100%;
+
+                padding:
+                    24px 18px;
+
+                border-radius: 12px;
+            }
+
+
+            .card h2 {
+
+                font-size: 21px;
+
+                margin-bottom: 22px;
+            }
+
+
+            .form-group {
+
+                margin-bottom: 18px;
+            }
+
+
+            .form-group label {
+
+                font-size: 14px;
+
+                margin-bottom: 7px;
+            }
+
+
+            .form-control {
+
+                min-height: 48px;
+
+                padding:
+                    12px;
+
+                font-size: 14px;
+            }
+
+
+            .btn-group {
+
+                flex-direction: column;
+
+                gap: 10px;
+
+                margin-top: 22px;
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+                flex: none;
+
+                min-height: 46px;
+
+                padding:
+                    12px 14px;
+
+                font-size: 14px;
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL MOBILE
+        ===================================================== */
+
+        @media (max-width: 400px) {
+
+            .main-content {
+
+                padding:
+                    17px 9px;
+            }
+
+
+            .page-header {
+
+                padding:
+                    17px 14px;
+
+                border-radius: 10px;
+            }
+
+
+            .page-header h1 {
+
+                font-size: 21px;
+            }
+
+
+            .page-header p {
+
+                font-size: 12px;
+            }
+
+
+            .card {
+
+                padding:
+                    21px 14px;
+
+                border-radius: 10px;
+            }
+
+
+            .card h2 {
+
+                font-size: 19px;
+
+                gap: 8px;
+
+                margin-bottom: 20px;
+            }
+
+
+            .form-group label {
+
+                font-size: 13px;
+            }
+
+
+            .form-control {
+
+                min-height: 46px;
+
+                padding:
+                    11px;
+
+                font-size: 13px;
+
+                border-radius: 7px;
+            }
+
+
+            .btn {
+
+                min-height: 44px;
+
+                font-size: 13px;
+
+                border-radius: 7px;
+            }
+
+        }
+
+
+        /* =====================================================
+           VERY SMALL PHONE
+        ===================================================== */
+
+        @media (max-width: 330px) {
+
+            .main-content {
+
+                padding:
+                    15px 7px;
+            }
+
+
+            .page-header {
+
+                padding:
+                    15px 12px;
+            }
+
+
+            .page-header h1 {
+
+                font-size: 19px;
+            }
+
+
+            .page-header p {
+
+                font-size: 11px;
+            }
+
+
+            .card {
+
+                padding:
+                    19px 12px;
+            }
+
+
+            .card h2 {
+
+                font-size: 17px;
+            }
+
+
+            .form-group label {
+
+                font-size: 12px;
+            }
+
+
+            .form-control {
+
+                min-height: 44px;
+
+                font-size: 12px;
+
+                padding:
+                    10px;
+            }
+
+
+            .btn {
+
+                min-height: 42px;
+
+                font-size: 12px;
+            }
+
+        }
+
+
+        /* =====================================================
+           TOUCH DEVICES
+        ===================================================== */
+
+        @media (hover: none) {
+
+            .btn-save:hover,
+            .btn-back:hover {
+
+                transform: none;
+
+                box-shadow:
+                    0 4px 10px rgba(0, 0, 0, .12);
+            }
+
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .btn,
+            .form-control {
+
+                transition: none;
+            }
+
         }
     </style>
 
 </head>
 
+
 <body>
 
+
+    <!-- =====================================================
+         ADMIN NAVBAR
+    ===================================================== -->
+
     <%- include("../../partials/admin/navbar") %>
+
+
+        <!-- =====================================================
+         ADMIN SIDEBAR
+    ===================================================== -->
+
         <%- include("../../partials/admin/sidebar") %>
 
-            <div class="main-content">
 
-                <div class="page-header">
-                    <h1>Add Category</h1>
-                    <p>Create a new category for your products.</p>
-                </div>
+            <!-- =====================================================
+         MAIN CONTENT
+    ===================================================== -->
 
-                <div class="card">
+            <main class="main-content">
+
+
+                <!-- PAGE HEADER -->
+
+                <section class="page-header">
+
+                    <h1>
+                        Add Category
+                    </h1>
+
+                    <p>
+                        Create a new category for your products.
+                    </p>
+
+                </section>
+
+
+                <!-- CATEGORY FORM -->
+
+                <section class="card">
 
                     <h2>
+
                         <i class="fa-solid fa-folder-plus"></i>
+
                         Add Category
+
                     </h2>
+
 
                     <form action="/admin/category/add" method="POST">
 
+
                         <div class="form-group">
 
-                            <label>Category Name</label>
+                            <label for="categoryName">
+                                Category Name
+                            </label>
 
-                            <input type="text" name="name" class="form-control" placeholder="Enter Category Name"
-                                required>
+
+                            <input type="text" id="categoryName" name="name" class="form-control"
+                                placeholder="Enter Category Name" autocomplete="off" required>
 
                         </div>
 
+
+                        <!-- BUTTONS -->
+
                         <div class="btn-group">
 
+
                             <button type="submit" class="btn btn-save">
+
                                 <i class="fa-solid fa-plus"></i>
+
                                 Add Category
+
                             </button>
 
+
                             <a href="/admin/category" class="btn btn-back">
+
                                 <i class="fa-solid fa-arrow-left"></i>
+
                                 Back
+
                             </a>
 
                         </div>
 
                     </form>
 
-                </div>
+                </section>
 
-            </div>
+
+            </main>
+
+
+            <!-- =====================================================
+         ADMIN FOOTER
+    ===================================================== -->
 
             <%- include("../../partials/admin/footer") %>
+
 
 </body>
 

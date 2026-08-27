@@ -7,66 +7,91 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="description" content="Browse category products">
+
     <title>Category Products</title>
 
+
     <style>
-        /* =========================
-           GLOBAL
-        ========================= */
+        /* =====================================================
+           RESET
+        ===================================================== */
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+
+            font-family:
+                'Poppins',
+                sans-serif;
         }
 
-        html {
-            width: 100%;
-            overflow-x: hidden;
-        }
 
+        html,
         body {
             width: 100%;
-            min-height: 100vh;
-            background: linear-gradient(135deg,
-                    #edf2f7,
-                    #dbeafe);
+            max-width: 100%;
+
             overflow-x: hidden;
         }
 
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
 
-        .container {
-            width: min(92%, 1250px);
-            margin: 45px auto 60px;
+        body {
+            min-height: 100vh;
+
+            background:
+                linear-gradient(135deg,
+                    #edf2f7,
+                    #dbeafe);
+
+            color: #111827;
         }
 
-        /* =========================
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+            width: 92%;
+
+            max-width: 1250px;
+
+            margin:
+                40px auto 60px;
+        }
+
+
+        /* =====================================================
            TITLE
-        ========================= */
+        ===================================================== */
 
         .title {
-            text-align: center;
+            width: 100%;
 
-            margin-bottom: 25px;
+            text-align: center;
 
             color: #0f172a;
 
-            font-size: clamp(28px, 4vw, 42px);
+            font-size:
+                clamp(28px, 4vw, 42px);
 
             font-weight: 700;
 
             line-height: 1.25;
 
+            margin-bottom: 25px;
+
             overflow-wrap: anywhere;
+
+            word-break: break-word;
         }
 
-        /* =========================
+
+        /* =====================================================
            BACK BUTTON
-        ========================= */
+        ===================================================== */
 
         .back-btn {
             display: inline-flex;
@@ -75,51 +100,55 @@
 
             justify-content: center;
 
+            min-height: 44px;
+
+            padding:
+                11px 20px;
+
+            margin-bottom: 35px;
+
+            border-radius: 8px;
+
             background:
                 linear-gradient(90deg,
                     #3b82f6,
                     #2563eb);
 
-            color: white;
+            color: #fff;
 
             text-decoration: none;
-
-            padding: 12px 20px;
-
-            min-height: 44px;
-
-            border-radius: 8px;
 
             font-size: 15px;
 
             font-weight: 600;
 
-            margin-bottom: 35px;
-
-            transition: 0.3s;
+            line-height: 1.3;
 
             box-shadow:
-                0 5px 12px rgba(37,
-                    99,
-                    235,
-                    0.25);
+                0 5px 12px rgba(37, 99, 235, .25);
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
         }
+
 
         .back-btn:hover {
-            transform: translateY(-3px);
+
+            transform:
+                translateY(-3px);
 
             box-shadow:
-                0 8px 18px rgba(37,
-                    99,
-                    235,
-                    0.35);
+                0 8px 18px rgba(37, 99, 235, .35);
         }
 
-        /* =========================
+
+        /* =====================================================
            PRODUCT GRID
-        ========================= */
+        ===================================================== */
 
         .product {
+
             width: 100%;
 
             display: grid;
@@ -133,45 +162,52 @@
             align-items: stretch;
         }
 
-        /* =========================
+
+        /* =====================================================
            PRODUCT CARD
-        ========================= */
+        ===================================================== */
 
         .card {
+
             width: 100%;
 
             min-width: 0;
 
-            background: #ffffff;
+            display: flex;
+
+            flex-direction: column;
+
+            background: #fff;
 
             border-radius: 16px;
 
             overflow: hidden;
 
             box-shadow:
-                0 10px 25px rgba(0, 0, 0, 0.10);
-
-            display: flex;
-
-            flex-direction: column;
+                0 10px 25px rgba(0, 0, 0, .10);
 
             transition:
-                transform 0.3s ease,
-                box-shadow 0.3s ease;
+                transform .3s ease,
+                box-shadow .3s ease;
         }
+
 
         .card:hover {
-            transform: translateY(-7px);
+
+            transform:
+                translateY(-7px);
 
             box-shadow:
-                0 16px 30px rgba(0, 0, 0, 0.14);
+                0 16px 30px rgba(0, 0, 0, .14);
         }
 
-        /* =========================
+
+        /* =====================================================
            PRODUCT IMAGE
-        ========================= */
+        ===================================================== */
 
         .card img {
+
             display: block;
 
             width: 100%;
@@ -183,27 +219,33 @@
             background: #e5e7eb;
         }
 
-        /* =========================
+
+        /* =====================================================
            CONTENT
-        ========================= */
+        ===================================================== */
 
         .content {
-            padding: 18px;
+
+            width: 100%;
+
+            min-width: 0;
+
+            flex: 1;
 
             display: flex;
 
             flex-direction: column;
 
-            flex-grow: 1;
-
-            min-width: 0;
+            padding: 18px;
         }
 
-        /* =========================
+
+        /* =====================================================
            PRODUCT NAME
-        ========================= */
+        ===================================================== */
 
         .content h2 {
+
             color: #111827;
 
             font-size: 22px;
@@ -215,99 +257,130 @@
             margin-bottom: 12px;
 
             overflow-wrap: anywhere;
+
+            word-break: break-word;
         }
 
-        /* =========================
+
+        /* =====================================================
            PRICE
-        ========================= */
+        ===================================================== */
 
         .price {
+
             color: #16a34a;
 
             font-size: 24px;
 
             font-weight: 700;
 
-            line-height: 1.2;
+            line-height: 1.25;
 
             margin-bottom: 18px;
+
+            overflow-wrap: anywhere;
+
+            word-break: break-word;
         }
 
-        /* =========================
-           BUTTON
-        ========================= */
+
+        /* =====================================================
+           VIEW PRODUCT BUTTON
+        ===================================================== */
 
         .btn {
+
+            width: 100%;
+
+            min-height: 44px;
+
+            margin-top: auto;
+
             display: flex;
 
             align-items: center;
 
             justify-content: center;
 
-            width: 100%;
+            padding:
+                11px 18px;
 
-            min-height: 44px;
+            border-radius: 8px;
 
             background:
                 linear-gradient(90deg,
                     #f59e0b,
                     #ef4444);
 
-            color: white;
+            color: #fff;
 
             text-decoration: none;
 
-            padding: 11px 18px;
-
-            border-radius: 8px;
+            text-align: center;
 
             font-size: 14px;
 
             font-weight: 600;
 
-            text-align: center;
-
-            margin-top: auto;
-
-            transition: 0.3s;
+            line-height: 1.3;
 
             box-shadow:
-                0 4px 10px rgba(239, 68, 68, 0.20);
+                0 4px 10px rgba(239, 68, 68, .20);
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
+
+            overflow-wrap: anywhere;
         }
+
 
         .btn:hover {
-            transform: translateY(-3px);
+
+            transform:
+                translateY(-3px);
 
             box-shadow:
-                0 7px 15px rgba(239, 68, 68, 0.35);
+                0 7px 15px rgba(239, 68, 68, .35);
         }
 
-        /* =========================
-           EMPTY PRODUCTS
-        ========================= */
+
+        /* =====================================================
+           EMPTY MESSAGE
+        ===================================================== */
 
         .empty-message {
+
+            grid-column:
+                1 / -1;
+
             width: 100%;
 
-            text-align: center;
+            padding:
+                40px 20px;
 
-            background: white;
-
-            padding: 35px 20px;
+            background: #fff;
 
             border-radius: 14px;
 
             color: #64748b;
 
-            font-size: 17px;
+            text-align: center;
+
+            font-size: 18px;
+
+            line-height: 1.5;
 
             box-shadow:
-                0 8px 20px rgba(0, 0, 0, 0.06);
+                0 8px 20px rgba(0, 0, 0, .06);
+
+            overflow-wrap: anywhere;
         }
 
-        /* =========================
+
+        /* =====================================================
            LARGE TABLET
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 1100px) {
 
@@ -315,7 +388,9 @@
                 width: 94%;
             }
 
+
             .product {
+
                 grid-template-columns:
                     repeat(2,
                         minmax(0, 1fr));
@@ -323,44 +398,61 @@
                 gap: 22px;
             }
 
+
             .card img {
                 height: 240px;
             }
+
 
             .content h2 {
                 font-size: 20px;
             }
 
+
             .price {
                 font-size: 22px;
             }
+
         }
 
-        /* =========================
+
+        /* =====================================================
            TABLET
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 768px) {
 
             .container {
+
                 width: 92%;
 
-                margin: 30px auto 45px;
+                margin:
+                    30px auto 45px;
             }
 
+
             .title {
+
                 font-size: 32px;
 
                 margin-bottom: 22px;
             }
 
+
             .back-btn {
+
                 width: 100%;
 
+                min-height: 43px;
+
                 margin-bottom: 25px;
+
+                font-size: 14px;
             }
 
+
             .product {
+
                 grid-template-columns:
                     repeat(2,
                         minmax(0, 1fr));
@@ -368,52 +460,72 @@
                 gap: 16px;
             }
 
+
             .card {
+
                 border-radius: 13px;
             }
 
+
             .card img {
+
                 height: 210px;
             }
 
+
             .content {
+
                 padding: 15px;
             }
 
+
             .content h2 {
+
                 font-size: 18px;
 
                 margin-bottom: 9px;
             }
 
+
             .price {
+
                 font-size: 20px;
 
                 margin-bottom: 14px;
             }
 
+
             .btn {
+
                 min-height: 42px;
 
-                padding: 10px;
+                padding:
+                    10px;
 
                 font-size: 13px;
             }
+
         }
 
-        /* =========================
+
+        /* =====================================================
            MOBILE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 600px) {
 
             .container {
-                width: calc(100% - 24px);
 
-                margin: 25px auto 40px;
+                width:
+                    calc(100% - 24px);
+
+                margin:
+                    25px auto 40px;
             }
 
+
             .title {
+
                 font-size: 27px;
 
                 line-height: 1.3;
@@ -421,17 +533,22 @@
                 margin-bottom: 20px;
             }
 
+
             .back-btn {
+
                 min-height: 42px;
 
-                padding: 10px 15px;
-
-                font-size: 14px;
+                padding:
+                    10px 15px;
 
                 margin-bottom: 20px;
+
+                font-size: 13px;
             }
 
+
             .product {
+
                 grid-template-columns:
                     repeat(2,
                         minmax(0, 1fr));
@@ -439,208 +556,301 @@
                 gap: 12px;
             }
 
+
             .card {
+
                 border-radius: 10px;
 
                 box-shadow:
-                    0 5px 14px rgba(0, 0, 0, 0.08);
+                    0 5px 14px rgba(0, 0, 0, .08);
             }
 
+
             .card:hover {
+
                 transform: none;
             }
 
+
             .card img {
-                width: 100%;
 
                 height: 160px;
             }
 
+
             .content {
+
                 padding: 11px;
             }
 
+
             .content h2 {
+
                 font-size: 14px;
 
                 line-height: 1.3;
 
                 margin-bottom: 7px;
 
-                display: -webkit-box;
+                display:
+                    -webkit-box;
 
                 -webkit-line-clamp: 2;
 
-                -webkit-box-orient: vertical;
+                -webkit-box-orient:
+                    vertical;
 
                 overflow: hidden;
             }
 
+
             .price {
+
                 font-size: 17px;
 
                 margin-bottom: 11px;
             }
 
+
             .btn {
+
                 min-height: 38px;
 
-                padding: 8px 5px;
+                padding:
+                    8px 5px;
 
                 font-size: 11px;
 
                 border-radius: 6px;
             }
 
+
             .btn:hover {
+
                 transform: none;
 
-                box-shadow: none;
+                box-shadow:
+                    0 4px 10px rgba(239, 68, 68, .20);
             }
+
+
+            .empty-message {
+
+                padding:
+                    30px 12px;
+
+                font-size: 15px;
+            }
+
         }
 
-        /* =========================
+
+        /* =====================================================
            SMALL MOBILE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 400px) {
 
             .container {
-                width: calc(100% - 18px);
+
+                width:
+                    calc(100% - 18px);
 
                 margin-top: 20px;
             }
 
+
             .title {
+
                 font-size: 24px;
 
                 margin-bottom: 17px;
             }
 
+
             .back-btn {
+
                 min-height: 40px;
 
-                font-size: 13px;
+                padding:
+                    9px 12px;
 
-                padding: 9px 12px;
+                font-size: 12px;
 
                 margin-bottom: 17px;
             }
 
+
             .product {
+
                 gap: 9px;
             }
 
+
             .card {
+
                 border-radius: 8px;
             }
 
+
             .card img {
+
                 height: 135px;
             }
 
+
             .content {
+
                 padding: 8px;
             }
 
+
             .content h2 {
+
                 font-size: 12px;
 
                 margin-bottom: 5px;
             }
 
+
             .price {
+
                 font-size: 15px;
 
                 margin-bottom: 8px;
             }
 
+
             .btn {
+
                 min-height: 34px;
 
-                padding: 7px 3px;
+                padding:
+                    7px 3px;
 
                 font-size: 9px;
 
                 border-radius: 5px;
             }
+
+
+            .empty-message {
+
+                padding:
+                    25px 8px;
+
+                font-size: 14px;
+            }
+
         }
 
-        /* =========================
+
+        /* =====================================================
            VERY SMALL PHONE
-        ========================= */
+        ===================================================== */
 
         @media (max-width: 330px) {
 
             .container {
-                width: calc(100% - 14px);
+
+                width:
+                    calc(100% - 14px);
             }
 
+
             .product {
+
                 grid-template-columns: 1fr;
 
                 gap: 14px;
             }
 
+
             .card img {
+
                 height: 200px;
             }
 
+
             .content {
+
                 padding: 14px;
             }
 
+
             .content h2 {
+
                 font-size: 16px;
+
+                display: block;
+
+                overflow: visible;
             }
 
+
             .price {
+
                 font-size: 18px;
             }
 
+
             .btn {
+
                 min-height: 40px;
+
+                padding:
+                    9px;
 
                 font-size: 12px;
             }
+
         }
 
-        /* =========================
+
+        /* =====================================================
            TOUCH DEVICES
-        ========================= */
+        ===================================================== */
 
         @media (hover: none) {
 
             .card:hover {
+
                 transform: none;
             }
 
+
             .btn:hover {
+
                 transform: none;
 
                 box-shadow:
-                    0 4px 10px rgba(239,
-                        68,
-                        68,
-                        0.20);
+                    0 4px 10px rgba(239, 68, 68, .20);
             }
+
         }
     </style>
 
 </head>
 
+
 <body>
 
-    <!-- Existing Responsive Navbar -->
+
+    <!-- =====================================================
+         NAVBAR
+    ===================================================== -->
 
     <%- include("../../partials/user/navbar") %>
 
 
-        <!-- =========================
+        <!-- =====================================================
          MAIN CONTENT
-    ========================= -->
+    ===================================================== -->
 
-        <div class="container">
+        <main class="container">
+
+
+            <!-- TITLE -->
 
             <h1 class="title">
 
@@ -650,26 +860,46 @@
             </h1>
 
 
+            <!-- BACK -->
+
             <a href="/product" class="back-btn">
+
                 ← Back To Products
+
             </a>
 
 
+            <!-- =================================================
+             PRODUCT GRID
+        ================================================= -->
+
             <div class="product">
+
 
                 <% if (product && product.length) { %>
 
+
                     <% product.forEach(function(item) { %>
 
-                        <div class="card">
+
+                        <article class="card">
+
+
+                            <!-- PRODUCT IMAGE -->
 
                             <img src="<%= item.images && item.images.length ? item.images[0] : '/images/no-image.png' %>"
-                                alt="<%= item.name %>">
+                                alt="<%= item.name %>" loading="lazy">
+
+
+                            <!-- PRODUCT CONTENT -->
 
                             <div class="content">
 
+
                                 <h2>
+
                                     <%= item.name %>
+
                                 </h2>
 
 
@@ -681,16 +911,23 @@
 
 
                                 <a href="/product/<%= item._id %>" class="btn">
+
                                     View Product
+
                                 </a>
+
 
                             </div>
 
-                        </div>
+
+                        </article>
+
 
                         <% }) %>
 
+
                             <% } else { %>
+
 
                                 <div class="empty-message">
 
@@ -698,16 +935,22 @@
 
                                 </div>
 
+
                                 <% } %>
+
 
             </div>
 
-        </div>
+
+        </main>
 
 
-        <!-- Existing Responsive Footer -->
+        <!-- =====================================================
+         FOOTER
+    ===================================================== -->
 
         <%- include("../../partials/user/footer") %>
+
 
 </body>
 

@@ -1,64 +1,17 @@
-<!-- <div class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-        <h2>Admin Panel</h2>
-    </div>
-    <ul>
-        <li><a href="/admin/dashboard">🏠 Dashboard</a></li>
-        <li><a href="/admin/category">📂 Categories</a></li>
-        <li><a href="/admin/product">👟 Products</a></li>
-        <li><a href="/admin/order">📦 Orders</a></li>
-        <li><a href="/admin/user">👤 Users</a></li>
-    </ul>
-</div>
-
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<style>
-    .sidebar {
-        position: fixed;
-        top: 70px;
-        left: 0;
-        width: 250px;
-        height: calc(100vh - 70px);
-        background: #1f2937;
-        transition: transform 0.3s ease;
-        z-index: 1000;
-    }
-
-    /* Mobile specific behavior */
-    @media(max-width:768px) {
-        .sidebar {
-            transform: translateX(-100%);
-            /* Screen se bahar */
-        }
-
-        .sidebar.active {
-            transform: translateX(0);
-            /* Screen par wapas */
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-    }
-</style> -->
-
 <div class="sidebar" id="sidebar">
 
+    <!-- SIDEBAR HEADER -->
+
     <div class="sidebar-logo">
-        <h2>Admin Panel</h2>
+
+        <h2>
+            Admin Panel
+        </h2>
+
     </div>
+
+
+    <!-- NAVIGATION -->
 
     <ul>
 
@@ -69,12 +22,14 @@
             </a>
         </li>
 
+
         <li>
             <a href="/admin/category">
                 <i class="fa-solid fa-folder"></i>
                 <span>Categories</span>
             </a>
         </li>
+
 
         <li>
             <a href="/admin/product">
@@ -83,12 +38,14 @@
             </a>
         </li>
 
+
         <li>
             <a href="/admin/order">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span>Orders</span>
             </a>
         </li>
+
 
         <li>
             <a href="/admin/user">
@@ -101,115 +58,613 @@
 
 </div>
 
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- OVERLAY -->
+
+<div class="sidebar-overlay" id="sidebarOverlay">
+</div>
+
+
 <style>
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
+
     .sidebar {
+
         position: fixed;
+
         top: 70px;
         left: 0;
+
         width: 260px;
-        height: calc(100vh - 70px);
-        background: #0f172a;
+
+        height:
+            calc(100vh - 70px);
+
+        background:
+            #0f172a;
+
         display: flex;
+
         flex-direction: column;
+
+        overflow-x: hidden;
+
         overflow-y: auto;
-        transition: .35s;
+
+        transition:
+            left .35s ease,
+            transform .35s ease;
+
         z-index: 999;
+
+        scrollbar-width: thin;
+
+        scrollbar-color:
+            #334155 transparent;
     }
+
+
+    /* =====================================================
+       SIDEBAR LOGO
+    ===================================================== */
 
     .sidebar-logo {
-        padding: 28px 25px 18px;
-        border-bottom: 1px solid rgba(255, 255, 255, .08);
+
+        width: 100%;
+
+        padding:
+            28px 25px 18px;
+
+        border-bottom:
+            1px solid rgba(255, 255, 255, .08);
+
+        flex-shrink: 0;
     }
+
 
     .sidebar-logo h2 {
-        color: #fff;
-        font-size: 24px;
-        font-weight: 700;
+
         margin: 0;
-        letter-spacing: .5px;
+
+        color: #ffffff;
+
+        font-size: 24px;
+
+        font-weight: 700;
+
+        line-height: 1.25;
+
+        letter-spacing:
+            .5px;
+
+        overflow-wrap:
+            anywhere;
     }
+
+
+    /* =====================================================
+       NAVIGATION LIST
+    ===================================================== */
 
     .sidebar ul {
+
+        width: 100%;
+
         list-style: none;
-        padding: 20px 15px;
+
+        padding:
+            20px 15px;
+
+        margin: 0;
     }
 
+
     .sidebar li {
+
+        width: 100%;
+
         margin-bottom: 8px;
     }
 
-    .sidebar a {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 14px 18px;
-        color: #cbd5e1;
-        text-decoration: none;
-        border-radius: 12px;
-        transition: .3s;
-        font-size: 17px;
-        font-weight: 500;
+
+    .sidebar li:last-child {
+
+        margin-bottom: 0;
     }
 
+
+    /* =====================================================
+       LINKS
+    ===================================================== */
+
+    .sidebar a {
+
+        width: 100%;
+
+        min-height: 50px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+
+        padding:
+            14px 18px;
+
+        color:
+            #cbd5e1;
+
+        text-decoration: none;
+
+        border-radius: 12px;
+
+        transition:
+            background .25s ease,
+            color .25s ease,
+            transform .25s ease,
+            box-shadow .25s ease;
+
+        font-size: 17px;
+
+        font-weight: 500;
+
+        line-height: 1.3;
+
+        overflow: hidden;
+    }
+
+
+    /* =====================================================
+       ICON
+    ===================================================== */
+
     .sidebar a i {
+
         width: 22px;
+
+        min-width: 22px;
+
         text-align: center;
+
         font-size: 18px;
     }
 
-    .sidebar a:hover {
-        background: #2563eb;
-        color: #fff;
-        transform: translateX(5px);
+
+    /* =====================================================
+       TEXT
+    ===================================================== */
+
+    .sidebar a span {
+
+        min-width: 0;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
     }
+
+
+    /* =====================================================
+       HOVER
+    ===================================================== */
+
+    .sidebar a:hover {
+
+        background:
+            #2563eb;
+
+        color:
+            #ffffff;
+
+        transform:
+            translateX(5px);
+    }
+
+
+    /* =====================================================
+       ACTIVE
+    ===================================================== */
 
     .sidebar a.active {
-        background: #2563eb;
-        color: #fff;
-        box-shadow: 0 10px 20px rgba(37, 99, 235, .35);
+
+        background:
+            #2563eb;
+
+        color:
+            #ffffff;
+
+        box-shadow:
+            0 10px 20px rgba(37, 99, 235, .35);
     }
 
+
+    /* =====================================================
+       SCROLLBAR
+    ===================================================== */
+
     .sidebar::-webkit-scrollbar {
+
         width: 6px;
     }
 
+
+    .sidebar::-webkit-scrollbar-track {
+
+        background:
+            transparent;
+    }
+
+
     .sidebar::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 20px;
+
+        background:
+            #334155;
+
+        border-radius:
+            20px;
     }
 
-    /* Overlay */
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+
+        background:
+            #475569;
+    }
+
+
+    /* =====================================================
+       OVERLAY
+    ===================================================== */
+
     .sidebar-overlay {
+
         display: none;
+
         position: fixed;
+
         inset: 0;
-        background: rgba(0, 0, 0, .45);
+
+        background:
+            rgba(0, 0, 0, .45);
+
         z-index: 998;
+
+        opacity: 0;
+
+        transition:
+            opacity .3s ease;
     }
 
-    /* Mobile */
 
-    @media (max-width:768px) {
+    .sidebar-overlay.active {
+
+        display: block;
+
+        opacity: 1;
+    }
+
+
+    /* =====================================================
+       TABLET
+    ===================================================== */
+
+    @media (max-width: 900px) {
 
         .sidebar {
-            left: -260px;
+
+            top: 68px;
+
+            height:
+                calc(100vh - 68px);
+
+            left: -270px;
+
+            width: 260px;
+
+            box-shadow:
+                8px 0 25px rgba(0, 0, 0, .18);
         }
 
+
         .sidebar.active {
+
             left: 0;
         }
 
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .45);
-            z-index: 998;
+
+        .sidebar-logo {
+
+            padding:
+                25px 22px 17px;
         }
 
-        .sidebar-overlay.active {
-            display: block;
+
+        .sidebar-logo h2 {
+
+            font-size: 22px;
         }
+
+
+        .sidebar ul {
+
+            padding:
+                18px 13px;
+        }
+
+
+        .sidebar a {
+
+            min-height: 48px;
+
+            padding:
+                13px 16px;
+
+            font-size: 16px;
+        }
+
+
+        .sidebar a i {
+
+            font-size: 17px;
+        }
+
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 600px) {
+
+        .sidebar {
+
+            top: 65px;
+
+            height:
+                calc(100vh - 65px);
+
+            width: min(280px,
+                    82vw);
+
+            left:
+                calc(-1 * min(280px, 82vw));
+
+            border-radius:
+                0 14px 14px 0;
+        }
+
+
+        .sidebar.active {
+
+            left: 0;
+        }
+
+
+        .sidebar-logo {
+
+            padding:
+                22px 20px 16px;
+        }
+
+
+        .sidebar-logo h2 {
+
+            font-size: 20px;
+        }
+
+
+        .sidebar ul {
+
+            padding:
+                16px 12px;
+        }
+
+
+        .sidebar li {
+
+            margin-bottom: 6px;
+        }
+
+
+        .sidebar a {
+
+            min-height: 46px;
+
+            gap: 13px;
+
+            padding:
+                12px 15px;
+
+            font-size: 15px;
+
+            border-radius: 10px;
+        }
+
+
+        .sidebar a i {
+
+            width: 21px;
+
+            min-width: 21px;
+
+            font-size: 16px;
+        }
+
+
+        .sidebar a:hover {
+
+            transform:
+                translateX(3px);
+        }
+
+    }
+
+
+    /* =====================================================
+       SMALL MOBILE
+    ===================================================== */
+
+    @media (max-width: 400px) {
+
+        .sidebar {
+
+            top: 62px;
+
+            height:
+                calc(100vh - 62px);
+
+            width:
+                78vw;
+
+            left:
+                -78vw;
+        }
+
+
+        .sidebar.active {
+
+            left: 0;
+        }
+
+
+        .sidebar-logo {
+
+            padding:
+                20px 17px 14px;
+        }
+
+
+        .sidebar-logo h2 {
+
+            font-size: 18px;
+        }
+
+
+        .sidebar ul {
+
+            padding:
+                14px 10px;
+        }
+
+
+        .sidebar a {
+
+            min-height: 44px;
+
+            gap: 11px;
+
+            padding:
+                11px 13px;
+
+            font-size: 14px;
+        }
+
+
+        .sidebar a i {
+
+            width: 20px;
+
+            min-width: 20px;
+
+            font-size: 15px;
+        }
+
+    }
+
+
+    /* =====================================================
+       VERY SMALL PHONE
+    ===================================================== */
+
+    @media (max-width: 330px) {
+
+        .sidebar {
+
+            width:
+                82vw;
+
+            left:
+                -82vw;
+        }
+
+
+        .sidebar-logo {
+
+            padding:
+                18px 14px 13px;
+        }
+
+
+        .sidebar-logo h2 {
+
+            font-size: 16px;
+        }
+
+
+        .sidebar ul {
+
+            padding:
+                12px 8px;
+        }
+
+
+        .sidebar a {
+
+            min-height: 42px;
+
+            gap: 9px;
+
+            padding:
+                10px 11px;
+
+            font-size: 13px;
+        }
+
+
+        .sidebar a i {
+
+            width: 19px;
+
+            min-width: 19px;
+
+            font-size: 14px;
+        }
+
+    }
+
+
+    /* =====================================================
+       TOUCH DEVICES
+    ===================================================== */
+
+    @media (hover: none) {
+
+        .sidebar a:hover {
+
+            transform: none;
+        }
+
+    }
+
+
+    /* =====================================================
+       REDUCED MOTION
+    ===================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .sidebar,
+        .sidebar a,
+        .sidebar-overlay {
+
+            transition: none;
+        }
+
     }
 </style>

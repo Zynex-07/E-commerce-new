@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Edit Product</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -21,9 +22,9 @@
             overflow-x: hidden;
         }
 
-        /*==========================
-            MAIN CONTENT
-        ==========================*/
+        /* ==========================
+           MAIN CONTENT
+        ========================== */
 
         .main-content {
             margin-left: 260px;
@@ -32,9 +33,9 @@
             padding: 30px;
         }
 
-        /*==========================
-            PAGE HEADER
-        ==========================*/
+        /* ==========================
+           PAGE HEADER
+        ========================== */
 
         .page-header {
             background: #fff;
@@ -54,9 +55,9 @@
             color: #6b7280;
         }
 
-        /*==========================
-            CARD
-        ==========================*/
+        /* ==========================
+           CARD
+        ========================== */
 
         .card {
             max-width: 700px;
@@ -105,6 +106,10 @@
             min-height: 120px;
         }
 
+        /* ==========================
+           BUTTONS
+        ========================== */
+
         .btn-group {
             display: flex;
             gap: 15px;
@@ -146,7 +151,11 @@
             background: #4b5563;
         }
 
-        @media(max-width:768px) {
+        /* ==========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 768px) {
 
             .main-content {
                 margin-left: 0;
@@ -164,10 +173,9 @@
             .btn-group {
                 flex-direction: column;
             }
-
         }
 
-        @media(max-width:480px) {
+        @media (max-width: 480px) {
 
             .page-header {
                 padding: 20px;
@@ -180,89 +188,151 @@
             .page-header h1 {
                 font-size: 24px;
             }
-
         }
     </style>
-
 </head>
 
 <body>
+
     <%- include("../../partials/admin/navbar") %>
+
         <%- include("../../partials/admin/sidebar") %>
+
             <div class="main-content">
+
                 <div class="page-header">
                     <h1>Edit Product</h1>
                     <p>Update product information from here.</p>
                 </div>
+
                 <div class="card">
+
                     <h2>
                         <i class="fa-solid fa-pen-to-square"></i>
                         Edit Product
                     </h2>
+
                     <form action="/admin/product/update/<%= product._id %>" method="POST">
+
+                        <!-- Product Name -->
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" name="name" class="form-control" value="<%= product.name %>" required>
+
+                            <input type="text" name="name" class="form-control" value="<%= product.name || '' %>"
+                                placeholder="Enter Product Name" required>
                         </div>
+
+                        <!-- Price -->
                         <div class="form-group">
                             <label>Price</label>
-                            <input type="number" name="price" class="form-control" value="<%= product.price %>"
-                                required>
+
+                            <input type="number" name="price" class="form-control" value="<%= product.price || '' %>"
+                                placeholder="Enter Product Price" min="0" required>
                         </div>
+
+                        <!-- Description -->
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea name="description" class="form-control"><%= product.description %></textarea>
+
+                            <textarea name="description" class="form-control"
+                                placeholder="Enter Product Description"><%= product.description || '' %></textarea>
                         </div>
+
+                        <!-- Image URL 1 -->
                         <div class="form-group">
                             <label>Image URL 1</label>
+
                             <input type="text" name="images" class="form-control"
-                                value="<%= product.images?.[0] || '' %>">
+                                value="<%= product.images?.[0] || '' %>" placeholder="Enter Image URL">
                         </div>
+
+                        <!-- Image URL 2 -->
                         <div class="form-group">
                             <label>Image URL 2</label>
+
                             <input type="text" name="images" class="form-control"
-                                value="<%= product.images?.[1] || '' %>">
+                                value="<%= product.images?.[1] || '' %>" placeholder="Enter Image URL">
                         </div>
+
+                        <!-- Image URL 3 -->
                         <div class="form-group">
                             <label>Image URL 3</label>
+
                             <input type="text" name="images" class="form-control"
-                                value="<%= product.images?.[2] || '' %>">
+                                value="<%= product.images?.[2] || '' %>" placeholder="Enter Image URL">
                         </div>
+
+                        <!-- Image URL 4 -->
                         <div class="form-group">
                             <label>Image URL 4</label>
+
                             <input type="text" name="images" class="form-control"
-                                value="<%= product.images?.[3] || '' %>">
+                                value="<%= product.images?.[3] || '' %>" placeholder="Enter Image URL">
                         </div>
+
+                        <!-- Stock -->
                         <div class="form-group">
                             <label>Stock</label>
-                            <input type="number" name="stock" class="form-control" value="<%= product.stock %>"
-                                required>
+
+                            <input type="number" name="stock" class="form-control" value="<%= product.stock || 0 %>"
+                                placeholder="Enter Stock" min="0" required>
                         </div>
+
+                        <!-- Category -->
                         <div class="form-group">
+
                             <label>Category</label>
-                            <select name="categoryId" class="form-control">
-                                <% category.forEach(function(item){ %>
-                                    <option value="<%= item._id %>"
-                                        <%=item._id.toString()===product.categoryId.toString() ? "selected" : "" %>>
+
+                            <select name="categoryId" class="form-control" required>
+
+                                <option value="">
+                                    Select Category
+                                </option>
+
+                                <% category.forEach(function(item) { %>
+
+                                    <option value="<%= item._id %>" <%=product.categoryId &&
+                                        product.categoryId.toString()===item._id.toString() ? "selected" : "" %>>
+
                                         <%= item.name %>
+
                                     </option>
+
                                     <% }) %>
+
                             </select>
+
                         </div>
+
+                        <!-- Buttons -->
                         <div class="btn-group">
+
                             <button type="submit" class="btn btn-update">
+
                                 <i class="fa-solid fa-floppy-disk"></i>
+
                                 Update Product
+
                             </button>
+
                             <a href="/admin/product" class="btn btn-back">
+
                                 <i class="fa-solid fa-arrow-left"></i>
+
                                 Back
+
                             </a>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
             <%- include("../../partials/admin/footer") %>
+
 </body>
 
 </html>

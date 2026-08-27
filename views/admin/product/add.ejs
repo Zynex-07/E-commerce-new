@@ -21,9 +21,9 @@
             overflow-x: hidden;
         }
 
-        /*==========================
-            MAIN CONTENT
-        ==========================*/
+        /* ==========================
+           MAIN CONTENT
+        ========================== */
 
         .main-content {
             margin-left: 260px;
@@ -32,9 +32,9 @@
             padding: 30px;
         }
 
-        /*==========================
-            PAGE HEADER
-        ==========================*/
+        /* ==========================
+           PAGE HEADER
+        ========================== */
 
         .page-header {
             background: #fff;
@@ -54,9 +54,9 @@
             color: #6b7280;
         }
 
-        /*==========================
-            CARD
-        ==========================*/
+        /* ==========================
+           CARD
+        ========================== */
 
         .card {
             max-width: 700px;
@@ -105,6 +105,10 @@
             min-height: 120px;
         }
 
+        /* ==========================
+           BUTTONS
+        ========================== */
+
         .btn-group {
             display: flex;
             gap: 15px;
@@ -146,6 +150,10 @@
             background: #4b5563;
         }
 
+        /* ==========================
+           RESPONSIVE
+        ========================== */
+
         @media(max-width:768px) {
 
             .main-content {
@@ -164,7 +172,6 @@
             .btn-group {
                 flex-direction: column;
             }
-
         }
 
         @media(max-width:480px) {
@@ -180,7 +187,6 @@
             .page-header h1 {
                 font-size: 24px;
             }
-
         }
     </style>
 
@@ -189,6 +195,7 @@
 <body>
 
     <%- include("../../partials/admin/navbar") %>
+
         <%- include("../../partials/admin/sidebar") %>
 
             <div class="main-content">
@@ -197,74 +204,111 @@
                     <h1>Add Product</h1>
                     <p>Create a new product for your store.</p>
                 </div>
+
                 <div class="card">
+
                     <h2>
                         <i class="fa-solid fa-box"></i>
                         Add Product
                     </h2>
+
                     <form action="/admin/product/add" method="POST">
+
                         <div class="form-group">
                             <label>Product Name</label>
+
                             <input type="text" name="name" class="form-control" placeholder="Enter Product Name"
                                 required>
                         </div>
+
                         <div class="form-group">
                             <label>Price</label>
+
                             <input type="number" name="price" class="form-control" placeholder="Enter Product Price"
                                 required>
                         </div>
+
                         <div class="form-group">
                             <label>Description</label>
+
                             <textarea name="description" class="form-control"
                                 placeholder="Enter Product Description"></textarea>
                         </div>
+
                         <div class="form-group">
                             <label>Image URL 1</label>
+
                             <input type="text" name="images" class="form-control" placeholder="Enter Image URL">
                         </div>
+
                         <div class="form-group">
                             <label>Image URL 2</label>
+
                             <input type="text" name="images" class="form-control" placeholder="Enter Image URL">
                         </div>
+
                         <div class="form-group">
                             <label>Image URL 3</label>
+
                             <input type="text" name="images" class="form-control" placeholder="Enter Image URL">
                         </div>
+
                         <div class="form-group">
                             <label>Image URL 4</label>
+
                             <input type="text" name="images" class="form-control" placeholder="Enter Image URL">
                         </div>
+
                         <div class="form-group">
                             <label>Stock</label>
+
                             <input type="number" name="stock" class="form-control" placeholder="Enter Stock" required>
                         </div>
+
                         <div class="form-group">
                             <label>Category</label>
+
                             <select name="categoryId" class="form-control" required>
+
                                 <option value="">Select Category</option>
-                                <% category.forEach((item)=>{ %>
+
+                                <% category.forEach((item)=> { %>
 
                                     <option value="<%= item._id %>">
                                         <%= item.name %>
                                     </option>
 
                                     <% }) %>
+
                             </select>
                         </div>
+
                         <div class="btn-group">
+
                             <button type="submit" class="btn btn-save">
+
                                 <i class="fa-solid fa-plus"></i>
                                 Add Product
+
                             </button>
+
                             <a href="/admin/product" class="btn btn-back">
+
                                 <i class="fa-solid fa-arrow-left"></i>
                                 Back
+
                             </a>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
             <%- include("../../partials/admin/footer") %>
+
 </body>
 
 </html>

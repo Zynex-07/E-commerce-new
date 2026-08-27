@@ -1,36 +1,187 @@
 <footer class="admin-footer">
+
     <p>
-        © <%= new Date().getFullYear() %> Shoe Factory Admin Panel |
+        © <%= new Date().getFullYear() %>
+            Shoe Factory Admin Panel |
             All Rights Reserved.
     </p>
+
 </footer>
 
+
 <style>
+    /* =====================================================
+       ADMIN FOOTER
+    ===================================================== */
+
     .admin-footer {
+
         width: 100%;
-        background: #111827;
-        color: #fff;
-        text-align: center;
-        padding: 18px 15px;
+
         margin-top: 40px;
-        border-top: 1px solid rgba(255, 255, 255, .1);
+
+        padding:
+            18px 20px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        text-align: center;
+
+        border-top:
+            1px solid rgba(255, 255, 255, .1);
+
+        overflow: hidden;
     }
+
+
+    /* =====================================================
+       TEXT
+    ===================================================== */
 
     .admin-footer p {
+
+        width: 100%;
+
+        max-width: 100%;
+
         margin: 0;
+
+        padding: 0;
+
         font-size: 15px;
-        letter-spacing: .3px;
+
+        font-weight: 400;
+
+        line-height: 1.6;
+
+        letter-spacing:
+            .3px;
+
+        overflow-wrap:
+            anywhere;
+
+        word-break:
+            break-word;
     }
 
-    @media (max-width:768px) {
+
+    /* =====================================================
+       TABLET
+    ===================================================== */
+
+    @media (max-width: 768px) {
 
         .admin-footer {
-            padding: 15px 10px;
+
+            margin-top: 35px;
+
+            padding:
+                16px 15px;
         }
 
+
         .admin-footer p {
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 600px) {
+
+        .admin-footer {
+
+            margin-top: 30px;
+
+            padding:
+                15px 12px;
+        }
+
+
+        .admin-footer p {
+
             font-size: 13px;
-            line-height: 22px;
+
+            line-height: 1.7;
+
+            letter-spacing:
+                .15px;
+        }
+
+    }
+
+
+    /* =====================================================
+       SMALL MOBILE
+    ===================================================== */
+
+    @media (max-width: 400px) {
+
+        .admin-footer {
+
+            margin-top: 25px;
+
+            padding:
+                14px 10px;
+        }
+
+
+        .admin-footer p {
+
+            font-size: 12px;
+
+            line-height: 1.7;
+
+            letter-spacing:
+                0;
+        }
+
+    }
+
+
+    /* =====================================================
+       VERY SMALL PHONE
+    ===================================================== */
+
+    @media (max-width: 330px) {
+
+        .admin-footer {
+
+            padding:
+                13px 8px;
+        }
+
+
+        .admin-footer p {
+
+            font-size: 11px;
+
+            line-height: 1.8;
+        }
+
+    }
+
+
+    /* =====================================================
+       REDUCED MOTION
+    ===================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .admin-footer {
+
+            transition: none;
         }
 
     }
