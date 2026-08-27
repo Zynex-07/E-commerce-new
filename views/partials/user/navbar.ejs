@@ -1,10 +1,8 @@
 <style>
-    /* ==========================
-       NAVBAR
-    ========================== */
-
     .navbar {
         width: 100%;
+        min-height: 79px;
+        box-sizing: border-box;
         background: linear-gradient(90deg, #0f172a, #1e293b);
         padding: 12px 20px;
         display: flex;
@@ -12,14 +10,11 @@
         align-items: center;
         position: sticky;
         top: 0;
+        left: 0;
         z-index: 1000;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         margin: 0;
     }
-
-    /* ==========================
-       LOGO
-    ========================== */
 
     .logo {
         flex-shrink: 0;
@@ -43,14 +38,11 @@
         padding: 0;
     }
 
-    /* ==========================
-       MENU BUTTON
-    ========================== */
-
     .menu-toggle {
         display: none;
         width: 45px;
         height: 40px;
+        flex-shrink: 0;
         border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: 6px;
         background: transparent;
@@ -68,16 +60,15 @@
         background: rgba(255, 255, 255, 0.1);
     }
 
-    /* ==========================
-       NAV LINKS - DESKTOP
-    ========================== */
 
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: flex-end;
+        gap: 8px;
         margin: 0;
         padding: 0;
+        min-width: 0;
     }
 
     .nav-links>a {
@@ -85,7 +76,7 @@
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
-        padding: 8px 12px;
+        padding: 8px 11px;
         border-radius: 6px;
         transition: 0.3s;
         white-space: nowrap;
@@ -96,12 +87,11 @@
         background: #2563eb;
     }
 
-    /* ==========================
-       DROPDOWN
-    ========================== */
+
 
     .dropdown {
         position: relative;
+        flex-shrink: 0;
         margin: 0;
         padding: 0;
     }
@@ -111,7 +101,7 @@
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
-        padding: 8px 12px;
+        padding: 8px 11px;
         border-radius: 6px;
         display: block;
         white-space: nowrap;
@@ -130,6 +120,7 @@
         left: 0;
         background: #1e293b;
         min-width: 180px;
+        max-width: 280px;
         border-radius: 8px;
         padding: 8px 0;
         margin: 0;
@@ -137,13 +128,16 @@
         z-index: 1100;
     }
 
-    .dropdown:hover .dropdown-menu {
-        display: block;
+    @media (min-width: 1025px) {
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
     }
 
     .dropdown-menu a {
         display: block;
         width: 100%;
+        box-sizing: border-box;
         padding: 10px 15px;
         color: #fff;
         text-decoration: none;
@@ -157,21 +151,23 @@
         background: #2563eb;
     }
 
-    /* ==========================
-       SEARCH
-    ========================== */
+
 
     .search-form {
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-shrink: 1;
+        min-width: 0;
         margin: 0 0 0 5px;
         padding: 0;
     }
 
     .search-form input {
         width: 180px;
+        max-width: 100%;
         height: 38px;
+        box-sizing: border-box;
         padding: 8px 10px;
         border: none;
         border-radius: 6px;
@@ -182,6 +178,7 @@
 
     .search-form button {
         height: 38px;
+        flex-shrink: 0;
         padding: 8px 15px;
         border: none;
         border-radius: 6px;
@@ -198,46 +195,49 @@
         background: #d97706;
     }
 
-    /* ==========================
-       TABLET
-    ========================== */
 
     @media (max-width: 1100px) {
 
         .navbar {
             padding: 12px 15px;
-            margin: 0;
         }
 
         .nav-links {
-            gap: 5px;
+            gap: 4px;
         }
 
         .nav-links>a,
         .dropdown>a {
             font-size: 13px;
-            padding: 7px 8px;
+            padding: 7px 7px;
+        }
+
+        .search-form {
+            margin-left: 3px;
         }
 
         .search-form input {
-            width: 150px;
+            width: 145px;
+        }
+
+        .search-form button {
+            padding-left: 12px;
+            padding-right: 12px;
         }
     }
 
-    /* ==========================
-       MOBILE / TABLET
-    ========================== */
+
 
     @media (max-width: 1024px) {
 
         .navbar {
-            position: sticky;
-            top: 0;
-            left: 0;
-            width: 100%;
-            margin: 0 !important;
+            min-height: 68px;
             padding: 10px 15px;
-            z-index: 1000;
+        }
+
+        .logo img {
+            width: 120px;
+            height: 48px;
         }
 
         .menu-toggle {
@@ -245,39 +245,34 @@
             margin-left: auto;
         }
 
-        /* ==========================
-           MOBILE MENU
-        ========================== */
-
         .nav-links {
             display: none;
 
             position: absolute;
-
-            /* Menu exactly below navbar */
-            top: calc(100% - 1px);
-
+            top: 100%;
             left: 0;
             right: 0;
 
             width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
 
             margin: 0 !important;
+            padding: 15px 20px 20px;
 
             background: #1e293b;
 
             flex-direction: column;
             align-items: stretch;
+            justify-content: flex-start;
 
             gap: 0;
 
-            padding: 15px 20px 20px;
-
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 
-            max-height: calc(100vh - 70px);
-
+            max-height: calc(100vh - 68px);
             overflow-y: auto;
+            overflow-x: hidden;
 
             z-index: 9999;
         }
@@ -288,20 +283,16 @@
 
         .nav-links>a {
             width: 100%;
+            box-sizing: border-box;
             text-align: center;
 
             padding: 12px;
-
             margin: 2px 0;
 
             font-size: 15px;
-
             border-radius: 6px;
         }
 
-        /* ==========================
-           MOBILE DROPDOWN
-        ========================== */
 
         .dropdown {
             width: 100%;
@@ -312,6 +303,7 @@
 
         .dropdown>a {
             width: 100%;
+            box-sizing: border-box;
             text-align: center;
             padding: 12px;
             font-size: 15px;
@@ -322,51 +314,49 @@
             position: static;
 
             width: 100%;
+            max-width: none;
             min-width: 0;
+
+            box-sizing: border-box;
 
             background: #2d3748;
 
             box-shadow: none;
-
             border-radius: 6px;
 
             padding: 5px 0;
-
             margin: 0;
         }
 
-        /* Disable desktop hover on mobile */
         .dropdown:hover .dropdown-menu {
             display: none;
         }
 
-        /* Open through JavaScript */
         .dropdown.mobile-open .dropdown-menu {
             display: block;
         }
 
         .dropdown-menu a {
             width: 100%;
+            box-sizing: border-box;
             text-align: center;
             padding: 10px;
             font-size: 14px;
             margin: 0;
         }
 
-        /* ==========================
-           MOBILE SEARCH
-        ========================== */
 
         .search-form {
             width: 100%;
+            box-sizing: border-box;
 
             display: flex;
             flex-direction: column;
+            align-items: stretch;
 
             gap: 8px;
 
             margin: 12px 0 0 !important;
-
             padding: 12px 0 0;
 
             border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -374,7 +364,9 @@
 
         .search-form input {
             width: 100%;
+            max-width: none;
             height: 40px;
+            box-sizing: border-box;
             font-size: 14px;
             margin: 0;
         }
@@ -382,26 +374,24 @@
         .search-form button {
             width: 100%;
             height: 40px;
+            box-sizing: border-box;
             font-size: 14px;
             margin: 0;
         }
     }
 
-    /* ==========================
-       SMALL MOBILE
-    ========================== */
 
     @media (max-width: 600px) {
 
         .navbar {
             width: 100%;
-            padding: 10px 15px;
-            margin: 0 !important;
+            min-height: 64px;
+            padding: 8px 12px;
         }
 
         .logo img {
             width: 110px;
-            height: 48px;
+            height: 46px;
         }
 
         .menu-toggle {
@@ -411,24 +401,20 @@
         }
 
         .nav-links {
-            top: calc(100% - 1px);
-            padding: 15px 20px 20px;
+            padding: 12px 15px 18px;
+            max-height: calc(100vh - 64px);
         }
     }
-
-    /* ==========================
-       VERY SMALL MOBILE
-    ========================== */
 
     @media (max-width: 400px) {
 
         .navbar {
-            padding: 10px 15px;
+            padding: 8px 10px;
         }
 
         .logo img {
             width: 100px;
-            height: 45px;
+            height: 43px;
         }
 
         .menu-toggle {
@@ -438,86 +424,56 @@
         }
 
         .nav-links {
-            top: calc(100% - 1px);
-            padding-left: 15px;
-            padding-right: 15px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .nav-links>a,
+        .dropdown>a {
+            font-size: 14px;
+            padding: 11px;
         }
     }
 </style>
-
-
-<!-- ==========================
-     NAVBAR HTML
-========================== -->
-
 <div class="navbar">
-
-    <!-- LOGO -->
     <div class="logo">
         <a href="/">
             <img src="/images/logo1.png" alt="Logo">
         </a>
     </div>
-
-
-    <!-- MOBILE MENU BUTTON -->
     <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open Menu" aria-expanded="false">
         ☰
     </button>
-
-
-    <!-- NAVIGATION -->
     <div class="nav-links" id="navLinks">
-
         <a href="/">
             Home
         </a>
-
         <a href="/product">
             Product
         </a>
-
-
-        <!-- CATEGORIES -->
         <div class="dropdown" id="categoryDropdown">
-
             <a href="#" id="categoryToggle" onclick="toggleCategory(event)">
                 Categories ▼
             </a>
-
             <div class="dropdown-menu">
-
                 <% if (typeof category !=='undefined' && category.length) { %>
-
                     <% category.forEach(function(cat) { %>
-
                         <a href="/product/category/<%= cat._id %>">
                             <%= cat.name %>
                         </a>
-
                         <% }) %>
-
                             <% } %>
-
             </div>
-
         </div>
-
-
         <a href="/cart">
             🛒 Cart
         </a>
-
         <a href="/order">
             Order
         </a>
-
         <a href="/wishlist">
             ❤️ Wishlist
         </a>
-
-
-        <!-- SEARCH -->
         <form action="/" method="GET" class="search-form">
 
             <input type="text" name="search" placeholder="Search..."
@@ -532,17 +488,38 @@
     </div>
 </div>
 
+
 <script>
-    /* ==========================
-       MOBILE MENU
-    ========================== */
 
-    const menuToggle =
-        document.getElementById("menuToggle");
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    const categoryDropdown = document.getElementById("categoryDropdown");
 
-    const navLinks =
-        document.getElementById("navLinks");
+    function resetMobileMenu() {
 
+        if (navLinks) {
+            navLinks.classList.remove("active");
+        }
+
+        if (categoryDropdown) {
+            categoryDropdown.classList.remove("mobile-open");
+        }
+
+        if (menuToggle) {
+
+            menuToggle.innerHTML = "☰";
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open Menu"
+            );
+        }
+    }
 
     if (menuToggle && navLinks) {
 
@@ -556,47 +533,44 @@
                 isOpen ? "true" : "false"
             );
 
+            menuToggle.setAttribute(
+                "aria-label",
+                isOpen ? "Close Menu" : "Open Menu"
+            );
+
             menuToggle.innerHTML =
                 isOpen ? "✕" : "☰";
+
+            if (!isOpen && categoryDropdown) {
+                categoryDropdown.classList.remove("mobile-open");
+            }
 
         });
 
     }
 
 
-    /* ==========================
-       CATEGORY DROPDOWN
-    ========================== */
 
     function toggleCategory(event) {
 
         event.preventDefault();
 
-        const dropdown =
-            document.getElementById("categoryDropdown");
-
-        if (!dropdown) return;
-
-        /*
-         * Only use click dropdown on
-         * tablet/mobile.
-         */
+        if (!categoryDropdown) {
+            return;
+        }
 
         if (window.innerWidth <= 1024) {
 
-            dropdown.classList.toggle("mobile-open");
+            categoryDropdown.classList.toggle("mobile-open");
 
         }
 
     }
 
 
-    /* ==========================
-       CLOSE MENU AFTER LINK CLICK
-    ========================== */
 
     document.querySelectorAll(
-        '.nav-links > a'
+        ".nav-links > a"
     ).forEach(function (link) {
 
         link.addEventListener(
@@ -605,18 +579,7 @@
 
                 if (window.innerWidth <= 1024) {
 
-                    navLinks.classList.remove("active");
-
-                    if (menuToggle) {
-
-                        menuToggle.innerHTML = "☰";
-
-                        menuToggle.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
-
-                    }
+                    resetMobileMenu();
 
                 }
 
@@ -626,38 +589,57 @@
     });
 
 
-    /* ==========================
-       RESET MOBILE MENU
-       WHEN WINDOW BECOMES DESKTOP
-    ========================== */
+
+    if (categoryDropdown) {
+
+        categoryDropdown
+            .querySelectorAll(".dropdown-menu a")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (window.innerWidth <= 1024) {
+                            resetMobileMenu();
+                        }
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    let previousWidth = window.innerWidth;
 
     window.addEventListener(
         "resize",
         function () {
 
-            if (window.innerWidth > 1024) {
+            const currentWidth = window.innerWidth;
+            if (
+                (previousWidth <= 1024 && currentWidth > 1024) ||
+                (previousWidth > 1024 && currentWidth <= 1024)
+            ) {
 
-                if (navLinks) {
-                    navLinks.classList.remove("active");
-                }
+                resetMobileMenu();
 
-                if (menuToggle) {
+            }
 
-                    menuToggle.innerHTML = "☰";
+            previousWidth = currentWidth;
 
-                    menuToggle.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
+        }
+    );
 
-                }
+    document.addEventListener(
+        "keydown",
+        function (event) {
 
-                const dropdown =
-                    document.getElementById("categoryDropdown");
+            if (event.key === "Escape") {
 
-                if (dropdown) {
-                    dropdown.classList.remove("mobile-open");
-                }
+                resetMobileMenu();
 
             }
 
