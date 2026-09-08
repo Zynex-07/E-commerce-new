@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
 
     <style>
@@ -23,16 +25,18 @@
             margin-top: 70px;
             min-height: calc(100vh - 70px);
             padding: 30px;
-            transition: .3s;
+            transition: all 0.3s ease;
             width: calc(100% - 250px);
         }
 
         .title {
             font-size: 35px;
+            font-weight: 600;
             color: #111827;
             margin-bottom: 30px;
         }
 
+        /* Dashboard Cards */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -40,96 +44,209 @@
         }
 
         .card {
-            background: #fff;
+            background: #ffffff;
             border-radius: 15px;
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
-            transition: .3s;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
 
         .card h2 {
             color: #6b7280;
             margin-bottom: 15px;
             font-size: 22px;
+            font-weight: 500;
         }
 
         .card h1 {
             color: #111827;
             font-size: 42px;
+            font-weight: 600;
+            word-break: break-word;
         }
 
-        @media(max-width:768px) {
+        /* Large Tablets */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                padding: 25px;
+            }
 
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 20px;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .card {
+                padding: 25px 15px;
+            }
+
+            .card h2 {
+                font-size: 20px;
+            }
+
+            .card h1 {
+                font-size: 36px;
+            }
+        }
+
+        /* Tablets */
+        @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
+                margin-top: 70px;
                 width: 100%;
+                min-height: calc(100vh - 70px);
                 padding: 20px;
             }
 
             .title {
                 text-align: center;
                 font-size: 28px;
+                margin-bottom: 25px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 15px;
+            }
+
+            .card {
+                padding: 25px 12px;
+                border-radius: 12px;
             }
 
             .card h2 {
                 font-size: 18px;
+                margin-bottom: 12px;
             }
 
             .card h1 {
-                font-size: 34px;
+                font-size: 32px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
             }
 
+            .title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .card {
+                padding: 22px 15px;
+            }
+
+            .card h2 {
+                font-size: 17px;
+            }
+
+            .card h1 {
+                font-size: 30px;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 360px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 20px 12px;
+            }
+
+            .card h2 {
+                font-size: 16px;
+            }
+
+            .card h1 {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
 
 <body>
+
     <!-- Navbar -->
     <%- include("../../partials/admin/navbar") %>
+
         <!-- Sidebar -->
         <%- include("../../partials/admin/sidebar") %>
+
             <!-- Main Content -->
             <div class="main-content">
+
                 <h1 class="title">Dashboard</h1>
+
                 <div class="cards">
+
                     <div class="card">
                         <h2>Total Users</h2>
                         <h1>
                             <%= totalUsers %>
                         </h1>
                     </div>
+
                     <div class="card">
                         <h2>Total Products</h2>
                         <h1>
                             <%= totalProducts %>
                         </h1>
                     </div>
+
                     <div class="card">
                         <h2>Total Orders</h2>
                         <h1>
                             <%= totalOrders %>
                         </h1>
                     </div>
+
                     <div class="card">
                         <h2>Pending Orders</h2>
                         <h1>
                             <%= pendingOrders %>
                         </h1>
                     </div>
+
                     <div class="card">
                         <h2>Monthly Revenue</h2>
-                        <h1>₹ <%= totalRevenue %>
+                        <h1>
+                            ₹ <%= totalRevenue %>
                         </h1>
                     </div>
+
                 </div>
             </div>
+
             <!-- Footer -->
             <%- include("../../partials/admin/footer") %>
+
 </body>
 
 </html>

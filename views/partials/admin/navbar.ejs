@@ -1,26 +1,29 @@
+<!-- =========================
+ADMIN NAVBAR
+========================= -->
+
 <div class="admin-navbar">
 
-    <!-- Menu Button -->
-    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
+    <!-- MOBILE MENU BUTTON -->
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"
+        aria-controls="sidebar">
 
         <i class="fa-solid fa-bars"></i>
 
     </button>
 
 
-    <!-- Logo -->
+    <!-- LOGO -->
     <div class="navbar-logo">
 
-        <img src="/images/logo1.png" alt="Logo">
+        <img src="/images/logo1.png" alt="Admin Panel Logo">
 
-        <h2>
-            Admin Panel
-        </h2>
+        <h2>Admin Panel</h2>
 
     </div>
 
 
-    <!-- Right Side -->
+    <!-- RIGHT SIDE -->
     <div class="navbar-right">
 
         <span class="admin-name">
@@ -33,9 +36,9 @@
 
 
 <style>
-    /* =====================================================
-       RESET
-    ===================================================== */
+    /* =========================
+RESET
+========================= */
 
     .admin-navbar,
     .admin-navbar * {
@@ -43,9 +46,9 @@
     }
 
 
-    /* =====================================================
-       NAVBAR
-    ===================================================== */
+    /* =========================
+NAVBAR
+========================= */
 
     .admin-navbar {
 
@@ -60,28 +63,26 @@
         display: flex;
 
         align-items: center;
-
         justify-content: space-between;
 
         padding: 0 25px;
 
         background: #ffffff;
 
-        border-bottom:
-            1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
 
-        box-shadow:
-            0 2px 10px rgba(0, 0, 0, .08);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
 
         z-index: 1000;
 
         overflow: hidden;
+
     }
 
 
-    /* =====================================================
-       MENU BUTTON
-    ===================================================== */
+    /* =========================
+MENU BUTTON
+========================= */
 
     .menu-btn {
 
@@ -97,8 +98,6 @@
 
         border: none;
 
-        outline: none;
-
         background: transparent;
 
         color: #111827;
@@ -112,26 +111,33 @@
         transition:
             background .25s ease,
             transform .2s ease;
-    }
 
+    }
 
     .menu-btn:hover {
 
-        background:
-            #f1f5f9;
-    }
+        background: #f1f5f9;
 
+    }
 
     .menu-btn:active {
 
-        transform:
-            scale(.94);
+        transform: scale(.94);
+
+    }
+
+    .menu-btn:focus-visible {
+
+        outline: 2px solid #2563eb;
+
+        outline-offset: 2px;
+
     }
 
 
-    /* =====================================================
-       LOGO
-    ===================================================== */
+    /* =========================
+LOGO
+========================= */
 
     .navbar-logo {
 
@@ -142,8 +148,8 @@
         align-items: center;
 
         gap: 12px;
-    }
 
+    }
 
     .navbar-logo img {
 
@@ -157,8 +163,8 @@
         object-fit: cover;
 
         border-radius: 50%;
-    }
 
+    }
 
     .navbar-logo h2 {
 
@@ -177,12 +183,13 @@
         overflow: hidden;
 
         text-overflow: ellipsis;
+
     }
 
 
-    /* =====================================================
-       RIGHT SIDE
-    ===================================================== */
+    /* =========================
+RIGHT SIDE
+========================= */
 
     .navbar-right {
 
@@ -193,24 +200,21 @@
         align-items: center;
 
         justify-content: flex-end;
-    }
 
+    }
 
     .admin-name {
 
         display: inline-flex;
 
         align-items: center;
-
         justify-content: center;
 
         min-height: 40px;
 
-        padding:
-            9px 18px;
+        padding: 9px 18px;
 
-        background:
-            #2563eb;
+        background: #2563eb;
 
         color: #ffffff;
 
@@ -223,12 +227,13 @@
         line-height: 1.3;
 
         white-space: nowrap;
+
     }
 
 
-    /* =====================================================
-       TABLET
-    ===================================================== */
+    /* =========================
+TABLET
+========================= */
 
     @media (max-width: 900px) {
 
@@ -236,16 +241,15 @@
 
             height: 68px;
 
-            padding:
-                0 18px;
-        }
+            padding: 0 18px;
 
+        }
 
         .menu-btn {
 
             display: inline-flex;
-        }
 
+        }
 
         .navbar-logo {
 
@@ -254,36 +258,36 @@
             justify-content: center;
 
             gap: 9px;
-        }
 
+        }
 
         .navbar-logo img {
 
             width: 40px;
             height: 40px;
-        }
 
+        }
 
         .navbar-logo h2 {
 
             font-size: 21px;
-        }
 
+        }
 
         .admin-name {
 
             font-size: 13px;
 
-            padding:
-                8px 14px;
+            padding: 8px 14px;
+
         }
 
     }
 
 
-    /* =====================================================
-       MOBILE
-    ===================================================== */
+    /* =========================
+MOBILE
+========================= */
 
     @media (max-width: 600px) {
 
@@ -291,10 +295,9 @@
 
             height: 65px;
 
-            padding:
-                0 12px;
-        }
+            padding: 0 12px;
 
+        }
 
         .menu-btn {
 
@@ -302,49 +305,50 @@
             height: 42px;
 
             font-size: 22px;
-        }
 
+        }
 
         .navbar-logo {
 
             gap: 8px;
 
             justify-content: center;
-        }
 
+        }
 
         .navbar-logo img {
 
             width: 37px;
             height: 37px;
-        }
 
+        }
 
         .navbar-logo h2 {
 
             font-size: 18px;
-        }
 
+        }
 
         .navbar-right {
 
             width: 42px;
 
             flex-shrink: 0;
-        }
 
+        }
 
         .admin-name {
 
             display: none;
+
         }
 
     }
 
 
-    /* =====================================================
-       SMALL MOBILE
-    ===================================================== */
+    /* =========================
+SMALL MOBILE
+========================= */
 
     @media (max-width: 400px) {
 
@@ -352,10 +356,9 @@
 
             height: 62px;
 
-            padding:
-                0 9px;
-        }
+            padding: 0 9px;
 
+        }
 
         .menu-btn {
 
@@ -363,48 +366,48 @@
             height: 40px;
 
             font-size: 21px;
-        }
 
+        }
 
         .navbar-logo {
 
             gap: 7px;
-        }
 
+        }
 
         .navbar-logo img {
 
             width: 34px;
             height: 34px;
-        }
 
+        }
 
         .navbar-logo h2 {
 
             font-size: 16px;
-        }
 
+        }
 
         .navbar-right {
 
             width: 40px;
+
         }
 
     }
 
 
-    /* =====================================================
-       VERY SMALL MOBILE
-    ===================================================== */
+    /* =========================
+VERY SMALL PHONE
+========================= */
 
     @media (max-width: 330px) {
 
         .admin-navbar {
 
-            padding:
-                0 7px;
-        }
+            padding: 0 7px;
 
+        }
 
         .menu-btn {
 
@@ -412,59 +415,62 @@
             height: 38px;
 
             font-size: 20px;
-        }
 
+        }
 
         .navbar-logo {
 
             gap: 5px;
-        }
 
+        }
 
         .navbar-logo img {
 
             width: 31px;
             height: 31px;
-        }
 
+        }
 
         .navbar-logo h2 {
 
             font-size: 14px;
-        }
 
+        }
 
         .navbar-right {
 
             width: 38px;
+
         }
 
     }
 
 
-    /* =====================================================
-       TOUCH DEVICES
-    ===================================================== */
+    /* =========================
+TOUCH DEVICES
+========================= */
 
     @media (hover: none) {
 
         .menu-btn:hover {
 
             background: transparent;
+
         }
 
     }
 
 
-    /* =====================================================
-       REDUCED MOTION
-    ===================================================== */
+    /* =========================
+REDUCED MOTION
+========================= */
 
     @media (prefers-reduced-motion: reduce) {
 
         .menu-btn {
 
             transition: none;
+
         }
 
     }
@@ -487,9 +493,9 @@
                 document.getElementById("sidebarOverlay");
 
 
-            /* =============================================
-               MENU BUTTON
-            ============================================= */
+            /* =========================
+               OPEN / CLOSE SIDEBAR
+            ========================= */
 
             if (menuBtn && sidebar) {
 
@@ -498,9 +504,7 @@
                     function () {
 
                         const isOpen =
-                            sidebar.classList.toggle(
-                                "active"
-                            );
+                            sidebar.classList.toggle("active");
 
 
                         if (overlay) {
@@ -514,9 +518,7 @@
 
                         menuBtn.setAttribute(
                             "aria-expanded",
-                            isOpen
-                                ? "true"
-                                : "false"
+                            isOpen ? "true" : "false"
                         );
 
                     }
@@ -525,9 +527,9 @@
             }
 
 
-            /* =============================================
-               OVERLAY CLOSE
-            ============================================= */
+            /* =========================
+               CLOSE WITH OVERLAY
+            ========================= */
 
             if (overlay) {
 
@@ -538,7 +540,6 @@
                         sidebar.classList.remove(
                             "active"
                         );
-
 
                         overlay.classList.remove(
                             "active"
@@ -560,9 +561,9 @@
             }
 
 
-            /* =============================================
-               SIDEBAR LINK CLICK
-            ============================================= */
+            /* =========================
+               CLOSE AFTER LINK CLICK
+            ========================= */
 
             if (sidebar) {
 
@@ -611,17 +612,15 @@
             }
 
 
-            /* =============================================
-               DESKTOP RESET
-            ============================================= */
+            /* =========================
+               RESET ON DESKTOP
+            ========================= */
 
             window.addEventListener(
                 "resize",
                 function () {
 
-                    if (
-                        window.innerWidth > 900
-                    ) {
+                    if (window.innerWidth > 900) {
 
                         if (sidebar) {
 
