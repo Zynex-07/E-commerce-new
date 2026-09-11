@@ -2,15 +2,18 @@ const express = require("express");
 const path = require("path");
 
 require("dotenv").config();
+
 const session = require("express-session");
 const { connectDB } = require("./config/db");
+const { requireAdmin } = require("./middleware/adminAuth");
 
 // Admin
+const adminAuthRoutes = require("./router/admin/adminRouters");
 const adminCategoryRoutes = require("./router/admin/categoryRoutes");
 const productRoutes = require("./router/admin/productRoutes");
 const orderRoutes = require("./router/admin/orderRoutes");
 const adminUserRoutes = require("./router/admin/userRoutes");
-const dashboardRoutes = require("./router/admin/dashboardRoutes")
+const dashboardRoutes = require("./router/admin/dashboardRoutes");
 
 // User
 const homeRoutes = require("./router/user/homeRoutes");
@@ -18,36 +21,45 @@ const userproductRoutes = require("./router/user/userproductRouters");
 const authRoutes = require("./router/user/authRoutes");
 const cartRoutes = require("./router/user/cartRoutes");
 const userorderRoutes = require("./router/user/userorderRoutes");
-const addressRoutes = require("./router/user/addressRoutes")
+const addressRoutes = require("./router/user/addressRoutes");
 const wishlistRoutes = require("./router/user/wishlistRoutes");
+const paymentRoutes = require("./router/user/paymentRoutes");
 
 const app = express();
-connectDB();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-    secret: "ecommerce-secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24
-    }
-}));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "change-this-session-secret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60 * 24
+        }
+    })
+);
 
 app.use((req, res, next) => {
     res.locals.userID = req.session.userID;
     res.locals.userName = req.session.userName;
+    res.locals.admin = req.session.admin || null;
+    res.locals.cartCount = req.session.cartCount || 0;
     next();
 });
 
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static("public"));
 
-// Admin
+// Admin authentication is public; everything else under /admin is protected.
+app.use("/admin", adminAuthRoutes);
+app.use("/admin", requireAdmin);
+
 app.use("/admin/category", adminCategoryRoutes);
 app.use("/admin/product", productRoutes);
 app.use("/admin/order", orderRoutes);
@@ -58,17 +70,15 @@ app.use("/admin/dashboard", dashboardRoutes);
 app.use("/", homeRoutes);
 app.use("/product", userproductRoutes);
 app.use("/auth", authRoutes);
-
-//test Route
-app.get("/test", (req, res) => {
-    console.log("TEST ROUTE HIT");
-    res.send("Working");
-});
-
 app.use("/cart", cartRoutes);
+app.use("/payment", paymentRoutes);
 app.use("/order", userorderRoutes);
 app.use("/address", addressRoutes);
 app.use("/wishlist", wishlistRoutes);
+
+app.get("/test", (req, res) => {
+    res.send("Working");
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -76,9 +86,10 @@ const PORT = process.env.PORT || 3000;
     try {
         await connectDB();
         app.listen(PORT, () => {
-            console.log(`Server Running : http://localhost:${PORT}/auth/login`);
+            console.log(`Server Running : http://localhost:${PORT}/admin/login`);
         });
     } catch (error) {
-        console.log(error);
+        console.error("Server startup error:", error);
+        process.exit(1);
     }
 })();

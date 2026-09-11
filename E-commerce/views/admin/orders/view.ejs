@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order Details</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            background: #111827;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: .3s;
+        }
+
+        .back-btn:hover {
+            background: #374151;
+        }
+
+        /* =========================
+           TITLE
+        ========================= */
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #111827;
+            font-size: 35px;
+        }
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #111827;
+            font-size: 24px;
+        }
+
+        /* =========================
+           ORDER INFO
+        ========================= */
+
+        .info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .info-box>div:last-child {
+            color: #4b5563;
+            word-break: break-word;
+        }
+
+        /* =========================
+           PRODUCTS
+        ========================= */
+
+        .product {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .product:last-of-type {
+            border-bottom: none;
+        }
+
+        .product img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+
+        .product-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #111827;
+            word-break: break-word;
+        }
+
+        .price {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .qty {
+            color: #64748b;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        /* =========================
+           TOTAL
+        ========================= */
+
+        .total-box {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            color: #16a34a;
+            word-break: break-word;
+        }
+
+        /* =========================
+           STATUS FORM
+        ========================= */
+
+        .status-form {
+            margin-top: 25px;
+        }
+
+        .status-form form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 250px;
+            max-width: 100%;
+            outline: none;
+            background: #fff;
+            color: #111827;
+        }
+
+        select:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            transition: .3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           LARGE TABLETS
+        ========================= */
+
+        @media (max-width: 1024px) {
+            body {
+                padding: 30px;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+
+        /* =========================
+           TABLETS
+        ========================= */
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .title {
+                font-size: 28px;
+                margin-bottom: 25px;
+            }
+
+            .card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .info {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product {
+                gap: 15px;
+            }
+
+            .product img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .product-name {
+                font-size: 18px;
+            }
+
+            .total-box {
+                font-size: 22px;
+            }
+
+            .status-form form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            select,
+            button {
+                width: 100%;
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .back-btn {
+                padding: 9px 13px;
+                font-size: 14px;
+                margin-bottom: 18px;
+            }
+
+            .title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .card {
+                padding: 16px;
+                margin-bottom: 18px;
+            }
+
+            .card h2 {
+                font-size: 21px;
+                margin-bottom: 15px;
+            }
+
+            .info {
+                gap: 12px;
+            }
+
+            .info-box {
+                padding: 13px;
+                font-size: 14px;
+            }
+
+            .label {
+                font-size: 14px;
+            }
+
+            .product {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 12px;
+                padding: 18px 0;
+            }
+
+            .product img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .product-details {
+                width: 100%;
+            }
+
+            .product-name {
+                font-size: 17px;
+                margin-bottom: 8px;
+            }
+
+            .price,
+            .qty {
+                font-size: 14px;
+            }
+
+            .total-box {
+                text-align: center;
+                font-size: 20px;
+                margin-top: 18px;
+            }
+
+            .status-form {
+                margin-top: 20px;
+            }
+
+            select,
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        /* =========================
+           SMALL MOBILE
+        ========================= */
+
+        @media (max-width: 360px) {
+            body {
+                padding: 12px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 13px;
+            }
+
+            .card h2 {
+                font-size: 19px;
+            }
+
+            .product img {
+                width: 90px;
+                height: 90px;
+            }
+
+            .product-name {
+                font-size: 16px;
+            }
+
+            .total-box {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <a href="/admin/order" class="back-btn">
+            Back To Orders
+        </a>
+
+        <h1 class="title">Order Details</h1>
+
+        <!-- Order Information -->
+        <div class="card">
+
+            <div class="info">
+
+                <div class="info-box">
+                    <div class="label">Customer Name</div>
+                    <div>
+                        <%= order.userName %>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="label">Customer Email</div>
+                    <div>
+                        <%= order.userEmail %>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="label">Order Status</div>
+                    <div>
+                        <%= order.status %>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="label">Order Date</div>
+                    <div>
+                        <%= new Date(order.createdAt).toDateString() %>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Products -->
+        <div class="card">
+
+            <h2>Products</h2>
+
+            <% order.products.forEach(product=> { %>
+
+                <div class="product">
+
+                    <% if(product.images){ %>
+
+                        <img src="<%= product.images %>" alt="Product image">
+
+                        <% } %>
+
+                            <div class="product-details">
+
+                                <div class="product-name">
+                                    <%= product.name %>
+                                </div>
+
+                                <div class="price">
+                                    Price : ₹ <%= product.price %>
+                                </div>
+
+                                <div class="qty">
+                                    Quantity : <%= product.qty %>
+                                </div>
+
+                                <div class="qty">
+                                    Product Total : ₹ <%= product.total %>
+                                </div>
+
+                            </div>
+
+                </div>
+
+                <% }) %>
+
+                    <!-- Grand Total -->
+                    <div class="total-box">
+                        Grand Total : ₹ <%= order.total %>
+                    </div>
+
+                    <!-- Status Update -->
+                    <div class="status-form">
+
+                        <form method="POST" action="/admin/order/status/<%= order._id %>">
+
+                            <select name="status">
+
+                                <option value="Pending" <%=order.status==="Pending" ? "selected" : "" %>>
+                                    Pending
+                                </option>
+
+                                <option value="Processing" <%=order.status==="Processing" ? "selected" : "" %>>
+                                    Processing
+                                </option>
+
+                                <option value="Shipped" <%=order.status==="Shipped" ? "selected" : "" %>>
+                                    Shipped
+                                </option>
+
+                                <option value="Delivered" <%=order.status==="Delivered" ? "selected" : "" %>>
+                                    Delivered
+                                </option>
+
+                                <option value="Cancelled" <%=order.status==="Cancelled" ? "selected" : "" %>>
+                                    Cancelled
+                                </option>
+
+                            </select>
+
+                            <button type="submit">
+                                Update Status
+                            </button>
+
+                        </form>
+
+                    </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

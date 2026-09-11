@@ -1,0 +1,224 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins, sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5f7fb;
+}
+
+/* ==========================
+        NAVBAR
+========================== */
+
+.navbar {
+    width: 100%;
+    background: linear-gradient(90deg, #0f172a, #1e293b);
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo img {
+    width: 150px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.menu-toggle {
+    display: none;
+    width: 45px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+}
+
+.cart-btn {
+    background: #2563eb;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: .3s;
+}
+
+.cart-btn:hover {
+    background: #1d4ed8;
+}
+
+.search-form {
+    display: flex;
+    gap: 8px;
+}
+
+.search-form input {
+    padding: 10px;
+    width: 220px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+.search-form button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #f59e0b;
+    color: white;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background: #d97706;
+}
+
+/* ==========================
+        FOOTER
+========================== */
+
+footer {
+    margin-top: auto;
+    width: 100%;
+    background: linear-gradient(90deg, #0f172a, #1e293b);
+    color: white;
+    text-align: center;
+    padding: 22px;
+    font-size: 15px;
+}
+
+/* ==========================
+        MOBILE
+========================== */
+
+@media(max-width:992px) {
+
+    .menu-toggle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .search-form {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-form input,
+    .search-form button {
+        width: 100%;
+    }
+
+    .cart-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .navbar {
+        flex-wrap: wrap;
+    }
+
+}
+
+/* Admin Panel Responsive Fixes - Add this to your style.css */
+
+@media (max-width: 768px) {
+
+    /* Admin Sidebar Fix */
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        /* Hide by default */
+        transition: 0.3s;
+    }
+
+    .sidebar.active {
+        left: 0;
+        /* Show on toggle */
+    }
+
+    /* Main Content Shift Fix */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Admin Navbar Fix */
+    .admin-navbar {
+        padding: 0 15px !important;
+    }
+}
+
+/* --- ADMIN PANEL ISOLATION (Fixes the color/layout issue) --- */
+
+/* Sidebar ke links ko Global 'a' tag ke color se bachayein */
+.sidebar a {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Sidebar ke icons aur text ka alignment sahi karein */
+.sidebar ul li a {
+    display: flex !important;
+    align-items: center !important;
+    color: white !important;
+}
+
+/* Admin Navbar ka logo aur links ka color fix karein */
+.admin-navbar, .admin-navbar a, .admin-navbar h2 {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Admin Panel ke main layout ko fix karein */
+.admin-wrapper {
+    display: block;
+    width: 100%;
+}
+
+/* style.css mein ye add karein */
+.admin-wrapper input {
+    border: 1px solid #d1d5db !important;
+}
+
+.admin-wrapper button {
+    cursor: pointer !important;
+    border: none !important;
+}
