@@ -4,6 +4,7 @@ const path = require("path");
 require("dotenv").config();
 
 const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const { connectDB } = require("./config/db");
 const { requireAdmin } = require("./middleware/adminAuth");
 
@@ -27,22 +28,39 @@ const paymentRoutes = require("./router/user/paymentRoutes");
 
 const app = express();
 
+// Heroku terminates HTTPS at its proxy. Trust the proxy so secure session
+// cookies work correctly in production.
+if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET || "change-this-session-secret",
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60 * 24
-        }
-    })
-);
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET || "change-this-session-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24
+    }
+};
+
+// Use MongoDB for sessions in production instead of Express MemoryStore.
+if (process.env.MONGO_URL) {
+    sessionOptions.store = MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        dbName: process.env.DB_NAME,
+        collectionName: "sessions",
+        ttl: 60 * 60 * 24,
+        touchAfter: 24 * 3600
+    });
+}
+
+app.use(session(sessionOptions));
 
 app.use((req, res, next) => {
     res.locals.userID = req.session.userID;

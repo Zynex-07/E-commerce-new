@@ -1,3 +1,7 @@
-node_modules
+node_modules/
 .env
-views-zip
+.env.*
+!.env.example
+.git/
+.DS_Store
+*.log

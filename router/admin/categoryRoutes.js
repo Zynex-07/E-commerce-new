@@ -27,7 +27,8 @@ router.post("/add", async (req, res) => {
     try {
         const db = getDB();
         await db.collection("category").insertOne({
-            name: req.body.name
+            name: String(req.body.name || "").trim(),
+            createdAt: new Date()
         });
         res.redirect("/admin/category");
     } catch (error) {

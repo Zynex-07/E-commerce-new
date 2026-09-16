@@ -38,14 +38,8 @@ router.get("/add", async (req, res) => {
 router.post("/add", async (req, res) => {
     try {
         const db = getDB();
-        const {
-            name,
-            price,
-            description,
-            categoryId,
-            stock,
-            images
-        } = req.body;
+        const { name, price, description, categoryId, stock, images } = req.body;
+        if (!String(name || "").trim()) return res.status(400).send("Product name is required");
         if (!ObjectId.isValid(categoryId)) {
             return res.send("Invalid Category ID");
         }
@@ -53,9 +47,10 @@ router.post("/add", async (req, res) => {
             name: name,
             price: Number(price),
             description: description,
-            stock: Number(stock),
-            images: Array.isArray(images) ? images.filter(img => img.trim() !== "") : [images],
-            categoryId: new ObjectId(categoryId)
+            stock: Math.max(0, Number(stock) || 0),
+            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
+            categoryId: new ObjectId(categoryId),
+            createdAt: new Date()
         });
         res.redirect("/admin/product");
     } catch (error) {
@@ -109,11 +104,11 @@ router.post("/update/:id", async (req, res) => {
             return res.send("Invalid Category ID");
         }
         let updateData = {
-            name: name,
-            price: Number(price),
-            description: description,
-            stock: Number(stock),
-            images:Array.isArray(images) ? images.filter(img => img.trim() !== "") : [images],
+            name: String(name || "").trim(),
+            price: Math.max(0, Number(price) || 0),
+            description: String(description || "").trim(),
+            stock: Math.max(0, Number(stock) || 0),
+            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
             categoryId: new ObjectId(categoryId)
         };
         await db.collection("product").updateOne(

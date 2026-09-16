@@ -123,6 +123,7 @@ router.get("/view/:id", async (req, res) => {
             return res.redirect("/auth/login");
         }
         const db = getDB();
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Order ID");
         const order = await db.collection("orders").findOne({
             _id: new ObjectId(req.params.id),
             userID: req.session.userID
@@ -152,7 +153,7 @@ router.get("/cancel/:id", async (req, res) => {
         if (!order) {
             return res.send("Order Not Found");
         }
-        if (order.status === "Cancelled") {
+        if (["Cancelled", "Delivered"].includes(order.status)) {
             return res.redirect("/order");
         }
         console.log("Order Products:", order.products);
@@ -206,6 +207,7 @@ router.get("/cancel/:id", async (req, res) => {
 router.get("/increase/:orderId/:productId", async (req, res) => {
     try {
         const db = getDB();
+        if (!ObjectId.isValid(req.params.orderId) || !ObjectId.isValid(req.params.productId)) return res.status(400).send("Invalid ID");
         const order = await db.collection("orders").findOne({
             _id: new ObjectId(req.params.orderId),
             userID: req.session.userID
@@ -260,6 +262,7 @@ router.get("/increase/:orderId/:productId", async (req, res) => {
 router.get("/decrease/:orderId/:productId", async (req, res) => {
     try {
         const db = getDB();
+        if (!ObjectId.isValid(req.params.orderId) || !ObjectId.isValid(req.params.productId)) return res.status(400).send("Invalid ID");
         const order = await db.collection("orders").findOne({
             _id: new ObjectId(req.params.orderId),
             userID: req.session.userID

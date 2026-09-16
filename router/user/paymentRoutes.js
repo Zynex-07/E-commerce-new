@@ -75,12 +75,24 @@ router.post("/verify", requireUser, async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) return res.status(400).json({ ok: false, message: "Incomplete payment response" });
+        if (!process.env.RAZORPAY_KEY_SECRET) return res.status(500).json({ ok: false, message: "Razorpay is not configured" });
         const expected = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
             .update(`${razorpay_order_id}|${razorpay_payment_id}`)
             .digest("hex");
-        if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(razorpay_signature))) return res.status(400).json({ ok: false, message: "Payment verification failed" });
+        const expectedBuf = Buffer.from(expected, "utf8");
+        const receivedBuf = Buffer.from(String(razorpay_signature), "utf8");
+        if (expectedBuf.length !== receivedBuf.length || !crypto.timingSafeEqual(expectedBuf, receivedBuf)) {
+            return res.status(400).json({ ok: false, message: "Payment verification failed" });
+        }
 
         const { db, user, cart, total } = await getCart(req);
+
+        // Idempotency: a retry from the browser must not create a second order.
+        const existingPayment = await db.collection("orders").findOne({ paymentId: razorpay_payment_id });
+        if (existingPayment) {
+            return res.json({ ok: true, orderId: existingPayment._id.toString() });
+        }
+
         const freshProducts = [];
         for (const item of cart) {
             const product = await db.collection("product").findOne({ _id: new ObjectId(item.productID) });
