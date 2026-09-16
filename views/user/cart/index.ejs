@@ -1,66 +1,78 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Shopping Cart — IV Store</title><link rel="stylesheet" href="/style/storefront.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your IV Store shopping cart">
+  <title>Shopping Cart — IV Store</title>
+  <link rel="stylesheet" href="/style/storefront.css">
+  <style>
+    .cart-page{padding:38px 0 70px;background:#f8fafc;min-height:calc(100vh - 130px)}
+    .cart-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:24px}.cart-header h1{margin:4px 0 6px;font-size:34px}.cart-header p{margin:0;color:#667085;font-size:14px}.cart-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.75fr);gap:22px;align-items:start}.cart-card,.summary-card{background:#fff;border:1px solid #e4e7ec;border-radius:18px;box-shadow:0 8px 25px rgba(16,24,40,.06)}.cart-item{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:18px;padding:20px;border-bottom:1px solid #eaecf0;align-items:center}.cart-item:last-child{border-bottom:0}.cart-item img{width:100px;height:100px;border-radius:14px;object-fit:cover;background:#f2f4f7}.cart-name{font-size:17px;font-weight:700;margin-bottom:7px;overflow-wrap:anywhere}.cart-name a{color:#101828;text-decoration:none}.cart-name a:hover{color:#175cd3}.cart-unit{font-size:13px;color:#667085}.stock-info{font-size:12px;color:#12b76a;margin-top:6px}.qty-control{display:inline-flex;align-items:center;margin-top:12px;border:1px solid #d0d5dd;border-radius:10px;overflow:hidden}.qty-control button{width:36px;height:36px;border:0;background:#f9fafb;font-size:20px;cursor:pointer}.qty-control input{width:42px;height:36px;border:0;border-left:1px solid #d0d5dd;border-right:1px solid #d0d5dd;text-align:center;font-weight:700;outline:none}.cart-remove{display:block;margin-top:9px;border:0;background:none;color:#d92d20;font-size:12px;font-weight:700;cursor:pointer;padding:0}.cart-total{font-size:17px;font-weight:800;white-space:nowrap}.summary-card{padding:22px;position:sticky;top:92px}.summary-card h2{font-size:18px;margin:0 0 16px}.summary-row{display:flex;justify-content:space-between;gap:15px;padding:10px 0;color:#667085;font-size:14px}.summary-row strong{color:#101828}.summary-total{border-top:1px solid #eaecf0;margin-top:8px;padding-top:17px;font-size:21px;font-weight:800;color:#101828}.checkout-btn{width:100%;min-height:50px;margin-top:15px;border:0;border-radius:12px;background:#101828;color:#fff;font-weight:800;cursor:pointer}.checkout-btn:hover{background:#1d2939}.checkout-btn:disabled{opacity:.55;cursor:not-allowed}.address-warning{margin-top:14px;padding:12px;border-radius:10px;background:#fffaeb;color:#b54708;font-size:12px;line-height:1.5}.address-warning a{font-weight:800;color:#b54708}.secure-note{text-align:center;color:#667085;font-size:11px;margin-top:12px}.clear-btn{width:100%;margin-top:14px;border:1px solid #d0d5dd;background:#fff;border-radius:10px;padding:11px;font-weight:700;cursor:pointer}.empty-cart{padding:70px 20px;text-align:center}.empty-cart .emoji{font-size:48px}.empty-cart h2{margin:12px 0 5px}.continue-btn{display:inline-flex;margin-top:18px;padding:12px 18px;border-radius:10px;background:#101828;color:#fff;text-decoration:none;font-weight:700}.toast{position:fixed;right:18px;bottom:18px;z-index:5000;background:#101828;color:#fff;padding:13px 16px;border-radius:10px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:13px}.payment-overlay{position:fixed;inset:0;background:rgba(16,24,40,.68);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px}.payment-box{background:#fff;width:min(420px,100%);padding:28px;border-radius:18px;text-align:center}.spinner{width:38px;height:38px;border:4px solid #eaecf0;border-top-color:#101828;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 15px}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:850px){.cart-layout{grid-template-columns:1fr}.summary-card{position:static}.cart-header{align-items:flex-start;flex-direction:column}}
+    @media(max-width:600px){.cart-page{padding:25px 0 55px}.cart-header h1{font-size:27px}.cart-item{grid-template-columns:72px minmax(0,1fr);gap:12px;padding:14px}.cart-item img{width:72px;height:72px}.cart-total{grid-column:2;font-size:16px}.cart-card{border-radius:14px}.summary-card{padding:18px;border-radius:14px}.cart-name{font-size:14px}.cart-unit{font-size:12px}.qty-control button{width:34px}.qty-control input{width:38px}}
+  </style>
 </head>
 <body>
 <%- include('../../partials/user/navbar') %>
-<main class="cart-page"><div class="shell">
-  <div class="section-head"><div><div class="eyebrow">Your bag</div><h2>Shopping Cart</h2><p><%= cart.length %> product type(s) in your cart.</p></div><a class="text-link" href="/product">Continue shopping →</a></div>
-  <% if(cart.length){ %>
-  <div class="cart-layout">
-    <section class="cart-list">
-      <% cart.forEach(function(item){ %>
-      <article class="cart-item" data-id="<%= item.productID %>">
-        <a href="/product/<%= item.productID %>"><img src="<%= item.images || '/images/whiteimg.jpg' %>" alt="<%= item.name %>"></a>
-        <div>
-          <div class="cart-name"><a href="/product/<%= item.productID %>"><%= item.name %></a></div>
-          <div class="cart-unit">₹<%= Number(item.price).toLocaleString('en-IN') %> each</div>
-          <div class="qty-control small" style="margin-top:10px"><button type="button" onclick="changeQty('<%= item.productID %>',-1)">−</button><input id="qty-<%= item.productID %>" value="<%= item.qty %>" readonly><button type="button" onclick="changeQty('<%= item.productID %>',1)">+</button></div>
-          <button class="cart-remove" type="button" onclick="removeItem('<%= item.productID %>')">Remove</button>
-        </div>
-        <div class="cart-total">₹<span id="total-<%= item.productID %>"><%= Number(item.total).toLocaleString('en-IN') %></span></div>
-      </article>
-      <% }) %>
-    </section>
-    <aside class="cart-summary">
-      <div class="eyebrow">Order summary</div>
-      <div class="summary-row"><span>Subtotal</span><strong id="grand-total">₹<%= Number(grandTotal).toLocaleString('en-IN') %></strong></div>
-      <div class="summary-row"><span>Delivery</span><strong>FREE</strong></div>
-      <div class="summary-row total"><span>Total</span><span id="grand-total-2">₹<%= Number(grandTotal).toLocaleString('en-IN') %></span></div>
-      <button class="checkout-btn" id="checkoutBtn" type="button" onclick="startCheckout()">Pay securely with Razorpay</button>
-      <div class="secure-note">🔒 Secure payment • UPI • Cards • Net Banking • Wallets</div>
-      <a class="text-link" style="display:block;text-align:center;margin-top:15px" href="/cart/clear">Clear cart</a>
-    </aside>
+<main class="cart-page">
+  <div class="shell">
+    <div class="cart-header">
+      <div><div class="eyebrow">Your bag</div><h1>Shopping Cart</h1><p><%= cart.length %> product type(s) • <%= cart.reduce((s,i)=>s+Number(i.qty||0),0) %> item(s)</p></div>
+      <a class="text-link" href="/product">← Continue shopping</a>
+    </div>
+
+    <% if(cart.length){ %>
+      <div class="cart-layout">
+        <section class="cart-card" aria-label="Cart items">
+          <% cart.forEach(function(item){ %>
+            <article class="cart-item" data-id="<%= item.productID %>">
+              <a href="/product/<%= item.productID %>"><img src="<%= item.images || '/images/whiteimg.jpg' %>" alt="<%= item.name %>" loading="lazy"></a>
+              <div>
+                <div class="cart-name"><a href="/product/<%= item.productID %>"><%= item.name %></a></div>
+                <div class="cart-unit">₹<%= Number(item.price||0).toLocaleString('en-IN') %> each</div>
+                <div class="qty-control" aria-label="Quantity">
+                  <button type="button" aria-label="Decrease" onclick="changeQty('<%= item.productID %>',-1)">−</button>
+                  <input id="qty-<%= item.productID %>" value="<%= item.qty %>" readonly>
+                  <button type="button" aria-label="Increase" onclick="changeQty('<%= item.productID %>',1)">+</button>
+                </div>
+                <button class="cart-remove" type="button" onclick="removeItem('<%= item.productID %>')">Remove</button>
+              </div>
+              <div class="cart-total">₹<span id="total-<%= item.productID %>"><%= Number(item.total||0).toLocaleString('en-IN') %></span></div>
+            </article>
+          <% }) %>
+        </section>
+
+        <aside class="summary-card">
+          <h2>Order Summary</h2>
+          <div class="summary-row"><span>Subtotal</span><strong id="grand-total">₹<%= Number(grandTotal||0).toLocaleString('en-IN') %></strong></div>
+          <div class="summary-row"><span>Delivery</span><strong>FREE</strong></div>
+          <div class="summary-row summary-total"><span>Total</span><span id="grand-total-2">₹<%= Number(grandTotal||0).toLocaleString('en-IN') %></span></div>
+
+          <% if(hasAddress){ %>
+            <button class="checkout-btn" id="checkoutBtn" type="button" onclick="startCheckout()">Pay securely with Razorpay</button>
+          <% } else { %>
+            <a class="checkout-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none" href="/address/edit">Add delivery address</a>
+            <div class="address-warning">Please add your delivery address before payment. <a href="/address">View address</a></div>
+          <% } %>
+          <div class="secure-note">🔒 Secure payment • UPI • Cards • Net Banking • Wallets</div>
+          <form action="/cart/clear" method="POST" onsubmit="return confirm('Clear all items from your cart?')"><button class="clear-btn" type="submit">Clear Cart</button></form>
+        </aside>
+      </div>
+    <% } else { %>
+      <div class="cart-card empty-cart"><div class="emoji">🛒</div><h2>Your cart is empty</h2><p style="color:#667085">Add products from the shop and they will appear here.</p><a class="continue-btn" href="/product">Start Shopping</a></div>
+    <% } %>
   </div>
-  <% } else { %>
-  <div class="cart-list empty-cart"><div class="emoji">🛒</div><h2>Your cart is empty</h2><p style="color:#667085;margin-top:8px">Add something you love and it will appear here.</p><a class="continue-btn" href="/product">Start Shopping</a></div>
-  <% } %>
-</div></main>
+</main>
 <div class="toast" id="toast"></div>
 <div class="payment-overlay" id="paymentOverlay"><div class="payment-box"><div class="spinner"></div><h3>Opening secure checkout…</h3><p style="color:#667085;font-size:13px;margin-top:8px">Please don't close this window.</p></div></div>
 <%- include('../../partials/user/footer') %>
 <script>
-const money = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+const money=n=>'₹'+Number(n||0).toLocaleString('en-IN');
 function toast(message){const t=document.getElementById('toast');t.textContent=message;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2600)}
-async function changeQty(id, delta){const input=document.getElementById('qty-'+id);const next=Math.max(1,Number(input.value)+delta);try{const r=await fetch('/cart/update/'+id,{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({qty:next})});const d=await r.json();if(!d.ok) return toast(d.message||'Unable to update cart');input.value=next;document.getElementById('total-'+id).textContent=Number(d.itemTotal).toLocaleString('en-IN');document.getElementById('grand-total').textContent=money(d.grandTotal);document.getElementById('grand-total-2').textContent=money(d.grandTotal);document.querySelectorAll('.cart-count').forEach(x=>x.textContent=d.cartCount)}catch(e){toast('Network error. Please try again.')}}
-async function removeItem(id){try{const r=await fetch('/cart/remove/'+id,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','Accept':'application/json'}});const d=await r.json();if(!d.ok) throw new Error();document.querySelector('.cart-item[data-id="'+id+'"]').remove();document.querySelectorAll('.cart-count').forEach(x=>x.textContent=d.cartCount);toast('Item removed');location.reload()}catch(e){toast('Unable to remove item')}}
-async function startCheckout(){
- const btn=document.getElementById('checkoutBtn');btn.disabled=true;document.getElementById('paymentOverlay').style.display='flex';
- try{
-   const r=await fetch('/payment/create-order',{method:'POST',headers:{'Content-Type':'application/json'}});const d=await r.json();
-   if(!d.ok) throw new Error(d.message||'Unable to create payment');
-   if(!window.Razorpay){await loadRazorpay();}
-   document.getElementById('paymentOverlay').style.display='none';
-   const options={key:d.key,amount:d.order.amount,currency:d.order.currency,name:'IV Store',description:'Secure order payment',order_id:d.order.id,theme:{color:'#ff5a36'},handler:async function(response){
-      document.getElementById('paymentOverlay').style.display='flex';
-      const vr=await fetch('/payment/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(response)});const vd=await vr.json();
-      if(vd.ok){window.location.href='/order/view/'+vd.orderId}else{throw new Error(vd.message||'Payment verification failed')}
-   },modal:{ondismiss:function(){btn.disabled=false}}};
-   const rp=new Razorpay(options);rp.on('payment.failed',function(){toast('Payment failed. Please try again.');btn.disabled=false});rp.open();
- }catch(e){document.getElementById('paymentOverlay').style.display='none';btn.disabled=false;toast(e.message||'Payment setup failed')}
-}
+async function changeQty(id,delta){const input=document.getElementById('qty-'+id);const next=Math.max(1,Number(input.value)+delta);try{const r=await fetch('/cart/update/'+id,{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({qty:next})});const d=await r.json();if(!d.ok)return toast(d.message||'Unable to update cart');input.value=next;document.getElementById('total-'+id).textContent=Number(d.itemTotal).toLocaleString('en-IN');document.getElementById('grand-total').textContent=money(d.grandTotal);document.getElementById('grand-total-2').textContent=money(d.grandTotal);document.querySelectorAll('.cart-count').forEach(x=>x.textContent=d.cartCount)}catch(e){toast('Network error. Please try again.')}}
+async function removeItem(id){if(!confirm('Remove this item from your cart?'))return;try{const r=await fetch('/cart/remove/'+id,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','Accept':'application/json'}});const d=await r.json();if(!d.ok)throw new Error(d.message);document.querySelector('.cart-item[data-id="'+id+'"]').remove();document.querySelectorAll('.cart-count').forEach(x=>x.textContent=d.cartCount);location.reload()}catch(e){toast(e.message||'Unable to remove item')}}
+async function startCheckout(){const btn=document.getElementById('checkoutBtn');if(!btn)return;btn.disabled=true;document.getElementById('paymentOverlay').style.display='flex';try{const r=await fetch('/payment/create-order',{method:'POST',headers:{'Content-Type':'application/json'}});const d=await r.json();if(!d.ok)throw new Error(d.message||'Unable to create payment');if(!window.Razorpay)await loadRazorpay();document.getElementById('paymentOverlay').style.display='none';const options={key:d.key,amount:d.order.amount,currency:d.order.currency,name:'IV Store',description:'Secure order payment',order_id:d.order.id,prefill:{name:d.user?.name||'',email:d.user?.email||''},theme:{color:'#101828'},handler:async response=>{document.getElementById('paymentOverlay').style.display='flex';try{const vr=await fetch('/payment/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(response)});const vd=await vr.json();if(!vd.ok)throw new Error(vd.message||'Payment verification failed');window.location.href='/order/view/'+vd.orderId}catch(err){document.getElementById('paymentOverlay').style.display='none';btn.disabled=false;toast(err.message)}},modal:{ondismiss:()=>{btn.disabled=false}}};const rp=new Razorpay(options);rp.on('payment.failed',()=>{document.getElementById('paymentOverlay').style.display='none';btn.disabled=false;toast('Payment failed. Please try again.')});rp.open()}catch(e){document.getElementById('paymentOverlay').style.display='none';btn.disabled=false;toast(e.message||'Payment setup failed')}}
 function loadRazorpay(){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://checkout.razorpay.com/v1/checkout.js';s.onload=resolve;s.onerror=()=>reject(new Error('Unable to load Razorpay checkout'));document.head.appendChild(s)})}
 </script>
 </body></html>

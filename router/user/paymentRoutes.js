@@ -42,21 +42,38 @@ async function getCart(req) {
     const db = getDB();
     const user = await db.collection("users").findOne({ _id: new ObjectId(req.session.userID) });
     if (!user) throw new Error("User Not Found");
-    const cart = Array.isArray(user.cartItems) ? user.cartItems : [];
-    if (!cart.length) throw new Error("Your cart is empty");
     if (!user.address?.address) throw new Error("Please add your delivery address first");
-    for (const item of cart) {
+
+    const sourceCart = Array.isArray(user.cartItems) ? user.cartItems : [];
+    if (!sourceCart.length) throw new Error("Your cart is empty");
+
+    const cart = [];
+    for (const item of sourceCart) {
+        if (!ObjectId.isValid(item.productID)) throw new Error("A cart item has an invalid product ID");
         const product = await db.collection("product").findOne({ _id: new ObjectId(item.productID) });
-        if (!product) throw new Error(`${item.name} is no longer available`);
-        if (Number(product.stock) < Number(item.qty)) throw new Error(`${product.name} has only ${product.stock} item(s) left`);
+        if (!product) throw new Error(`${item.name || "A product"} is no longer available`);
+        const qty = Math.max(1, Number(item.qty) || 1);
+        const stock = Math.max(0, Number(product.stock) || 0);
+        if (stock < qty) throw new Error(`${product.name} has only ${stock} item(s) left`);
+        const price = Number(product.price) || 0;
+        const category = product.categoryId ? await db.collection("category").findOne({ _id: product.categoryId }) : null;
+        cart.push({
+            productID: product._id,
+            name: product.name,
+            images: Array.isArray(product.images) && product.images[0] ? product.images[0] : "/images/whiteimg.jpg",
+            price,
+            qty,
+            total: price * qty,
+            category: category?.name || ""
+        });
     }
-    const total = cart.reduce((sum, item) => sum + Number(item.total || 0), 0);
+    const total = cart.reduce((sum, item) => sum + item.total, 0);
     return { db, user, cart, total };
 }
 
 router.post("/create-order", requireUser, async (req, res) => {
     try {
-        const { total } = await getCart(req);
+        const { total, user } = await getCart(req);
         if (!Number.isFinite(total) || total <= 0) return res.status(400).json({ ok: false, message: "Invalid cart total" });
         const order = await razorpayRequest("/v1/orders", "POST", {
             amount: Math.round(total * 100),
@@ -64,7 +81,7 @@ router.post("/create-order", requireUser, async (req, res) => {
             receipt: `iv_${Date.now()}_${req.session.userID.toString().slice(-6)}`,
             notes: { userID: req.session.userID.toString() }
         });
-        res.json({ ok: true, key: process.env.RAZORPAY_KEY_ID, order });
+        res.json({ ok: true, key: process.env.RAZORPAY_KEY_ID, order, user: { name: user.name, email: user.email } });
     } catch (error) {
         console.error("Razorpay Create Order Error:", error);
         res.status(400).json({ ok: false, message: error.message });
@@ -93,31 +110,46 @@ router.post("/verify", requireUser, async (req, res) => {
             return res.json({ ok: true, orderId: existingPayment._id.toString() });
         }
 
-        const freshProducts = [];
-        for (const item of cart) {
-            const product = await db.collection("product").findOne({ _id: new ObjectId(item.productID) });
-            if (!product || Number(product.stock) < Number(item.qty)) throw new Error(`${item.name} is out of stock`);
-            const category = product.categoryId ? await db.collection("category").findOne({ _id: product.categoryId }) : null;
-            freshProducts.push({ ...item, category: category?.name || "" });
+        const reserved = [];
+        try {
+            for (const item of cart) {
+                const stockResult = await db.collection("product").updateOne(
+                    { _id: new ObjectId(item.productID), stock: { $gte: Number(item.qty) } },
+                    { $inc: { stock: -Number(item.qty) } }
+                );
+                if (!stockResult.modifiedCount) throw new Error(`${item.name} is out of stock`);
+                reserved.push(item);
+            }
+        } catch (stockError) {
+            for (const item of reserved) {
+                await db.collection("product").updateOne({ _id: new ObjectId(item.productID) }, { $inc: { stock: Number(item.qty) } });
+            }
+            throw stockError;
         }
 
-        const result = await db.collection("orders").insertOne({
-            userID: req.session.userID,
-            userName: user.name,
-            userEmail: user.email,
-            shippingAddress: user.address,
-            products: freshProducts,
-            total,
-            status: "Paid",
-            paymentMethod: "Razorpay",
-            paymentId: razorpay_payment_id,
-            razorpayOrderId: razorpay_order_id,
-            createdAt: new Date()
-        });
-
-        for (const item of freshProducts) {
-            await db.collection("product").updateOne({ _id: new ObjectId(item.productID) }, { $inc: { stock: -Number(item.qty) } });
+        let result;
+        try {
+            result = await db.collection("orders").insertOne({
+                userID: req.session.userID,
+                userName: user.name,
+                userEmail: user.email,
+                shippingAddress: user.address,
+                products: cart,
+                total,
+                status: "Paid",
+                paymentMethod: "Razorpay",
+                paymentId: razorpay_payment_id,
+                razorpayOrderId: razorpay_order_id,
+                createdAt: new Date()
+            });
+        } catch (insertError) {
+            // Payment is already verified; restore reserved stock if order persistence fails.
+            for (const item of cart) {
+                await db.collection("product").updateOne({ _id: new ObjectId(item.productID) }, { $inc: { stock: Number(item.qty) } });
+            }
+            throw insertError;
         }
+
         await db.collection("users").updateOne({ _id: new ObjectId(req.session.userID) }, { $set: { cartItems: [] } });
         req.session.cartCount = 0;
         res.json({ ok: true, orderId: result.insertedId.toString() });

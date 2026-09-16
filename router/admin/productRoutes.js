@@ -155,11 +155,23 @@ router.get("/category/:id", async (req, res) => {
             .findOne({
                 _id: new ObjectId(id)
             });
+        // Support legacy string categoryId values as well as ObjectId values.
+        const categoryName = String(category?.name || "").trim();
+        const categoryFilter = {
+            $or: [
+                { categoryId: new ObjectId(id) },
+                { categoryId: id }
+            ]
+        };
+        if (categoryName) {
+            categoryFilter.$or.push({
+                categoryId: { $regex: `^${categoryName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" }
+            });
+        }
+
         const product = await db
             .collection("product")
-            .find({
-                categoryId: new ObjectId(id)
-            })
+            .find(categoryFilter)
             .toArray();
         res.render("admin/product/category_product", {
             category,

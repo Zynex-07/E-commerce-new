@@ -3,304 +3,82 @@ const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
 
-router.get("/place", async (req, res) => {
+function userId(req) {
+    return ObjectId.isValid(req.session.userID) ? new ObjectId(req.session.userID) : null;
+}
+
+function requireUser(req, res, next) {
+    if (!userId(req)) return res.redirect("/auth/login");
+    next();
+}
+
+// Old direct order endpoint is kept for compatibility, but payment must happen
+// through the cart checkout flow so users cannot create unpaid orders.
+router.get("/place", requireUser, (req, res) => res.redirect("/cart"));
+
+router.get("/", requireUser, async (req, res) => {
     try {
-        if (!req.session.userID) {
-            return res.redirect("/");
-        }
-        const db = getDB();
-        const user = await db.collection("users").findOne({
-            _id: new ObjectId(req.session.userID)
-        });
-        const cart = user.cartItems || [];
-        console.log(cart);
-        for (const item of cart) {
-            const product = await db.collection("product").findOne({
-                _id: new ObjectId(item.productID)
-            });
-            if (!product) {
-                return res.send("Product not Found");
-            }
-            if (product.stock < item.qty) {
-                return res.send(
-                    `${product.name} has only ${product.stock} Items left in stock`
-                );
-            }
-        }
-        if (cart.length === 0) {
-            return res.redirect("/cart");
-        }
-        if (!user.address || !user.address.address) {
-            return res.redirect("/address");
-        }
-        for (const item of cart) {
-            const product = await db.collection("product").findOne({
-                _id: new ObjectId(item.productID)
-            });
-
-            console.log("PRODUCT =", product);
-
-            if (product) {
-                const category = await db.collection("category").findOne({
-                    _id: product.categoryId
-                });
-                console.log("CATRGORY = ", category);
-
-                item.category = category ? category.name : "";
-
-                console.log("ITEM AFTER CATREGORY = ", item);
-            }
-        }
-        let total = 0;
-        cart.forEach(item => {
-            total += item.total;
-        });
-        await db.collection("orders").insertOne({
-            userID: req.session.userID,
-            userName: user.name,
-            userEmail: user.email,
-            shippingAddress: user.address,
-            products: cart,
-            total,
-            status: "Pending",
-            createdAt: new Date()
-        });
-        for (const item of cart) {
-            await db.collection("product").updateOne(
-                {
-                    _id: new ObjectId(item.productID)
-                },
-                {
-                    $inc: {
-                        stock: -item.qty
-                    }
-                }
-            );
-        }
-        await db.collection("users").updateOne(
-            {
-                _id: new ObjectId(req.session.userID)
-            },
-            {
-                $set: {
-                    cartItems: []
-                }
-            }
-        );
-        res.render("user/product/order");
-    } catch (error) {
-        console.log(error);
-        res.send("Place Order Error");
-    }
-});
-
-router.get("/", async (req, res) => {
-    try {
-        if (!req.session.userID) {
-            return res.redirect("/auth/login");
-        }
         const db = getDB();
         const orders = await db.collection("orders")
-            .find({
-                userID: req.session.userID
-            })
-            .sort({
-                createdAt: -1
-            })
+            .find({ userID: req.session.userID })
+            .sort({ createdAt: -1 })
             .toArray();
-        res.render("user/order/index", {
-            orders
-        });
+        res.render("user/order/index", { orders });
     } catch (error) {
-        console.log(error);
-        res.send("Order Fetch Error");
+        console.error("Order Fetch Error:", error);
+        res.status(500).send("Unable to load orders");
     }
 });
 
-router.get("/view/:id", async (req, res) => {
+router.get("/view/:id", requireUser, async (req, res) => {
     try {
-        if (!req.session.userID) {
-            return res.redirect("/auth/login");
-        }
-        const db = getDB();
         if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Order ID");
-        const order = await db.collection("orders").findOne({
+        const order = await getDB().collection("orders").findOne({
             _id: new ObjectId(req.params.id),
             userID: req.session.userID
         });
-        if (!order) {
-            return res.send("Order Not Found");
-        }
-        res.render("user/view-order", {
-            order
-        });
+        if (!order) return res.status(404).send("Order Not Found");
+        res.render("user/view-order", { order });
     } catch (error) {
-        console.log(error);
-        res.send("View Order Error");
+        console.error("View Order Error:", error);
+        res.status(500).send("Unable to load order");
     }
 });
 
-router.get("/cancel/:id", async (req, res) => {
+async function cancelOrder(req, res) {
     try {
-        if (!req.session.userID) {
-            return res.redirect("/auth/login");
-        }
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Order ID");
         const db = getDB();
-        const order = await db.collection("orders").findOne({
-            _id: new ObjectId(req.params.id),
-            userID: req.session.userID
-        });
-        if (!order) {
-            return res.send("Order Not Found");
-        }
-        if (["Cancelled", "Delivered"].includes(order.status)) {
-            return res.redirect("/order");
-        }
-        console.log("Order Products:", order.products);
-        for (const item of order.products) {
-            const productBefore = await db.collection("product").findOne({
-                _id: item.productID
-            });
-            console.log(
-                "Before Stock:",
-                productBefore?.name,
-                productBefore?.stock
-            );
-            const result = await db.collection("product").updateOne(
-                {
-                    _id: item.productID
-                },
-                {
-                    $inc: {
-                        stock: Number(item.qty)
-                    }
-                }
-            );
-            console.log("Update Result:", result);
-            const productAfter = await db.collection("product").findOne({
-                _id: item.productID
-            });
-            console.log(
-                "After Stock:",
-                productAfter?.name,
-                productAfter?.stock
-            );
-        }
-        await db.collection("orders").updateOne(
-            {
-                _id: new ObjectId(req.params.id)
-            },
-            {
-                $set: {
-                    status: "Cancelled"
-                }
-            }
+        const orderId = new ObjectId(req.params.id);
+
+        // Only one request can transition an active order to Cancelled.
+        const result = await db.collection("orders").updateOne(
+            { _id: orderId, userID: req.session.userID, status: { $nin: ["Cancelled", "Delivered"] } },
+            { $set: { status: "Cancelled", cancelledAt: new Date() } }
         );
-        console.log("Order Cancelled Successfully");
+        if (!result.matchedCount) return res.redirect("/order");
+
+        const order = await db.collection("orders").findOne({ _id: orderId, userID: req.session.userID });
+        for (const item of (order?.products || [])) {
+            if (!ObjectId.isValid(item.productID)) continue;
+            await db.collection("product").updateOne(
+                { _id: new ObjectId(item.productID) },
+                { $inc: { stock: Math.max(0, Number(item.qty) || 0) } }
+            );
+        }
         res.redirect("/order");
     } catch (error) {
-        console.log("Cancel Order Error:", error);
-        res.send("Cancel Order Error");
+        console.error("Cancel Order Error:", error);
+        res.status(500).send("Unable to cancel order");
     }
-});
+}
 
-router.get("/increase/:orderId/:productId", async (req, res) => {
-    try {
-        const db = getDB();
-        if (!ObjectId.isValid(req.params.orderId) || !ObjectId.isValid(req.params.productId)) return res.status(400).send("Invalid ID");
-        const order = await db.collection("orders").findOne({
-            _id: new ObjectId(req.params.orderId),
-            userID: req.session.userID
-        });
-        if (!order) {
-            return res.send("Order Not Found");
-        }
-        if (order.status !== "Pending") {
-            return res.redirect("/order/view/" + req.params.orderId);
-        }
-        for (const product of order.products) {
+router.post("/cancel/:id", requireUser, cancelOrder);
+router.get("/cancel/:id", requireUser, cancelOrder); // compatibility with older links
 
-            if (product.productID.toString() === req.params.productId) {
-
-                const dbProduct = await db.collection("product").findOne({
-                    _id: new ObjectId(product.productID)
-                });
-
-                if (!dbProduct) {
-                    return res.send("Product Not Found");
-                }
-
-                if (product.qty >= dbProduct.stock) {
-                    return res.send("Out Of Stock");
-                }
-
-                product.qty += 1;
-                product.total = product.qty * product.price;
-            }
-        }
-        const total = order.products.reduce((sum, item) => {
-            return sum + item.total;
-        }, 0);
-        await db.collection("orders").updateOne(
-            {
-                _id: new ObjectId(req.params.orderId)
-            },
-            {
-                $set: {
-                    products: order.products,
-                    total
-                }
-            }
-        );
-        res.redirect("/order/view/" + req.params.orderId);
-    } catch (error) {
-        console.log(error);
-        res.send("Increase Quantity Error");
-    }
-});
-
-router.get("/decrease/:orderId/:productId", async (req, res) => {
-    try {
-        const db = getDB();
-        if (!ObjectId.isValid(req.params.orderId) || !ObjectId.isValid(req.params.productId)) return res.status(400).send("Invalid ID");
-        const order = await db.collection("orders").findOne({
-            _id: new ObjectId(req.params.orderId),
-            userID: req.session.userID
-        });
-        if (!order) {
-            return res.send("Order Not Found");
-        }
-        if (order.status !== "Pending") {
-            return res.redirect("/order/view/" + req.params.orderId);
-        }
-        order.products.forEach(product => {
-            if (
-                product.productID.toString() === req.params.productId &&
-                product.qty > 1
-            ) {
-                product.qty -= 1;
-                product.total = product.qty * product.price;
-            }
-        });
-        const total = order.products.reduce((sum, item) => {
-            return sum + item.total;
-        }, 0);
-        await db.collection("orders").updateOne(
-            {
-                _id: new ObjectId(req.params.orderId)
-            },
-            {
-                $set: {
-                    products: order.products,
-                    total
-                }
-            }
-        );
-        res.redirect("/order/view/" + req.params.orderId);
-    } catch (error) {
-        console.log(error);
-        res.send("Decrease Quantity Error");
-    }
-});
+// Quantity changes are intentionally not allowed after an order is created.
+// Users should change quantities in the cart before payment.
+router.get("/increase/:orderId/:productId", requireUser, (req, res) => res.redirect(`/order/view/${req.params.orderId}`));
+router.get("/decrease/:orderId/:productId", requireUser, (req, res) => res.redirect(`/order/view/${req.params.orderId}`));
 
 module.exports = router;
