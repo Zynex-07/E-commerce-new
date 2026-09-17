@@ -1,4 +1,4 @@
-# IV Store - E-commerce
+# AAK Clothing - E-commerce
 
 Production-ready Express + MongoDB ecommerce project with:
 - Admin login/dashboard

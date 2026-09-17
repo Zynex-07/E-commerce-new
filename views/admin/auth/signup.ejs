@@ -164,6 +164,10 @@
                 padding: 12px;
             }
         }
+
+        .admin-auth-logo { text-align:center; margin-bottom:15px; }
+        .admin-auth-logo img { width:min(100%, 260px); height:auto; max-height:120px; object-fit:contain; background:#000; border-radius:8px; }
+        @media (max-width:480px) { .admin-auth-logo img { width:220px; } }
     </style>
 </head>
 
@@ -171,6 +175,7 @@
 
     <div class="signup-container">
 
+        <div class="admin-auth-logo"><img src="/images/logo1.png" alt="AAK Clothing Logo"></div>
         <div class="logo">
             <h1>Admin Signup</h1>
             <p>Create your administrator account</p>

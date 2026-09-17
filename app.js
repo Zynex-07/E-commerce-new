@@ -5,7 +5,8 @@ require("dotenv").config();
 
 const session = require("express-session");
 const { MongoStore } = require("connect-mongo");
-const { connectDB } = require("./config/db");
+const { connectDB, getDB } = require("./config/db");
+const { ObjectId } = require("mongodb");
 const { requireAdmin } = require("./middleware/adminAuth");
 
 // Admin
@@ -100,9 +101,46 @@ app.get("/test", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
+// One-time data repair for products created under the old MEN category ID.
+// The category collection now contains the current MEN category, while some
+// existing products still reference the deleted/old MEN category ObjectId.
+async function migrateLegacyMenCategory() {
+    const db = getDB();
+    const menCategory = await db.collection("category").findOne({
+        name: { $regex: /^mens?$/i }
+    });
+
+    if (!menCategory) {
+        console.log("ℹ️ MEN category not found; skipping category migration.");
+        return;
+    }
+
+    const legacyMenId = "6a0ef330d01ee0c10579a3dd";
+    const currentMenId = menCategory._id;
+
+    if (String(currentMenId) === legacyMenId) {
+        return;
+    }
+
+    const result = await db.collection("product").updateMany(
+        {
+            $or: [
+                { categoryId: new ObjectId(legacyMenId) },
+                { categoryId: legacyMenId }
+            ]
+        },
+        { $set: { categoryId: currentMenId } }
+    );
+
+    if (result.modifiedCount > 0) {
+        console.log(`✅ MEN category repaired: ${result.modifiedCount} product(s) updated.`);
+    }
+}
+
 (async () => {
     try {
         await connectDB();
+        await migrateLegacyMenCategory();
         app.listen(PORT, () => {
             console.log(`Server Running : http://localhost:${PORT}/admin/login`);
         });
