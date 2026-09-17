@@ -75,12 +75,19 @@ router.post("/create-order", requireUser, async (req, res) => {
     try {
         const { total, user } = await getCart(req);
         if (!Number.isFinite(total) || total <= 0) return res.status(400).json({ ok: false, message: "Invalid cart total" });
+        const amountPaise = Math.round(total * 100);
         const order = await razorpayRequest("/v1/orders", "POST", {
-            amount: Math.round(total * 100),
+            amount: amountPaise,
             currency: "INR",
             receipt: `iv_${Date.now()}_${req.session.userID.toString().slice(-6)}`,
             notes: { userID: req.session.userID.toString() }
         });
+        req.session.razorpayOrder = {
+            id: order.id,
+            amount: amountPaise,
+            createdAt: Date.now()
+        };
+        await new Promise((resolve, reject) => req.session.save(err => err ? reject(err) : resolve()));
         res.json({ ok: true, key: process.env.RAZORPAY_KEY_ID, order, user: { name: user.name, email: user.email } });
     } catch (error) {
         console.error("Razorpay Create Order Error:", error);
@@ -93,6 +100,14 @@ router.post("/verify", requireUser, async (req, res) => {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) return res.status(400).json({ ok: false, message: "Incomplete payment response" });
         if (!process.env.RAZORPAY_KEY_SECRET) return res.status(500).json({ ok: false, message: "Razorpay is not configured" });
+        const pendingPayment = req.session.razorpayOrder;
+        if (!pendingPayment || pendingPayment.id !== String(razorpay_order_id)) {
+            return res.status(400).json({ ok: false, message: "Invalid or expired payment order" });
+        }
+        if (Date.now() - Number(pendingPayment.createdAt || 0) > 30 * 60 * 1000) {
+            delete req.session.razorpayOrder;
+            return res.status(400).json({ ok: false, message: "Payment session expired. Please try again." });
+        }
         const expected = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
             .update(`${razorpay_order_id}|${razorpay_payment_id}`)
             .digest("hex");
@@ -103,6 +118,10 @@ router.post("/verify", requireUser, async (req, res) => {
         }
 
         const { db, user, cart, total } = await getCart(req);
+        const expectedAmount = Math.round(total * 100);
+        if (Number(pendingPayment.amount) !== expectedAmount) {
+            return res.status(400).json({ ok: false, message: "Cart changed during payment. Please create a new payment order." });
+        }
 
         // Idempotency: a retry from the browser must not create a second order.
         const existingPayment = await db.collection("orders").findOne({ paymentId: razorpay_payment_id });
@@ -152,6 +171,8 @@ router.post("/verify", requireUser, async (req, res) => {
 
         await db.collection("users").updateOne({ _id: new ObjectId(req.session.userID) }, { $set: { cartItems: [] } });
         req.session.cartCount = 0;
+        delete req.session.razorpayOrder;
+        await new Promise((resolve, reject) => req.session.save(err => err ? reject(err) : resolve()));
         res.json({ ok: true, orderId: result.insertedId.toString() });
     } catch (error) {
         console.error("Razorpay Verify/Place Error:", error);

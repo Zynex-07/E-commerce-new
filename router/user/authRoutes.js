@@ -2,9 +2,35 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
+const crypto = require("crypto");
 
 function safeText(value) {
     return String(value || "").trim();
+}
+
+function hashPassword(password) {
+    const salt = crypto.randomBytes(16).toString("hex");
+    const derivedKey = crypto.scryptSync(password, salt, 64).toString("hex");
+    return `scrypt$${salt}$${derivedKey}`;
+}
+
+function verifyPassword(password, storedPassword) {
+    const stored = String(storedPassword || "");
+    if (!stored.startsWith("scrypt$")) {
+        // Backward compatibility for existing users created before hashing.
+        return stored === password;
+    }
+
+    const parts = stored.split("$");
+    if (parts.length !== 3) return false;
+    const [, salt, expectedHex] = parts;
+    try {
+        const actual = crypto.scryptSync(password, salt, 64);
+        const expected = Buffer.from(expectedHex, "hex");
+        return expected.length === actual.length && crypto.timingSafeEqual(actual, expected);
+    } catch {
+        return false;
+    }
 }
 
 router.get("/signup", (req, res) => {
@@ -33,7 +59,7 @@ router.post("/signup", async (req, res) => {
         await db.collection("users").insertOne({
             name,
             email,
-            password,
+            password: hashPassword(password),
             cartItems: [],
             wishlist: [],
             createdAt: new Date()
@@ -60,7 +86,15 @@ router.post("/login", async (req, res) => {
 
         const user = await db.collection("users").findOne({ email });
         if (!user) return res.status(401).send("Invalid Email or Password");
-        if (user.password !== password) return res.status(401).send("Invalid Email or Password");
+        if (!verifyPassword(password, user.password)) return res.status(401).send("Invalid Email or Password");
+
+        // Upgrade legacy plaintext passwords to a secure hash after a successful login.
+        if (!String(user.password || "").startsWith("scrypt$")) {
+            await db.collection("users").updateOne(
+                { _id: user._id },
+                { $set: { password: hashPassword(password) } }
+            );
+        }
 
         req.session.regenerate(async (err) => {
             if (err) {
