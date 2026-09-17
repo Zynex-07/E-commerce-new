@@ -105,6 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 900) closeMenu();
+    });
+
     const currentPath = window.location.pathname;
     sidebar?.querySelectorAll("a").forEach(link => {
         if (link.getAttribute("href") !== "/admin/logout" &&
