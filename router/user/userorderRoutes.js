@@ -23,7 +23,29 @@ router.get("/", requireUser, async (req, res) => {
             .find({ userID: req.session.userID })
             .sort({ createdAt: -1 })
             .toArray();
-        res.render("user/order/index", { orders });
+
+        // Build a quick lookup so the Orders page can show a Write Review button
+        // only for delivered products that have not already been reviewed.
+        const deliveredProductIds = new Set();
+        for (const order of orders) {
+            if (order.status !== "Delivered") continue;
+            for (const item of (Array.isArray(order.products) ? order.products : [])) {
+                if (ObjectId.isValid(item.productID)) deliveredProductIds.add(String(item.productID));
+            }
+        }
+        const reviewedProductIds = new Set();
+        if (deliveredProductIds.size) {
+            const reviews = await db.collection("reviews").find({
+                userID: new ObjectId(req.session.userID),
+                productID: { $in: Array.from(deliveredProductIds).map(id => new ObjectId(id)) }
+            }, { projection: { productID: 1 } }).toArray();
+            reviews.forEach(review => reviewedProductIds.add(String(review.productID)));
+        }
+
+        res.render("user/order/index", {
+            orders,
+            reviewedProductIds: Array.from(reviewedProductIds)
+        });
     } catch (error) {
         console.error("Order Fetch Error:", error);
         res.status(500).send("Unable to load orders");

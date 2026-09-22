@@ -50,7 +50,9 @@ router.post("/add", async (req, res) => {
             stock: Math.max(0, Number(stock) || 0),
             images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
             categoryId: new ObjectId(categoryId),
-            createdAt: new Date()
+            createdAt: new Date(),
+            // Automatically keep a newly added product in "New Stock" for 3 days.
+            newUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
         });
         res.redirect("/admin/product");
     } catch (error) {
