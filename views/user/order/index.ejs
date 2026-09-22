@@ -27,7 +27,7 @@
             <div class="review-links">
               <% items.forEach(item=>{ if(item.productID){ const reviewed = (reviewedProductIds || []).includes(String(item.productID)); %>
                 <div class="review-item"><span><%= item.name || 'Product' %></span>
-                  <% if(reviewed){ %><span class="review-btn done">✓ Reviewed</span><% } else { %><a class="review-btn" href="/product/<%= item.productID %>#customer-reviews">⭐ Write Review</a><% } %>
+                  <% if(reviewed){ %><span class="review-btn done">✓ Reviewed</span><% } else { %><a class="review-btn" href="/product/<%= item.productID %>/review">⭐ Write Review</a><% } %>
                 </div>
               <% } }) %>
             </div>

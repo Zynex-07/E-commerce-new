@@ -93,6 +93,24 @@ router.get("/:id", async (req, res) => {
     });
 });
 
+router.get("/:id/review", async (req, res) => {
+    try {
+        if (!req.session.userID) return res.redirect("/auth/login");
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Product ID");
+
+        const db = getDB();
+        const product = await db.collection("product").findOne({ _id: new ObjectId(req.params.id) });
+        if (!product) return res.status(404).send("Product Not Found");
+
+        // Keep the review entry point simple: open the product's review section.
+        // The POST endpoint performs the real purchase/delivery verification.
+        return res.redirect(`/product/${product._id}#customer-reviews`);
+    } catch (error) {
+        console.error("Review Page Error:", error);
+        return res.status(500).send("Unable to open review page");
+    }
+});
+
 router.post("/:id/review", async (req, res) => {
     try {
         if (!req.session.userID) return res.redirect("/auth/login");
