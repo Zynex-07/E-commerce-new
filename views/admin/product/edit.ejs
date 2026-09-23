@@ -106,6 +106,34 @@
             min-height: 120px;
         }
 
+        .best-seller-group {
+            padding: 14px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+        }
+
+        .checkbox-label {
+            display: flex !important;
+            align-items: center;
+            gap: 10px;
+            margin: 0 !important;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .field-help {
+            display: block;
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
         /* ==========================
            BUTTONS
         ========================== */
@@ -276,6 +304,15 @@
 
                             <input type="number" name="stock" class="form-control" value="<%= product.stock || 0 %>"
                                 placeholder="Enter Stock" min="0" required>
+                        </div>
+
+                        <!-- Best Seller -->
+                        <div class="form-group best-seller-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="bestSeller" <%= product.bestSeller === true ? "checked" : "" %>>
+                                <span>Mark as Best Seller</span>
+                            </label>
+                            <small class="field-help">Selected products will appear in the Best Sellers section on the home page.</small>
                         </div>
 
                         <!-- Category -->

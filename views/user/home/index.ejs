@@ -127,7 +127,7 @@
                     <div>
                         <div class="eyebrow">Most loved</div>
                         <h2>Best Sellers</h2>
-                        <p>Popular products based on completed customer orders.</p>
+                        <p>Products selected by our admin team.</p>
                     </div><a class="text-link" href="/product">Shop all →</a>
                 </div>
                 <div class="product-grid">
@@ -142,7 +142,7 @@
                                     <%= item.name %>
                                 </h3>
                                 <div class="rating">★★★★★ <span>
-                                        <%= item.soldQty ? item.soldQty+' sold' : 'Popular pick' %>
+                                        Admin selected
                                     </span></div>
                                 <div class="price-line"><span class="current-price">₹<%=
                                             Number(item.price).toLocaleString('en-IN') %></span></div>
@@ -152,7 +152,7 @@
                             </div>
                         </article>
                         <% }) } else { %>
-                            <div class="empty">Best sellers will appear after customers place orders.</div>
+                            <div class="empty">Best sellers will appear here when the admin selects products.</div>
                             <% } %>
                 </div>
             </div>
