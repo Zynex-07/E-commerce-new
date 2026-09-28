@@ -38,12 +38,12 @@ img {
 }
 
 .shell {
-    width: min(1180px, calc(100% - 32px));
+    width: min(1540px, calc(100% - 72px));
     margin: auto
 }
 
 .section {
-    padding: 72px 0
+    padding: 86px 0
 }
 
 .section-soft {
@@ -96,7 +96,7 @@ img {
 .top-strip {
     background: #0b1220;
     color: #d0d5dd;
-    font-size: 12px
+    font-size: 13px
 }
 
 .top-strip .shell {
@@ -117,24 +117,24 @@ img {
 }
 
 .nav-inner {
-    min-height: 76px;
+    min-height: 92px;
     display: flex;
     align-items: center;
-    gap: 28px
+    gap: 34px
 }
 
 .brand {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 21px;
+    gap: 12px;
+    font-size: 32px;
     font-weight: 800;
     white-space: nowrap
 }
 
 .brand img {
-    width: 42px;
-    height: 42px;
+    width: 66px;
+    height: 66px;
     object-fit: contain;
     border-radius: 10px
 }
@@ -146,8 +146,8 @@ img {
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 22px;
-    font-size: 14px;
+    gap: 32px;
+    font-size: 18px;
     font-weight: 600
 }
 
@@ -159,7 +159,7 @@ img {
     margin-left: auto;
     display: flex;
     align-items: center;
-    width: min(330px, 32vw);
+    width: min(430px, 32vw);
     background: var(--soft);
     border: 1px solid var(--line);
     border-radius: 999px;
@@ -170,7 +170,7 @@ img {
     border: 0;
     outline: 0;
     background: transparent;
-    padding: 11px 4px 11px 16px;
+    padding: 14px 6px 14px 18px;
     width: 100%;
     font: inherit
 }
@@ -178,9 +178,9 @@ img {
 .nav-search button {
     border: 0;
     background: transparent;
-    padding: 10px 14px;
+    padding: 11px 16px;
     cursor: pointer;
-    font-size: 16px
+    font-size: 20px
 }
 
 .nav-actions {
@@ -190,16 +190,16 @@ img {
 }
 
 .nav-pill {
-    height: 40px;
-    min-width: 40px;
-    padding: 0 12px;
+    height: 56px;
+    min-width: 56px;
+    padding: 0 15px;
     border: 1px solid var(--line);
     border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700
 }
 
@@ -207,18 +207,37 @@ img {
     border-color: #98a2b3
 }
 
-.cart-pill {
-    position: relative
+.cart-pill, .wishlist-pill {
+    position: relative;
+    font-size: 29px;
+    line-height: 1
 }
 
-.cart-count {
-    min-width: 18px;
-    height: 18px;
+.wishlist-count {
+    position: absolute;
+    top: -5px;
+    right: -2px;
+    min-width: 22px;
+    height: 22px;
     padding: 0 5px;
     border-radius: 999px;
     background: var(--accent);
     color: #fff;
-    font-size: 10px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800
+}
+
+.cart-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
     display: inline-flex;
     align-items: center;
     justify-content: center
@@ -237,20 +256,20 @@ img {
 
 /* hero */
 .hero-new {
-    padding: 54px 0 34px;
+    padding: 68px 0 44px;
     background: radial-gradient(circle at 80% 20%, #ffe6df 0, transparent 32%), linear-gradient(135deg, #f9fafb, #fff)
 }
 
 .hero-grid {
-    min-height: 520px;
+    min-height: 590px;
     display: grid;
     grid-template-columns: 1.05fr .95fr;
     align-items: center;
-    gap: 45px
+    gap: 64px
 }
 
 .hero-copy h1 {
-    font-size: 64px;
+    font-size: 76px;
     line-height: 1.02;
     letter-spacing: -.045em;
     margin: 14px 0 20px;
@@ -278,8 +297,8 @@ img {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 50px;
-    padding: 0 22px;
+    min-height: 54px;
+    padding: 0 24px;
     border-radius: 12px;
     font-weight: 800;
     font-size: 14px
@@ -301,7 +320,7 @@ img {
 
 .hero-visual {
     position: relative;
-    height: 500px;
+    height: 570px;
     border-radius: 30px;
     overflow: hidden;
     background: #eef2f6;
@@ -337,7 +356,7 @@ img {
     border: 1px solid var(--line);
     border-radius: 18px;
     background: #fff;
-    margin-top: 24px
+    margin-top: 30px
 }
 
 .trust-item {
@@ -442,7 +461,7 @@ img {
 }
 
 .product-media {
-    height: 245px;
+    height: 285px;
     background: #f5f6f7;
     position: relative;
     overflow: hidden
@@ -504,14 +523,14 @@ img {
 }
 
 .product-info {
-    padding: 16px;
+    padding: 19px;
     display: flex;
     flex-direction: column;
     flex: 1
 }
 
 .product-info h3 {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.45;
     margin: 0 0 7px;
     display: -webkit-box;
@@ -538,7 +557,7 @@ img {
 }
 
 .current-price {
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 800
 }
 
@@ -904,9 +923,69 @@ img {
     justify-content: space-between
 }
 
+@media(min-width:1401px) {
+    .shell {
+        width: min(1540px, calc(100% - 96px));
+    }
+
+    .nav-inner {
+        min-height: 96px;
+    }
+
+    .hero-grid {
+        min-height: 610px;
+    }
+
+    .hero-visual {
+        height: 590px;
+    }
+
+    .section-head h2 {
+        font-size: 38px;
+    }
+}
+
+@media(max-width:1250px) and (min-width:1001px) {
+    .shell {
+        width: min(1320px, calc(100% - 44px));
+    }
+
+    .nav-inner {
+        gap: 18px;
+    }
+
+    .brand {
+        font-size: 27px;
+    }
+
+    .brand img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .nav-menu {
+        gap: 18px;
+        font-size: 16px;
+    }
+
+    .nav-search {
+        width: min(330px, 28vw);
+    }
+
+    .nav-pill {
+        min-width: 50px;
+        height: 50px;
+    }
+}
+
 @media(max-width:1000px) {
     .nav-menu {
         display: none
+    }
+
+    .menu-toggle {
+        display: block;
+        margin-left: 0
     }
 
     .nav-search {
@@ -953,12 +1032,18 @@ img {
     }
 
     .nav-inner {
-        min-height: 66px;
+        min-height: 70px;
         gap: 10px
     }
 
-    .brand span {
-        display: none
+    .brand {
+        font-size: 19px;
+        gap: 8px
+    }
+
+    .brand img {
+        width: 46px;
+        height: 46px
     }
 
     .nav-search {
@@ -979,7 +1064,7 @@ img {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        top: 66px;
+        top: 70px;
         left: 0;
         right: 0;
         background: #fff;
@@ -1001,7 +1086,7 @@ img {
     }
 
     .hero-copy h1 {
-        font-size: 42px
+        font-size: 44px
     }
 
     .hero-visual {
@@ -1065,11 +1150,11 @@ img {
 
 @media(max-width:480px) {
     .shell {
-        width: min(100% - 22px, 1180px)
+        width: min(100% - 22px, 1540px)
     }
 
     .hero-copy h1 {
-        font-size: 36px
+        font-size: 38px
     }
 
     .hero-copy p {

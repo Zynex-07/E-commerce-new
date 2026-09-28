@@ -9,9 +9,25 @@ router.get("/", async (req, res) => {
         const product = await db
             .collection("product")
             .find()
+            .sort({ createdAt: -1 })
             .toArray();
+        const category = await db
+            .collection("category")
+            .find()
+            .sort({ name: 1 })
+            .toArray();
+        const ratingRows = await db.collection("reviews").aggregate([
+            { $match: { rating: { $gte: 1, $lte: 5 } } },
+            { $group: { _id: "$productID", average: { $avg: "$rating" }, count: { $sum: 1 } } }
+        ]).toArray();
+        const ratingMap = Object.fromEntries(ratingRows.map(row => [String(row._id), { average: Number(row.average || 0), count: Number(row.count || 0) }]));
+        product.forEach(item => {
+            item.ratingAverage = ratingMap[String(item._id)]?.average || 0;
+            item.ratingCount = ratingMap[String(item._id)]?.count || 0;
+        });
         res.render("admin/product/index", {
-            product
+            product,
+            category
         });
     } catch (error) {
         console.log(error);

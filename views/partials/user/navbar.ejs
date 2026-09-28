@@ -1,16 +1,16 @@
 <div class="top-strip"><div class="shell"><span>Free delivery on eligible orders</span><span>Secure shopping • Easy checkout • Customer support</span></div></div>
 <header class="store-nav">
   <div class="shell nav-inner">
-    <a class="brand" href="/"><img src="/images/logo.png" alt="AAK Clothing Logo"><span>AAK <b>CLOTHING</b></span></a>
+    <a class="brand" href="/" aria-label="AAK Clothing home"><img src="/images/logo.png" alt="AAK Clothing Logo"><span>AAK <b>CLOTHING</b></span></a>
     <nav class="nav-menu" id="storeMenu">
       <a href="/">Home</a><a href="/product">Shop</a><a href="/#categories">Categories</a><a href="/#new-arrivals">New Arrivals</a>
     </nav>
-    <form class="nav-search" action="/" method="GET"><input name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search products..."><button aria-label="Search">⌕</button></form>
+    <form class="nav-search" action="/" method="GET"><input name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search products..." aria-label="Search products"><button aria-label="Search">⌕</button></form>
     <div class="nav-actions">
-      <a class="nav-pill" href="/wishlist" title="Wishlist">♡</a>
-      <a class="nav-pill cart-pill" href="/cart" title="Cart">🛒 <span class="cart-count"><%= cartCount || 0 %></span></a>
+      <a class="nav-pill wishlist-pill" href="/wishlist" title="Wishlist" aria-label="Wishlist">♡<span class="wishlist-count">0</span></a>
+      <a class="nav-pill cart-pill" href="/cart" title="Cart" aria-label="Cart">🛒 <span class="cart-count"><%= cartCount || 0 %></span></a>
       <% if (typeof userID !== 'undefined' && userID) { %><a class="nav-pill account-pill" href="/order"><%= userName || 'Account' %></a><% } else { %><a class="nav-pill account-pill" href="/auth/login">Login</a><% } %>
     </div>
-    <button class="menu-toggle" type="button" onclick="document.getElementById('storeMenu').classList.toggle('open')">☰</button>
+    <button class="menu-toggle" type="button" aria-label="Open menu" onclick="document.getElementById('storeMenu').classList.toggle('open')">☰</button>
   </div>
 </header>
