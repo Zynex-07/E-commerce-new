@@ -20,7 +20,7 @@
         .panel-head h2 { font-size:18px; }
         .panel-head a { color:#2563eb; text-decoration:none; font-size:13px; font-weight:800; }
         .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-        table { width:100%; min-width:680px; border-collapse:collapse; }
+        table { width:100%; min-width:820px; border-collapse:collapse; }
         th, td { padding:14px 12px; text-align:left; border-bottom:1px solid #eef2f7; font-size:13px; }
         th { color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.05em; background:#f8fafc; }
         tbody tr:hover { background:#f8fafc; }
@@ -61,7 +61,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Phone</th>
                                 <th>Email</th>
                                 <th>Cart Items</th>
                                 <th>Joined</th>
@@ -70,7 +71,8 @@
                         <tbody>
                             <% users.forEach(user => { %>
                                 <tr>
-                                    <td class="user-name"><%= user.name || "—" %></td>
+                                    <td class="user-name"><%= user.username || user.name || "—" %></td>
+                                    <td class="email"><%= user.phone ? "+91 " + user.phone : "—" %></td>
                                     <td class="email"><%= user.email || "—" %></td>
                                     <td><span class="cart-count"><%= Array.isArray(user.cartItems) ? user.cartItems.reduce((sum, item) => sum + Number(item.qty || 0), 0) : 0 %></span></td>
                                     <td><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-IN") : "—" %></td>

@@ -7,35 +7,50 @@
     <link rel="stylesheet" href="/style/auth.css">
 </head>
 <body>
-    <main class="auth-shell">
-        <section class="auth-card">
-            <div class="auth-logo">
-                <img src="/images/logo.png" alt="AAK Clothing Logo">
+<main class="auth-shell">
+    <section class="auth-card">
+        <div class="auth-logo"><img src="/images/logo.png" alt="AAK Clothing Logo"></div>
+        <div class="auth-kicker">Welcome back</div>
+        <h1>Login</h1>
+        <p class="auth-subtitle">Login with your registered phone number.</p>
+
+        <% if (message) { %><div class="auth-alert success"><%= message %></div><% } %>
+        <% if (error) { %><div class="auth-alert error"><%= error %></div><% } %>
+
+        <form class="auth-form" action="/auth/login" method="POST">
+            <div class="field">
+                <label for="phone">Phone Number</label>
+                <input id="phone" type="tel" name="phone" inputmode="numeric"
+                       placeholder="Enter 10-digit phone number"
+                       autocomplete="tel" maxlength="14" required>
             </div>
-            <div class="auth-kicker">Welcome back</div>
-            <h1>Login</h1>
-            <p class="auth-subtitle">Sign in to continue shopping with AAK Clothing.</p>
 
-            <form class="auth-form" action="/auth/login" method="POST">
-                <div class="field">
-                    <label for="email">Email</label>
-                    <input id="email" type="email" name="email" placeholder="Enter your email" autocomplete="email" required>
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="password-wrap">
+                    <input id="password" type="password" name="password"
+                           placeholder="Enter your password"
+                           autocomplete="current-password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Show password">Show</button>
                 </div>
-
-                <div class="field">
-                    <label for="password">Password</label>
-                    <input id="password" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-                </div>
-
-                <button class="auth-button" type="submit">Login</button>
-            </form>
-
-            <div class="auth-link">
-                Don't have an account?
-                <a href="/auth/signup">Create an account</a>
             </div>
-            <div class="auth-footer">AAK Clothing • Style that fits your everyday.</div>
-        </section>
-    </main>
+
+            <button class="auth-button" type="submit">Login</button>
+        </form>
+
+        <div class="auth-link single"><a href="/auth/forgot-password">Forgot Password?</a></div>
+        <div class="auth-link">Don't have an account? <a href="/auth/signup">Create an account</a></div>
+        <div class="auth-footer">AAK Clothing • Style that fits your everyday.</div>
+    </section>
+</main>
+<script>
+function togglePassword(id, button) {
+    const input = document.getElementById(id);
+    const visible = input.type === "text";
+    input.type = visible ? "password" : "text";
+    button.textContent = visible ? "Show" : "Hide";
+    button.setAttribute("aria-label", visible ? "Show password" : "Hide password");
+}
+</script>
 </body>
 </html>

@@ -104,6 +104,23 @@ const PORT = process.env.PORT || 3000;
 // One-time data repair for products created under the old MEN category ID.
 // The category collection now contains the current MEN category, while some
 // existing products still reference the deleted/old MEN category ObjectId.
+async function ensureUserIndexes() {
+    const db = getDB();
+
+    // Sparse indexes keep old users without these new fields valid.
+    await db.collection("users").createIndex(
+        { phone: 1 },
+        { unique: true, sparse: true, name: "users_phone_unique" }
+    );
+
+    await db.collection("users").createIndex(
+        { usernameKey: 1 },
+        { unique: true, sparse: true, name: "users_username_unique" }
+    );
+
+    console.log("✅ User authentication indexes ready.");
+}
+
 async function migrateLegacyMenCategory() {
     const db = getDB();
     const menCategory = await db.collection("category").findOne({
@@ -141,6 +158,7 @@ async function migrateLegacyMenCategory() {
     try {
         await connectDB();
         await migrateLegacyMenCategory();
+        await ensureUserIndexes();
         app.listen(PORT, () => {
             console.log(`Server Running : http://localhost:${PORT}/admin/login`);
         });

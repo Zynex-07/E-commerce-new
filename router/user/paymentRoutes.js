@@ -88,7 +88,7 @@ router.post("/create-order", requireUser, async (req, res) => {
             createdAt: Date.now()
         };
         await new Promise((resolve, reject) => req.session.save(err => err ? reject(err) : resolve()));
-        res.json({ ok: true, key: process.env.RAZORPAY_KEY_ID, order, user: { name: user.name, email: user.email } });
+        res.json({ ok: true, key: process.env.RAZORPAY_KEY_ID, order, user: { name: user.username || user.name || "Customer", email: user.email || "" } });
     } catch (error) {
         console.error("Razorpay Create Order Error:", error);
         res.status(400).json({ ok: false, message: error.message });
@@ -150,8 +150,8 @@ router.post("/verify", requireUser, async (req, res) => {
         try {
             result = await db.collection("orders").insertOne({
                 userID: req.session.userID,
-                userName: user.name,
-                userEmail: user.email,
+                userName: user.username || user.name || "Customer",
+                userEmail: user.email || "",
                 shippingAddress: user.address,
                 products: cart,
                 total,
