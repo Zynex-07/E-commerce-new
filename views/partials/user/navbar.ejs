@@ -7,7 +7,7 @@
     </nav>
     <form class="nav-search" action="/" method="GET"><input name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search products..." aria-label="Search products"><button aria-label="Search">⌕</button></form>
     <div class="nav-actions">
-      <a class="nav-pill wishlist-pill" href="/wishlist" title="Wishlist" aria-label="Wishlist">♡<span class="wishlist-count">0</span></a>
+      <a class="nav-pill wishlist-pill" href="/wishlist" title="Wishlist" aria-label="Wishlist">♡<span class="wishlist-count"><%= wishlistCount || 0 %></span></a>
       <a class="nav-pill cart-pill" href="/cart" title="Cart" aria-label="Cart">🛒 <span class="cart-count"><%= cartCount || 0 %></span></a>
       <% if (typeof userID !== 'undefined' && userID) { %><a class="nav-pill account-pill" href="/order"><%= userName || 'Account' %></a><% } else { %><a class="nav-pill account-pill" href="/auth/login">Login</a><% } %>
     </div>

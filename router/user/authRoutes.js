@@ -18,8 +18,11 @@ function normalizePhone(value) {
     return /^\d{10}$/.test(phone) ? phone : null;
 }
 
-function phoneForSms(phone) {
-    return `+91${phone}`;
+function renderLogin(res, error = null, message = null) {
+    return res.status(error ? 400 : 200).render("auth/login", {
+        error,
+        message
+    });
 }
 
 function hashPassword(password) {
@@ -204,6 +207,9 @@ router.post("/login", async (req, res) => {
             req.session.userName = user.username || user.name || "Account";
             req.session.cartCount = Array.isArray(user.cartItems)
                 ? user.cartItems.reduce((sum, item) => sum + Number(item.qty || 0), 0)
+                : 0;
+            req.session.wishlistCount = Array.isArray(user.wishlist)
+                ? user.wishlist.length
                 : 0;
 
             req.session.save((saveErr) => {

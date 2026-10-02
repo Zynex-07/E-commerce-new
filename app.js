@@ -63,11 +63,30 @@ if (process.env.MONGO_URL) {
 
 app.use(session(sessionOptions));
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     res.locals.userID = req.session.userID;
     res.locals.userName = req.session.userName;
     res.locals.admin = req.session.admin || null;
     res.locals.cartCount = req.session.cartCount || 0;
+
+    // Always read the wishlist count from MongoDB so the navbar cannot
+    // become stale after adding/removing a wishlist item.
+    res.locals.wishlistCount = req.session.wishlistCount || 0;
+    if (req.session.userID) {
+        try {
+            const db = getDB();
+            const user = await db.collection("users").findOne(
+                { _id: new ObjectId(req.session.userID) },
+                { projection: { wishlist: 1 } }
+            );
+            const count = Array.isArray(user?.wishlist) ? user.wishlist.length : 0;
+            req.session.wishlistCount = count;
+            res.locals.wishlistCount = count;
+        } catch (error) {
+            console.error("Wishlist count error:", error);
+        }
+    }
+
     next();
 });
 

@@ -22,6 +22,16 @@ router.get("/add/:id", async (req, res) => {
                 }
             }
         );
+
+        // Keep the navbar wishlist counter in sync with MongoDB.
+        const user = await db.collection("users").findOne(
+            { _id: new ObjectId(req.session.userID) },
+            { projection: { wishlist: 1 } }
+        );
+        req.session.wishlistCount = Array.isArray(user?.wishlist)
+            ? user.wishlist.length
+            : 0;
+
         res.redirect("/product");
     } catch (error) {
         console.log(error);
@@ -74,6 +84,16 @@ router.get("/remove/:id", async (req, res) => {
                 }
             }
         );
+
+        // Recalculate after removal so the navbar count decreases immediately.
+        const user = await db.collection("users").findOne(
+            { _id: new ObjectId(req.session.userID) },
+            { projection: { wishlist: 1 } }
+        );
+        req.session.wishlistCount = Array.isArray(user?.wishlist)
+            ? user.wishlist.length
+            : 0;
+
         res.redirect("/wishlist");
     } catch (error) {
         console.log(error);
