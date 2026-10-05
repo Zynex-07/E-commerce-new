@@ -3,7 +3,6 @@ const router = express.Router();
 
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
-const { openDelimiter } = require("ejs");
 
 router.get("/", async (req, res) => {
     try {
@@ -105,10 +104,10 @@ router.get("/cancel/:id", async (req, res) => {
         if (!order) {
             return res.send("Order Not Found");
         }
-        if (order.status === "Cancelled") {
+        if (["Cancelled", "Delivered"].includes(order.status)) {
             return res.redirect("/admin/order");
         }
-        for (const item of order.products) {
+        for (const item of order.products || []) {
 
             await db.collection("product").updateOne(
                 {

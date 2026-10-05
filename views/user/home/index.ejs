@@ -1,406 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecommerce Home</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #edf2f7, #dbeafe);
-            min-height: 100vh;
-        }
-
-        span {
-            color: crimson;
-        }
-
-        .navbar {
-            width: 100%;
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo img {
-            width: 150px;
-            height: 60px;
-            object-fit: contain;
-        }
-
-        /* Toggle Button */
-        .menu-toggle {
-            display: none;
-            width: 45px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, .4);
-            border-radius: 6px;
-            background: transparent;
-            color: #fff;
-            font-size: 26px;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            line-height: 1;
-            transition: .3s;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, .1);
-        }
-
-        .menu-toggle:active {
-            transform: scale(.95);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 15px;
-            font-weight: 500;
-            transition: .3s;
-        }
-
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
-
-        .cart-btn {
-            background: linear-gradient(90deg, #10b981, #059669);
-            padding: 10px 18px;
-            border-radius: 8px;
-            color: white !important;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, .3);
-        }
-
-        .cart-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 18px rgba(16, 185, 129, .5);
-        }
-
-        .hero {
-            height: 350px;
-            background: linear-gradient(rgba(0, 0, 0, .6), rgba(0, 0, 0, .6)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero h1 {
-            color: white;
-            font-size: 60px;
-            padding: 20px 40px;
-            background: rgba(255, 255, 255, .1);
-            backdrop-filter: blur(5px);
-            border-radius: 12px;
-        }
-
-        .container {
-            width: 92%;
-            max-width: 1250px;
-            margin: 60px auto;
-        }
-
-        .title {
-            text-align: center;
-            font-size: 42px;
-            color: #0f172a;
-            margin-bottom: 40px;
-        }
-
-        /* --- DESKTOP PRODUCT GRID (NO CHANGES HERE) --- */
-        .product {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            align-items: stretch;
-        }
-
-        /* --- DESKTOP CARD STYLE (NO CHANGES HERE) --- */
-        .card {
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .card img {
-            width: 100%;
-            height: 260px;
-            object-fit: cover;
-        }
-
-        .content {
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .content h2 {
-            font-size: 22px;
-            color: #111827;
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-
-        .price {
-            color: #16a34a;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #f59e0b, #ef4444);
-            color: white;
-            text-decoration: none;
-            padding: 12px 18px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            text-align: center;
-            transition: .3s;
-            margin-top: auto;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-form input {
-            width: 220px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-form button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            background: #f59e0b;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .search-form button:hover {
-            background: #d97706;
-        }
-
-        footer {
-            margin-top: 70px;
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            color: white;
-            text-align: center;
-            padding: 25px;
-        }
-
-        /* --- TABLET RESPONSIVE QUERIES --- */
-        @media (max-width:992px) { 
-            .product {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 25px;
-            }
-
-            .navbar {
-                padding: 15px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: center;
-                gap: 18px;
-                margin-top: 20px;
-                padding-top: 20px;
-                border-top: 1px solid rgba(255, 255, 255, .15);
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .search-form {
-                width: 100%;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .search-form input,
-            .search-form button {
-                width: 100%;
-            }
-
-            .cart-btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .hero h1 {
-                font-size: 40px;
-                text-align: center;
-            }
-        }
-
-        /* --- ONLY MOBILE PHONE CHANGES --- */
-        @media (max-width:600px) { 
-            .container {
-                width: 96%;
-                margin: 30px auto;
-            }
-            
-            .logo img {
-                width: 100px;
-                height: 40px;
-            }
-
-            .hero {
-                height: 200px;
-            }
-
-            .hero h1 {
-                font-size: 22px;
-                padding: 10px 15px;
-            }
-
-            .title {
-                font-size: 24px;
-                margin-bottom: 25px;
-            }
-
-            .product {
-                grid-template-columns: repeat(3, 1fr); /* 3 Products per line ONLY on phone */
-                gap: 8px;
-            }
-
-            .card {
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            }
-
-            .card img {
-                height: 100px;
-            }
-
-            .content {
-                padding: 8px;
-            }
-
-            .content h2 {
-                font-size: 11px;
-                margin-bottom: 4px;
-                line-height: 1.2;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .price {
-                font-size: 13px;
-                margin-bottom: 8px;
-            }
-
-            .btn {
-                padding: 6px 2px;
-                font-size: 9px;
-                border-radius: 4px;
-                width: 100%;
-                display: block;
-                text-align: center;
-                letter-spacing: 0.5px;
-            }
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>AAK Clothing — Modern Shopping</title>
+    <link rel="stylesheet" href="/style/storefront.css">
 </head>
 
 <body>
-    <%- include("../../partials/user/navbar") %>
-        
-    <div class="hero">
-        <h1>
-            AA<span>K</span> Store
-        </h1>
-    </div>
-
-    <div class="container">
-        <h1 class="title">
-            Latest Products
-        </h1>
-        <div class="product">
-            <% product.forEach(function(item){ %>
-                <div class="card">
-                    <img src="<%= item.images && item.images.length ? item.images[0] : '/images/no-image.png' %>"
-                        alt="<%= item.name %>">
-                    <div class="content">
-                        <h2>
-                            <%= item.name %>
-                        </h2>
-                        <div class="price">
-                            ₹ <%= item.price %>
-                        </div>
-                        <a href="/product/<%= item._id %>" class="btn">
-                            View Product
-                        </a>
+    <%- include('../../partials/user/navbar') %>
+        <section class="hero-new">
+            <div class="shell">
+                <div class="hero-grid">
+                    <div class="hero-copy">
+                        <div class="eyebrow">Fresh picks • Better shopping</div>
+                        <h1>Style that fits your <span>everyday.</span></h1>
+                        <p>Discover our latest collection across fashion, essentials and more. A faster, cleaner
+                            shopping experience built around the products you love.</p>
+                        <div class="hero-actions"><a class="primary-btn" href="/product">Shop Collection →</a><a
+                                class="outline-btn" href="#categories">Browse Categories</a></div>
+                    </div>
+                    <div class="hero-visual"><img
+                            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop"
+                            alt="Modern shopping collection">
+                        <div class="hero-badge"><strong>New season</strong>Explore the latest arrivals</div>
                     </div>
                 </div>
-            <% }) %>
-        </div>
-    </div>
-        
-    <%- include("../../partials/user/footer") %>
+                <div class="trust-row">
+                    <div class="trust-item">
+                        <div class="trust-icon">🚚</div>
+                        <div><strong>Fast Delivery</strong><small>Quick order dispatch</small></div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">🔒</div>
+                        <div><strong>Secure Checkout</strong><small>Protected shopping</small></div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">↩</div>
+                        <div><strong>Easy Returns</strong><small>Simple return process</small></div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">💬</div>
+                        <div><strong>Customer Support</strong><small>Here when you need us</small></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="categories">
+            <div class="shell">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">Shop your way</div>
+                        <h2>Popular Categories</h2>
+                        <p>Jump straight into what you're looking for.</p>
+                    </div><a class="text-link" href="/product">View all products →</a>
+                </div>
+                <div class="category-grid">
+                    <% if(category && category.length){ category.slice(0,8).forEach(function(cat,index){ const
+                        match=product.find(p=>String(p.categoryId)===String(cat._id)); const
+                        fallback=['/images/women.jpg','/images/shoes_1.webp','/images/baby.1.png','/images/whiteimg.jpg'][index%4];
+                        %><a class="category-card" href="/product/category/<%= cat._id %>"><img
+                                src="<%= match && match.images && match.images[0] ? match.images[0] : fallback %>"
+                                alt="<%= cat.name %>">
+                            <div class="category-label"><strong>
+                                    <%= cat.name %>
+                                </strong><small>Explore collection →</small></div>
+                        </a>
+                        <% }) } %>
+                </div>
+            </div>
+        </section>
+        <section class="section section-soft" id="new-arrivals">
+            <div class="shell">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">
+                            <%= search ? 'Search results' : 'New stock' %>
+                        </div>
+                        <h2>
+                            <%= search ? 'Results for “' +search+'”' : 'New Stock' %>
+                        </h2>
+                        <p>
+                            <%= search ? product.length+' product(s) found'
+                                : 'Every newly added product stays here .' %>
+                        </p>
+                    </div><a class="text-link" href="/product">Shop all →</a>
+                </div>
+                <div class="product-grid">
+                    <% const homeProducts=search ? product : (newStock || []); %>
+                        <% if(homeProducts && homeProducts.length){ homeProducts.slice(0,8).forEach(function(item){ %>
+                            <article class="product-card">
+                                <div class="product-media"><img
+                                        src="<%= item.images && item.images[0] ? item.images[0] : '/images/whiteimg.jpg' %>"
+                                        alt="<%= item.name %>" loading="lazy"><span
+                                        class="stock-tag <%= Number(item.stock)<=0?'out':'' %>">
+                                        <%= Number(item.stock)>0?'In stock':'Sold out' %>
+                                    </span>
+                                    <% if(item.newUntil && new Date(item.newUntil)> new Date()){ %><span
+                                            class="new-stock-tag">NEW</span>
+                                        <% } %><a class="wish" href="/wishlist/add/<%= item._id %>"
+                                                title="Add to wishlist">♡</a>
+                                </div>
+                                <div class="product-info">
+                                    <h3>
+                                        <%= item.name %>
+                                    </h3>
+                                    <div class="rating">★★★★★ <span>(New)</span></div>
+                                    <div class="price-line"><span class="current-price">₹<%=
+                                                Number(item.price).toLocaleString('en-IN') %></span></div>
+                                    <div class="card-actions"><a class="card-btn" href="/product/<%= item._id %>">View
+                                            Product</a><button class="cart-icon-btn" type="button"
+                                            onclick="addToCart(\'<%= item._id %>\',1)" title="Add to cart">🛒</button>
+                                    </div>
+                                </div>
+                            </article>
+                            <% }) } else { %>
+                                <div class="empty">No products found. Try another search.</div>
+                                <% } %>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="best-sellers">
+            <div class="shell">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">Most loved</div>
+                        <h2>Best Sellers</h2>
+                        <p>Products selected by our admin team.</p>
+                    </div><a class="text-link" href="/product">Shop all →</a>
+                </div>
+                <div class="product-grid">
+                    <% if(bestSellers && bestSellers.length){ bestSellers.slice(0,8).forEach(function(item){ %>
+                        <article class="product-card">
+                            <div class="product-media"><img
+                                    src="<%= item.images&&item.images[0]?item.images[0]:'/images/whiteimg.jpg' %>"
+                                    alt="<%= item.name %>" loading="lazy"><span class="best-seller-tag">BEST
+                                    SELLER</span><a class="wish" href="/wishlist/add/<%= item._id %>">♡</a></div>
+                            <div class="product-info">
+                                <h3>
+                                    <%= item.name %>
+                                </h3>
+                                <div class="rating">★★★★★ <span>
+                                        Admin selected
+                                    </span></div>
+                                <div class="price-line"><span class="current-price">₹<%=
+                                            Number(item.price).toLocaleString('en-IN') %></span></div>
+                                <div class="card-actions"><a class="card-btn" href="/product/<%= item._id %>">View
+                                        Product</a><button class="cart-icon-btn" type="button"
+                                        onclick="addToCart('<%= item._id %>',1)">🛒</button></div>
+                            </div>
+                        </article>
+                        <% }) } else { %>
+                            <div class="empty">Best sellers will appear here when the admin selects products.</div>
+                            <% } %>
+                </div>
+            </div>
+        </section>
+        <section class="section section-soft" id="customer-reviews">
+            <div class="shell">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">Customer feedback</div>
+                        <h2>Customer Ratings</h2>
+                        <p>Real ratings and reviews shared by AAK Clothing shoppers.</p>
+                    </div><a class="text-link" href="/product">Rate a product →</a>
+                </div>
+                <div class="review-grid">
+                    <% if(reviews && reviews.length){ reviews.slice(0,3).forEach(function(review){ %>
+                        <article class="review-card">
+                            <div class="review-stars">
+                                <%= '★' .repeat(Number(review.rating)) %>
+                                    <%= '☆' .repeat(5-Number(review.rating)) %>
+                            </div>
+                            <p>“<%= review.comment %>”</p><strong>
+                                <%= review.userName || 'Customer' %>
+                            </strong><small>Customer review</small>
+                        </article>
+                        <% }) } else { %>
+                            <div class="empty review-empty">No customer ratings yet. Be the first to share your
+                                experience from a product page.</div>
+                            <% } %>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="blog">
+            <div class="shell">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">AAK Journal</div>
+                        <h2>Style & Fashion Blog</h2>
+                        <p>Fresh outfit inspiration for casual, formal and traditional occasions.</p>
+                    </div><span class="text-link">Read & explore →</span>
+                </div>
+                <div class="blog-grid">
+                    <% blogs.forEach(function(blog){ %>
+                        <article class="blog-card"><img src="<%= blog.image %>" alt="<%= blog.title %>" loading="lazy">
+                            <div class="blog-content"><span>
+                                    <%= blog.tag %>
+                                </span>
+                                <h3>
+                                    <%= blog.title %>
+                                </h3>
+                                <p>
+                                    <%= blog.text %>
+                                </p><a href="#blog">Read article →</a>
+                            </div>
+                        </article>
+                        <% }) %>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="shell">
+                <div class="promo">
+                    <div>
+                        <div class="eyebrow">Made for easy shopping</div>
+                        <h2>Find your next favourite.</h2>
+                        <p>Browse the complete collection, save products to your wishlist and check out in just a few
+                            steps.</p>
+                    </div><a class="primary-btn" href="/product">Explore the Store →</a>
+                </div>
+            </div>
+        </section>
+        <%- include('../../partials/user/footer') %>
 </body>
 
 </html>

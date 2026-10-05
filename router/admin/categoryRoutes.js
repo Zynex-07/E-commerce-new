@@ -27,7 +27,8 @@ router.post("/add", async (req, res) => {
     try {
         const db = getDB();
         await db.collection("category").insertOne({
-            name: req.body.name
+            name: String(req.body.name || "").trim(),
+            createdAt: new Date()
         });
         res.redirect("/admin/category");
     } catch (error) {
@@ -39,6 +40,7 @@ router.post("/add", async (req, res) => {
 
 router.get("/edit/:id", async (req, res) => {
     try {
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Category ID");
         const db = getDB();
         const category = await db
             .collection("category")
@@ -56,6 +58,9 @@ router.get("/edit/:id", async (req, res) => {
 
 router.post("/update/:id", async (req, res) => {
     try {
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Category ID");
+        const name = String(req.body.name || "").trim();
+        if (!name) return res.status(400).send("Category name is required");
         const db = getDB();
         await db.collection("category").updateOne(
             {
@@ -63,7 +68,7 @@ router.post("/update/:id", async (req, res) => {
             },
             {
                 $set: {
-                    name: req.body.name
+                    name
                 }
             }
         );
@@ -76,6 +81,7 @@ router.post("/update/:id", async (req, res) => {
 
 router.get("/delete/:id", async (req, res) => {
     try {
+        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Category ID");
         const db = getDB();
         await db.collection("category").deleteOne({
             _id: new ObjectId(req.params.id)

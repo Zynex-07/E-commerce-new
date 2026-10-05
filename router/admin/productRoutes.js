@@ -9,9 +9,25 @@ router.get("/", async (req, res) => {
         const product = await db
             .collection("product")
             .find()
+            .sort({ createdAt: -1 })
             .toArray();
+        const category = await db
+            .collection("category")
+            .find()
+            .sort({ name: 1 })
+            .toArray();
+        const ratingRows = await db.collection("reviews").aggregate([
+            { $match: { rating: { $gte: 1, $lte: 5 } } },
+            { $group: { _id: "$productID", average: { $avg: "$rating" }, count: { $sum: 1 } } }
+        ]).toArray();
+        const ratingMap = Object.fromEntries(ratingRows.map(row => [String(row._id), { average: Number(row.average || 0), count: Number(row.count || 0) }]));
+        product.forEach(item => {
+            item.ratingAverage = ratingMap[String(item._id)]?.average || 0;
+            item.ratingCount = ratingMap[String(item._id)]?.count || 0;
+        });
         res.render("admin/product/index", {
-            product
+            product,
+            category
         });
     } catch (error) {
         console.log(error);
@@ -38,14 +54,8 @@ router.get("/add", async (req, res) => {
 router.post("/add", async (req, res) => {
     try {
         const db = getDB();
-        const {
-            name,
-            price,
-            description,
-            categoryId,
-            stock,
-            images
-        } = req.body;
+        const { name, price, description, categoryId, stock, images, bestSeller } = req.body;
+        if (!String(name || "").trim()) return res.status(400).send("Product name is required");
         if (!ObjectId.isValid(categoryId)) {
             return res.send("Invalid Category ID");
         }
@@ -53,9 +63,13 @@ router.post("/add", async (req, res) => {
             name: name,
             price: Number(price),
             description: description,
-            stock: Number(stock),
-            images: Array.isArray(images) ? images.filter(img => img.trim() !== "") : [images],
-            categoryId: new ObjectId(categoryId)
+            stock: Math.max(0, Number(stock) || 0),
+            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
+            categoryId: new ObjectId(categoryId),
+            bestSeller: bestSeller === "on",
+            createdAt: new Date(),
+            // Automatically keep a newly added product in "New Stock" for 3 days.
+            newUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
         });
         res.redirect("/admin/product");
     } catch (error) {
@@ -103,18 +117,20 @@ router.post("/update/:id", async (req, res) => {
             description,
             categoryId,
             stock,
-            images
+            images,
+            bestSeller
         } = req.body;
         if (!ObjectId.isValid(categoryId)) {
             return res.send("Invalid Category ID");
         }
         let updateData = {
-            name: name,
-            price: Number(price),
-            description: description,
-            stock: Number(stock),
-            images:Array.isArray(images) ? images.filter(img => img.trim() !== "") : [images],
-            categoryId: new ObjectId(categoryId)
+            name: String(name || "").trim(),
+            price: Math.max(0, Number(price) || 0),
+            description: String(description || "").trim(),
+            stock: Math.max(0, Number(stock) || 0),
+            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
+            categoryId: new ObjectId(categoryId),
+            bestSeller: bestSeller === "on"
         };
         await db.collection("product").updateOne(
             {
@@ -160,11 +176,23 @@ router.get("/category/:id", async (req, res) => {
             .findOne({
                 _id: new ObjectId(id)
             });
+        // Support legacy string categoryId values as well as ObjectId values.
+        const categoryName = String(category?.name || "").trim();
+        const categoryFilter = {
+            $or: [
+                { categoryId: new ObjectId(id) },
+                { categoryId: id }
+            ]
+        };
+        if (categoryName) {
+            categoryFilter.$or.push({
+                categoryId: { $regex: `^${categoryName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" }
+            });
+        }
+
         const product = await db
             .collection("product")
-            .find({
-                categoryId: new ObjectId(id)
-            })
+            .find(categoryFilter)
             .toArray();
         res.render("admin/product/category_product", {
             category,

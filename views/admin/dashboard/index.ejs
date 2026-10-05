@@ -1,135 +1,23 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Admin Dashboard</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Poppins, sans-serif;
-        }
-
-        body {
-            background: #f4f6f9;
-            overflow-x: hidden;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 250px;
-            margin-top: 70px;
-            min-height: calc(100vh - 70px);
-            padding: 30px;
-            transition: .3s;
-            width: calc(100% - 250px);
-        }
-
-        .title {
-            font-size: 35px;
-            color: #111827;
-            margin-bottom: 30px;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
-            transition: .3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h2 {
-            color: #6b7280;
-            margin-bottom: 15px;
-            font-size: 22px;
-        }
-
-        .card h1 {
-            color: #111827;
-            font-size: 42px;
-        }
-
-        @media(max-width:768px) {
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 20px;
-            }
-
-            .title {
-                text-align: center;
-                font-size: 28px;
-            }
-
-            .card h2 {
-                font-size: 18px;
-            }
-
-            .card h1 {
-                font-size: 34px;
-            }
-
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <%- include("../../partials/admin/navbar") %>
-        <!-- Sidebar -->
-        <%- include("../../partials/admin/sidebar") %>
-            <!-- Main Content -->
-            <div class="main-content">
-                <h1 class="title">Dashboard</h1>
-                <div class="cards">
-                    <div class="card">
-                        <h2>Total Users</h2>
-                        <h1>
-                            <%= totalUsers %>
-                        </h1>
-                    </div>
-                    <div class="card">
-                        <h2>Total Products</h2>
-                        <h1>
-                            <%= totalProducts %>
-                        </h1>
-                    </div>
-                    <div class="card">
-                        <h2>Total Orders</h2>
-                        <h1>
-                            <%= totalOrders %>
-                        </h1>
-                    </div>
-                    <div class="card">
-                        <h2>Pending Orders</h2>
-                        <h1>
-                            <%= pendingOrders %>
-                        </h1>
-                    </div>
-                    <div class="card">
-                        <h2>Monthly Revenue</h2>
-                        <h1>₹ <%= totalRevenue %>
-                        </h1>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer -->
-            <%- include("../../partials/admin/footer") %>
-</body>
-
-</html>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | AAK Clothing</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,Poppins,Arial,sans-serif;background:#f4f6f8;color:#0f172a;overflow-x:hidden}.main-content{margin-left:260px;padding:96px 30px 40px;min-height:100vh}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}.head h1{font-size:32px;line-height:1.15}.head p{margin-top:7px;color:#64748b;font-size:14px}.month{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px 16px;font-weight:700;white-space:nowrap}.month i{color:#ff7a00;margin-right:7px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}.stat{background:#fff;border:1px solid #e6e9ee;border-radius:15px;padding:20px;box-shadow:0 5px 20px rgba(15,23,42,.04);display:flex;justify-content:space-between;gap:12px}.stat h4{font-size:12px;color:#64748b;margin-bottom:8px}.stat strong{font-size:27px}.stat small{display:block;color:#94a3b8;margin-top:6px}.icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#fff1e6;color:#ff7a00;font-size:18px}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-bottom:18px}.panel{background:#fff;border:1px solid #e6e9ee;border-radius:15px;padding:20px;box-shadow:0 5px 20px rgba(15,23,42,.04)}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.panel-head h2{font-size:17px}.panel-head a{color:#ff7a00;text-decoration:none;font-size:12px;font-weight:800}.bars{height:225px;display:flex;align-items:flex-end;gap:10px;padding:15px 5px 5px;border-bottom:1px solid #e5e7eb}.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}.bar{width:100%;max-width:30px;background:#ff7a00;border-radius:6px 6px 0 0;min-height:8px}.bar-col span{font-size:10px;color:#64748b}.orders{width:100%;border-collapse:collapse}.orders th,.orders td{padding:11px 8px;border-bottom:1px solid #eef0f3;text-align:left;font-size:12px}.orders th{font-size:10px;text-transform:uppercase;color:#64748b}.status{padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;background:#fff7ed;color:#c2410c}.history{overflow:auto}.history table{width:100%;border-collapse:collapse;min-width:650px}.history th,.history td{padding:12px;border-bottom:1px solid #eef0f3;text-align:left;font-size:12px}.history th{color:#64748b;font-size:10px;text-transform:uppercase}.current{background:#fff7ed}.quick{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.quick a{padding:13px;border-radius:10px;text-align:center;text-decoration:none;background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;font-weight:800;font-size:12px}.quick a:hover{background:#ffedd5}.empty{text-align:center;color:#64748b;padding:25px}.recent-name{font-weight:700}@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.quick{grid-template-columns:repeat(3,1fr)}}@media(max-width:900px){.main-content{margin-left:0;padding:88px 20px 30px}}@media(max-width:600px){.main-content{padding:82px 14px 25px}.head{flex-direction:column}.head h1{font-size:27px}.stats{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:15px}.stat strong{font-size:21px}.grid2{gap:12px}.panel{padding:15px}.quick{grid-template-columns:1fr 1fr}}@media(max-width:390px){.stats,.quick{grid-template-columns:1fr}}
+</style></head>
+<body><%- include("../../partials/admin/navbar") %><%- include("../../partials/admin/sidebar") %>
+<main class="main-content">
+<div class="head"><div><h1>Dashboard</h1><p>Welcome back! Here's what's happening with your store.</p></div><div class="month"><i class="fa-regular fa-calendar"></i><%= currentMonthLabel %></div></div>
+<section class="stats">
+<div class="stat"><div><h4>Total Orders</h4><strong><%= totalOrders %></strong><small><%= pendingOrders %> pending</small></div><div class="icon"><i class="fa-solid fa-bag-shopping"></i></div></div>
+<div class="stat"><div><h4>Total Products</h4><strong><%= totalProducts %></strong><small>Products added this month</small></div><div class="icon"><i class="fa-solid fa-box"></i></div></div>
+<div class="stat"><div><h4>Total Categories</h4><strong><%= totalCategories %></strong><small>Categories added this month</small></div><div class="icon"><i class="fa-solid fa-layer-group"></i></div></div>
+<div class="stat"><div><h4>Total Revenue</h4><strong>₹<%= Number(totalRevenue||0).toLocaleString("en-IN") %></strong><small>Delivered orders this month</small></div><div class="icon"><i class="fa-solid fa-indian-rupee-sign"></i></div></div>
+</section>
+<div class="grid2"><section class="panel"><div class="panel-head"><h2>Monthly Revenue</h2></div><div class="bars"><% const maxRev=Math.max(...monthlyHistory.map(x=>Number(x.revenue||0)),1); monthlyHistory.slice(-12).forEach(item=>{ %><div class="bar-col"><div class="bar" style="height:<%= Math.max(8,Math.round((Number(item.revenue||0)/maxRev)*190)) %>px"></div><span><%= item.label.split(' ')[0].slice(0,3) %></span></div><% }) %></div></section>
+<section class="panel"><div class="panel-head"><h2>Recent Orders</h2><a href="/admin/order">View All →</a></div><% if(!recentOrders.length){ %><div class="empty">No orders found.</div><% }else{ %><table class="orders"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody><% recentOrders.slice(0,6).forEach(order=>{ %><tr><td>#<%= String(order._id).slice(-6).toUpperCase() %></td><td class="recent-name"><%= order.userName||order.name||order.email||'Customer' %></td><td>₹<%= Number(order.total||0).toLocaleString('en-IN') %></td><td><span class="status"><%= order.status||'Pending' %></span></td></tr><% }) %></tbody></table><% } %></section></div>
+<section class="panel history" style="margin-bottom:18px"><div class="panel-head"><h2>Monthly History</h2></div><table><thead><tr><th>Month</th><th>Orders</th><th>Products</th><th>Categories</th><th>Revenue</th></tr></thead><tbody><% monthlyHistory.forEach(item=>{ %><tr class="<%= item.key===monthlyHistory[monthlyHistory.length-1].key?'current':'' %>"><td><%= item.label %></td><td><%= item.orders %></td><td><%= item.products %></td><td><%= item.categories %></td><td>₹<%= Number(item.revenue||0).toLocaleString('en-IN') %></td></tr><% }) %></tbody></table></section>
+<section class="panel"><div class="panel-head"><h2>Quick Management</h2></div><div class="quick"><a href="/admin/product"><i class="fa-solid fa-box"></i> Products</a><a href="/admin/product/add"><i class="fa-solid fa-plus"></i> Add Product</a><a href="/admin/category"><i class="fa-solid fa-layer-group"></i> Categories</a><a href="/admin/order"><i class="fa-solid fa-cart-shopping"></i> Orders</a><a href="/admin/user"><i class="fa-solid fa-users"></i> Users</a></div></section>
+</main><%- include("../../partials/admin/footer") %></body></html>
