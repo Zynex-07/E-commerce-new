@@ -41,9 +41,24 @@ router.get("/", async (req, res) => {
         .sort({ createdAt: -1 }).limit(6).toArray();
 
     const blogs = [
-        { title: "How to build an everyday wardrobe", text: "Simple ways to combine versatile pieces and create more outfits with less effort.", tag: "Style Guide", image: "/images/women.jpg" },
-        { title: "3 ways to style your new favourite", text: "From casual days to evening plans, make one great piece work harder for you.", tag: "Outfit Ideas", image: "/images/shoes_1.webp" },
-        { title: "Choosing the right fit", text: "A quick guide to comfortable silhouettes, proportions and everyday styling.", tag: "Fashion Tips", image: "/images/whiteimg.jpg" }
+        {
+            title: "The Modern Business-Casual Look",
+            text: "A light shirt with clean trousers creates an easy, polished outfit that works for office days, meetings and smart everyday plans.",
+            tag: "Men's Style",
+            image: "/images/blog-business-casual.jpg"
+        },
+        {
+            title: "Formal & Party Dressing",
+            text: "For celebrations and evening events, classic tailoring and elegant statement pieces create a refined occasion-ready look.",
+            tag: "Party Wear",
+            image: "/images/blog-formal-party.webp"
+        },
+        {
+            title: "Timeless Traditional Style",
+            text: "Embroidered details, rich colours and traditional silhouettes bring together an authentic ethnic look for festive occasions.",
+            tag: "Ethnic Edit",
+            image: "/images/blog-traditional-ethnic.jpg"
+        }
     ];
 
     res.render("user/home/index", {
