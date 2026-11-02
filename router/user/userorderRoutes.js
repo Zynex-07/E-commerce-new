@@ -2,13 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
+const { cancelOrderSafely, isApiRequest } = require("../../services/orderService");
 
 function userId(req) {
     return ObjectId.isValid(req.session.userID) ? new ObjectId(req.session.userID) : null;
 }
 
 function requireUser(req, res, next) {
-    if (!userId(req)) return res.redirect("/auth/login");
+    if (!userId(req)) {
+        if (isApiRequest(req)) {
+            return res.status(401).json({ ok: false, message: "Please login first" });
+        }
+        return res.redirect("/auth/login");
+    }
     next();
 }
 
@@ -69,29 +75,39 @@ router.get("/view/:id", requireUser, async (req, res) => {
 
 async function cancelOrder(req, res) {
     try {
-        if (!ObjectId.isValid(req.params.id)) return res.status(400).send("Invalid Order ID");
-        const db = getDB();
-        const orderId = new ObjectId(req.params.id);
-
-        // Only one request can transition an active order to Cancelled.
-        const result = await db.collection("orders").updateOne(
-            { _id: orderId, userID: req.session.userID, status: { $nin: ["Cancelled", "Delivered"] } },
-            { $set: { status: "Cancelled", cancelledAt: new Date() } }
-        );
-        if (!result.matchedCount) return res.redirect("/order");
-
-        const order = await db.collection("orders").findOne({ _id: orderId, userID: req.session.userID });
-        for (const item of (order?.products || [])) {
-            if (!ObjectId.isValid(item.productID)) continue;
-            await db.collection("product").updateOne(
-                { _id: new ObjectId(item.productID) },
-                { $inc: { stock: Math.max(0, Number(item.qty) || 0) } }
-            );
+        if (!ObjectId.isValid(req.params.id)) {
+            if (isApiRequest(req)) return res.status(400).json({ ok: false, message: "Invalid Order ID" });
+            return res.status(400).send("Invalid Order ID");
         }
-        res.redirect("/order");
+
+        const db = getDB();
+        const result = await cancelOrderSafely({
+            db,
+            orderId: req.params.id,
+            userId: req.session.userID,
+            allowedStatuses: ["Pending", "Paid"]
+        });
+
+        if (isApiRequest(req)) {
+            return res.status(result.status).json({
+                ok: result.success,
+                code: result.code,
+                message: result.message
+            });
+        }
+
+        if (!result.success && result.status === 404) {
+            return res.status(404).send(result.message);
+        }
+
+        // For regular browser form submissions, redirect back to orders list
+        return res.redirect("/order");
     } catch (error) {
         console.error("Cancel Order Error:", error);
-        res.status(500).send("Unable to cancel order");
+        if (isApiRequest(req)) {
+            return res.status(500).json({ ok: false, message: "Unable to cancel order" });
+        }
+        return res.status(500).send("Unable to cancel order");
     }
 }
 
