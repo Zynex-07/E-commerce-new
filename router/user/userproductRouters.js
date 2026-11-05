@@ -69,6 +69,52 @@ router.get("/category/:id", async (req, res) => {
     });
 });
 
+// Back-in-stock notification subscription
+router.post("/notify-back-in-stock", async (req, res) => {
+    try {
+        const { productId, email, name } = req.body;
+        if (!productId || !ObjectId.isValid(productId)) {
+            return res.status(400).send("Invalid Product ID");
+        }
+        const cleanedEmail = String(email || "").trim().toLowerCase();
+        if (!cleanedEmail || !cleanedEmail.includes("@")) {
+            return res.status(400).send("Valid email address is required");
+        }
+
+        const db = getDB();
+        const product = await db.collection("product").findOne({ _id: new ObjectId(productId) });
+        if (!product) {
+            return res.status(404).send("Product Not Found");
+        }
+
+        await db.collection("stockNotifications").updateOne(
+            { productID: new ObjectId(productId), email: cleanedEmail },
+            {
+                $set: {
+                    productID: new ObjectId(productId),
+                    email: cleanedEmail,
+                    name: String(name || "").trim() || "Customer",
+                    notified: false,
+                    updatedAt: new Date()
+                },
+                $setOnInsert: {
+                    createdAt: new Date()
+                }
+            },
+            { upsert: true }
+        );
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({ success: true, message: "We will notify you when this item is back in stock!" });
+        }
+
+        return res.redirect(`/product/${productId}?notified=1`);
+    } catch (error) {
+        console.error("Back-in-stock subscription error:", error);
+        return res.status(500).send("Unable to record notification request");
+    }
+});
+
 router.get("/:id", async (req, res) => {
     const db = getDB();
     if (!ObjectId.isValid(req.params.id)) {

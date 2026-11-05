@@ -2,22 +2,23 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 
-const TZ = "Asia/Kolkata";
+const MONTH_NAMES = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+const TZ = "+05:30";
 
 function getCurrentMonthRange() {
     const now = new Date();
-    const parts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: TZ,
+    const formatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Kolkata",
         year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    }).formatToParts(now);
-
-    const values = {};
-    for (const part of parts) values[part.type] = part.value;
-
-    const year = Number(values.year);
-    const month = Number(values.month);
+        month: "numeric"
+    });
+    const parts = formatter.formatToParts(now);
+    const year = Number(parts.find(p => p.type === "year")?.value || now.getFullYear());
+    const month = Number(parts.find(p => p.type === "month")?.value || (now.getMonth() + 1));
 
     const start = new Date(`${year}-${String(month).padStart(2, "0")}-01T00:00:00+05:30`);
     const nextYear = month === 12 ? year + 1 : year;
@@ -27,22 +28,18 @@ function getCurrentMonthRange() {
     return { start, end, year, month };
 }
 
-function monthKey(year, month) {
-    return `${year}-${String(month).padStart(2, "0")}`;
-}
-
 function buildLast12Months(currentYear, currentMonth) {
     const months = [];
     for (let i = 11; i >= 0; i--) {
-        const date = new Date(Date.UTC(currentYear, currentMonth - 1 - i, 1));
-        const year = date.getUTCFullYear();
-        const month = date.getUTCMonth() + 1;
-        months.push({
-            key: monthKey(year, month),
-            year,
-            month,
-            label: date.toLocaleString("en-IN", { month: "short", year: "numeric", timeZone: "UTC" })
-        });
+        let y = currentYear;
+        let m = currentMonth - i;
+        while (m <= 0) {
+            m += 12;
+            y -= 1;
+        }
+        const key = `${y}-${String(m).padStart(2, "0")}`;
+        const label = `${MONTH_NAMES[m - 1]} ${y}`;
+        months.push({ key, label, year: y, month: m });
     }
     return months;
 }
@@ -65,7 +62,8 @@ router.get("/", async (req, res) => {
             pendingOrders,
             cancelledOrders,
             lowStockProducts,
-            recentOrders
+            recentOrders,
+            pendingApprovalOrders
         ] = await Promise.all([
             orders.countDocuments(currentRange),
             products.countDocuments(currentRange),
@@ -77,7 +75,8 @@ router.get("/", async (req, res) => {
             orders.countDocuments({ ...currentRange, status: "Pending" }),
             orders.countDocuments({ ...currentRange, status: "Cancelled" }),
             products.countDocuments({ stock: { $lte: 5 } }),
-            orders.find().sort({ createdAt: -1 }).limit(8).toArray()
+            orders.find().sort({ createdAt: -1 }).limit(8).toArray(),
+            orders.countDocuments({ cancellationStatus: "Pending Approval" })
         ]);
 
         const monthlyRevenue = monthlyRevenueData[0]?.totalRevenue || 0;
@@ -115,11 +114,10 @@ router.get("/", async (req, res) => {
             ]).toArray()
         ]);
 
-        const map = (rows) => Object.fromEntries(rows.map(row => [row._id, row.total || 0]));
-        const orderMap = map(orderHistory);
-        const productMap = map(productHistory);
-        const categoryMap = map(categoryHistory);
-        const revenueMap = map(revenueHistory);
+        const orderMap = Object.fromEntries(orderHistory.map(item => [item._id, item.total]));
+        const productMap = Object.fromEntries(productHistory.map(item => [item._id, item.total]));
+        const categoryMap = Object.fromEntries(categoryHistory.map(item => [item._id, item.total]));
+        const revenueMap = Object.fromEntries(revenueHistory.map(item => [item._id, item.total]));
 
         const monthlyHistory = months.map(item => ({
             ...item,
@@ -138,6 +136,7 @@ router.get("/", async (req, res) => {
             cancelledOrders,
             lowStockProducts,
             recentOrders,
+            pendingApprovalOrders,
             monthlyHistory,
             currentMonthLabel: new Date(start).toLocaleString("en-IN", { month: "long", year: "numeric", timeZone: TZ })
         });

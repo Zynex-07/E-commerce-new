@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Mobile OTP | AAK Clothing</title>
+    <link rel="stylesheet" href="/style/auth.css">
+    <style>
+        .otp-input {
+            letter-spacing: 8px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px;
+        }
+        .resend-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .resend-btn {
+            background: none;
+            border: none;
+            color: #111827;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+        }
+        .resend-btn:disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card">
+        <div class="auth-logo"><img src="/images/logo.png" alt="AAK Clothing Logo"></div>
+        <div class="auth-kicker">Mobile Verification</div>
+        <h1>Enter Mobile OTP</h1>
+        <p class="auth-subtitle">
+            We sent a 6-digit verification code via SMS to<br>
+            <strong style="color:#111827;font-size:15px;">+91-<%= phone %></strong>
+        </p>
+
+        <% if (message) { %><div class="auth-alert success"><%= message %></div><% } %>
+        <% if (error) { %><div class="auth-alert error"><%= error %></div><% } %>
+
+        <form class="auth-form" action="/auth/verify-otp" method="POST">
+            <input type="hidden" name="phone" value="<%= phone %>">
+            <input type="hidden" name="purpose" value="<%= purpose || 'registration' %>">
+
+            <div class="field">
+                <label for="otp">6-Digit SMS OTP</label>
+                <input id="otp" class="otp-input" type="text" name="otp" inputmode="numeric"
+                       pattern="[0-9]{6}" maxlength="6" placeholder="------"
+                       autocomplete="one-time-code" required autofocus>
+            </div>
+
+            <button class="auth-button" type="submit">Verify & Continue</button>
+        </form>
+
+        <div class="resend-box">
+            <span id="timerText">Resend available in <strong id="countdown">60</strong>s</span>
+            <form id="resendForm" action="/auth/resend-otp" method="POST" style="margin:0;">
+                <input type="hidden" name="phone" value="<%= phone %>">
+                <input type="hidden" name="purpose" value="<%= purpose || 'registration' %>">
+                <button id="resendBtn" class="resend-btn" type="submit" disabled>Resend SMS OTP</button>
+            </form>
+        </div>
+
+        <div class="auth-link" style="margin-top:20px;">
+            Entered the wrong phone? <a href="/auth/signup">Change mobile number</a>
+        </div>
+        <div class="auth-footer">AAK Clothing • Style that fits your everyday.</div>
+    </section>
+</main>
+<script>
+(function() {
+    let timeLeft = Number("<%= cooldownSeconds || 60 %>");
+    const countdownEl = document.getElementById("countdown");
+    const timerTextEl = document.getElementById("timerText");
+    const resendBtn = document.getElementById("resendBtn");
+
+    if (timeLeft <= 0) {
+        timerTextEl.style.display = "none";
+        resendBtn.disabled = false;
+        return;
+    }
+
+    const interval = setInterval(() => {
+        timeLeft--;
+        if (countdownEl) countdownEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            if (timerTextEl) timerTextEl.style.display = "none";
+            if (resendBtn) resendBtn.disabled = false;
+        }
+    }, 1000);
+})();
+</script>
+</body>
+</html>

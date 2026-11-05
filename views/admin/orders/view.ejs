@@ -448,9 +448,101 @@
                     </div>
                 </div>
 
+                <div class="info-box">
+                    <div class="label">Payment Method</div>
+                    <div>
+                        <%= order.paymentMethod || 'N/A' %>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="label">Payment ID</div>
+                    <div style="font-family:monospace;word-break:break-all">
+                        <%= order.paymentId || 'N/A' %>
+                    </div>
+                </div>
+
             </div>
 
         </div>
+
+        <% if(order.cancellationStatus === 'Pending Approval'){ %>
+        <!-- Cancellation Request Alert Card -->
+        <div class="card" style="border-left:5px solid #eab308;background:#fefce8">
+            <h2 style="color:#854d0e;display:flex;align-items:center;gap:10px">
+                ⏳ Customer Cancellation Request (Pending Approval)
+            </h2>
+            <div style="margin:12px 0 18px;font-size:14px;color:#713f12;line-height:1.6">
+                <div><strong>Requested At:</strong> <%= order.cancellationRequest?.requestedAt ? new Date(order.cancellationRequest.requestedAt).toLocaleString() : 'N/A' %></div>
+                <div style="margin-top:6px"><strong>Customer Reason:</strong> <%= order.cancellationRequest?.reason || 'No specific reason provided' %></div>
+                <div style="margin-top:6px"><strong>Order Total:</strong> ₹<%= order.total %> (Full refund will be initiated to <%= order.paymentId || 'original payment method' %>)</div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <form method="POST" action="/admin/order/approve-cancellation/<%= order._id %>" onsubmit="return confirm('Approve cancellation and initiate FULL refund of ₹<%= order.total %> via Razorpay?')">
+                    <button type="submit" style="background:#16a34a;padding:12px 20px;border-radius:8px;border:none;color:#fff;font-weight:700;cursor:pointer">
+                        ✓ Approve & Issue Full Refund (₹<%= order.total %>)
+                    </button>
+                </form>
+                <form method="POST" action="/admin/order/reject-cancellation/<%= order._id %>" style="display:flex;gap:8px;flex-wrap:wrap" onsubmit="return confirm('Reject this cancellation request?')">
+                    <input type="text" name="reason" placeholder="Reason for rejection..." style="padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;min-width:240px">
+                    <button type="submit" style="background:#dc2626;padding:12px 20px;border-radius:8px;border:none;color:#fff;font-weight:700;cursor:pointer">
+                        ✕ Reject Request
+                    </button>
+                </form>
+            </div>
+        </div>
+        <% } else if(order.cancellationStatus === 'Rejected'){ %>
+        <!-- Rejected Request Card -->
+        <div class="card" style="border-left:5px solid #ef4444;background:#fef2f2">
+            <h2 style="color:#991b1b">❌ Cancellation Request Rejected</h2>
+            <p style="margin:8px 0;font-size:14px;color:#7f1d1d">
+                <strong>Reviewed:</strong> <%= order.cancellationRequest?.reviewedAt ? new Date(order.cancellationRequest.reviewedAt).toLocaleString() : 'N/A' %> by <%= order.cancellationRequest?.reviewedBy || 'Admin' %><br>
+                <strong>Reason:</strong> <%= order.cancellationRequest?.rejectionReason || 'N/A' %>
+            </p>
+        </div>
+        <% } %>
+
+        <% if(order.refundStatus === 'Requires Reconciliation'){ %>
+        <!-- Requires Reconciliation Warning Card -->
+        <div class="card" style="border-left:5px solid #f59e0b;background:#fffbeb">
+            <h2 style="color:#b45309">⚠️ Refund State Uncertain (Reconciliation Required)</h2>
+            <p style="margin:8px 0;font-size:14px;color:#92400e;line-height:1.6">
+                A previous refund attempt encountered an uncertain network outcome or timeout.<br>
+                <strong>Reason:</strong> <%= order.refundError || order.reconciliationReason || 'Gateway timeout' %><br>
+                <strong>Internal Reference:</strong> <code style="background:#fef3c7;padding:2px 6px;border-radius:4px"><%= order.internalRefundRef || 'N/A' %></code>
+            </p>
+            <form method="POST" action="/admin/order/reconcile-refund/<%= order._id %>" style="margin-top:12px">
+                <button type="submit" style="background:#d97706;padding:10px 20px;border-radius:8px;border:none;color:#fff;font-weight:700;cursor:pointer">
+                    🔍 Reconcile with Razorpay Now
+                </button>
+            </form>
+        </div>
+        <% } %>
+
+        <% if(order.refund && order.refund.refundId){ %>
+        <!-- Refund Information Card -->
+        <div class="card" style="border-left:5px solid #22c55e;background:#f0fdf4">
+            <h2 style="color:#166534">✓ Razorpay Full Refund Processed</h2>
+            <div class="info" style="margin-top:14px">
+                <div class="info-box">
+                    <div class="label">Refund ID</div>
+                    <div style="font-family:monospace;font-weight:600;color:#166534"><%= order.refund.refundId %></div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Refund Amount</div>
+                    <div style="font-weight:700;color:#166534">₹<%= order.refund.amount %> (Paise: <%= order.refund.amountPaise %>)</div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Refund Status</div>
+                    <div><span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:6px;font-weight:700"><%= order.refund.status %></span></div>
+                </div>
+                <div class="info-box">
+                    <div class="label">Initiated Date</div>
+                    <div><%= order.refund.initiatedAt ? new Date(order.refund.initiatedAt).toLocaleString() : 'N/A' %></div>
+                </div>
+            </div>
+        </div>
+        <% } %>
 
         <!-- Products -->
         <div class="card">

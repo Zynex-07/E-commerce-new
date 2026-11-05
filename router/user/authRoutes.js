@@ -3,19 +3,11 @@ const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
 const crypto = require("crypto");
+const { createAndSendOtp, verifyOtp, normalizePhone } = require("../../services/smsService");
+const { sendNewCustomerRegistrationAdminEmail } = require("../../services/emailService");
 
 function safeText(value) {
     return String(value ?? "").trim();
-}
-
-function normalizePhone(value) {
-    let phone = safeText(value).replace(/[\s()-]/g, "");
-
-    if (phone.startsWith("+91")) phone = phone.slice(3);
-    else if (phone.startsWith("0091")) phone = phone.slice(4);
-    else if (phone.startsWith("91") && phone.length === 12) phone = phone.slice(2);
-
-    return /^\d{10}$/.test(phone) ? phone : null;
 }
 
 function renderLogin(res, error = null, message = null) {
@@ -56,6 +48,10 @@ function verifyPassword(password, storedPassword) {
 function validPassword(password) {
     return typeof password === "string" && password.length >= 6;
 }
+
+// ==========================================
+// REGISTRATION FLOW (WITH MSG91 MOBILE OTP)
+// ==========================================
 
 router.get("/signup", (req, res) => {
     res.render("auth/signup", {
@@ -127,23 +123,40 @@ router.post("/signup", async (req, res) => {
             });
         }
 
-        await db.collection("users").insertOne({
+        // Store pending user registration securely in session and metadata
+        const pendingUser = {
             username,
             usernameKey,
-            // Keep name for compatibility with existing navbar, orders and payment code.
             name: username,
             phone,
             password: hashPassword(password),
-            cartItems: [],
-            wishlist: [],
             createdAt: new Date()
+        };
+
+        // Dispatch OTP via MSG91 SMS Gateway
+        const otpResult = await createAndSendOtp({
+            db,
+            phone,
+            purpose: "registration",
+            metadata: pendingUser
         });
 
-        return res.redirect("/auth/login?msg=signup-success");
+        if (!otpResult.success) {
+            return res.status(400).render("auth/signup", {
+                error: otpResult.message || "Failed to send mobile verification SMS. Please try again.",
+                form
+            });
+        }
+
+        req.session.pendingOtpPhone = phone;
+        req.session.pendingOtpPurpose = "registration";
+        req.session.pendingOtpUser = pendingUser;
+
+        return res.redirect(`/auth/verify-otp?phone=${phone}&purpose=registration`);
     } catch (error) {
         console.error("Signup Error:", error);
         return res.status(500).render("auth/signup", {
-            error: "Unable to create your account. Please try again.",
+            error: "Unable to process registration. Please try again.",
             form: {
                 username: safeText(req.body.username),
                 phone: safeText(req.body.phone)
@@ -152,12 +165,206 @@ router.post("/signup", async (req, res) => {
     }
 });
 
+// ==========================================
+// OTP VERIFICATION & RESEND ENDPOINTS
+// ==========================================
+
+router.get("/verify-otp", (req, res) => {
+    const phone = normalizePhone(req.query.phone || req.session.pendingOtpPhone);
+    const purpose = req.query.purpose || req.session.pendingOtpPurpose || "registration";
+
+    if (!phone) {
+        return res.redirect("/auth/signup");
+    }
+
+    let message = null;
+    if (req.query.msg === "resent") {
+        message = "A new verification code was sent via SMS to your mobile.";
+    }
+
+    res.render("auth/verify-otp", {
+        phone,
+        purpose,
+        error: null,
+        message,
+        cooldownSeconds: 60
+    });
+});
+
+router.post("/verify-otp", async (req, res) => {
+    try {
+        const db = getDB();
+        const phone = normalizePhone(req.body.phone || req.session.pendingOtpPhone);
+        const otp = safeText(req.body.otp);
+        const purpose = req.body.purpose || req.session.pendingOtpPurpose || "registration";
+
+        if (!phone) {
+            return res.redirect("/auth/signup");
+        }
+
+        const verifyResult = await verifyOtp({
+            db,
+            phone,
+            otp,
+            purpose
+        });
+
+        if (!verifyResult.success) {
+            return res.status(400).render("auth/verify-otp", {
+                phone,
+                purpose,
+                error: verifyResult.message || "Invalid OTP code",
+                message: null,
+                cooldownSeconds: 0
+            });
+        }
+
+        // Case 1: Customer Registration OTP verified
+        if (purpose === "registration") {
+            const pendingUser = verifyResult.metadata?.username
+                ? verifyResult.metadata
+                : req.session.pendingOtpUser;
+
+            if (!pendingUser || !pendingUser.username) {
+                return res.redirect("/auth/signup");
+            }
+
+            // Guard against duplicate user insert
+            const exists = await db.collection("users").findOne({
+                $or: [{ phone }, { usernameKey: pendingUser.usernameKey }]
+            });
+
+            let insertedUserId;
+            if (!exists) {
+                const insertResult = await db.collection("users").insertOne({
+                    username: pendingUser.username,
+                    usernameKey: pendingUser.usernameKey,
+                    name: pendingUser.name || pendingUser.username,
+                    phone: pendingUser.phone,
+                    password: pendingUser.password,
+                    phoneVerified: true,
+                    phoneVerifiedAt: new Date(),
+                    cartItems: [],
+                    wishlist: [],
+                    createdAt: new Date()
+                });
+                insertedUserId = insertResult.insertedId;
+
+                // Send email notification to Admin for new registration (non-blocking)
+                sendNewCustomerRegistrationAdminEmail({
+                    user: {
+                        username: pendingUser.username,
+                        phone: pendingUser.phone,
+                        createdAt: new Date()
+                    }
+                }).catch(err => console.error("Admin registration email error:", err));
+            } else {
+                insertedUserId = exists._id;
+            }
+
+            // Cleanup pending session
+            delete req.session.pendingOtpPhone;
+            delete req.session.pendingOtpPurpose;
+            delete req.session.pendingOtpUser;
+
+            return res.redirect("/auth/login?msg=signup-success");
+        }
+
+        // Case 2: Forgot Password OTP verified
+        if (purpose === "forgot_password") {
+            req.session.passwordResetPhone = phone;
+            req.session.passwordResetVerified = true;
+            delete req.session.pendingOtpPhone;
+            delete req.session.pendingOtpPurpose;
+            return res.redirect("/auth/reset-password");
+        }
+
+        // Case 3: Phone Number Change OTP verified
+        if (purpose === "phone_change") {
+            const newPhone = verifyResult.metadata?.newPhone || phone;
+            const currentUserId = req.session.userID;
+
+            if (currentUserId && ObjectId.isValid(currentUserId)) {
+                await db.collection("users").updateOne(
+                    { _id: new ObjectId(currentUserId) },
+                    {
+                        $set: {
+                            phone: newPhone,
+                            phoneVerified: true,
+                            phoneVerifiedAt: new Date()
+                        }
+                    }
+                );
+            }
+
+            delete req.session.pendingOtpPhone;
+            delete req.session.pendingOtpPurpose;
+            return res.redirect("/address?msg=phone-updated");
+        }
+
+        return res.redirect("/auth/login");
+    } catch (error) {
+        console.error("Verify OTP Error:", error);
+        return res.status(500).render("auth/verify-otp", {
+            phone: normalizePhone(req.body.phone) || "",
+            purpose: req.body.purpose || "registration",
+            error: "Unable to verify OTP right now. Please try again.",
+            message: null,
+            cooldownSeconds: 0
+        });
+    }
+});
+
+router.post("/resend-otp", async (req, res) => {
+    try {
+        const db = getDB();
+        const phone = normalizePhone(req.body.phone || req.session.pendingOtpPhone);
+        const purpose = req.body.purpose || req.session.pendingOtpPurpose || "registration";
+
+        if (!phone) {
+            return res.redirect("/auth/signup");
+        }
+
+        const result = await createAndSendOtp({
+            db,
+            phone,
+            purpose,
+            metadata: req.session.pendingOtpUser || {}
+        });
+
+        if (!result.success) {
+            return res.status(400).render("auth/verify-otp", {
+                phone,
+                purpose,
+                error: result.message,
+                message: null,
+                cooldownSeconds: result.cooldownSeconds || 0
+            });
+        }
+
+        return res.redirect(`/auth/verify-otp?phone=${phone}&purpose=${purpose}&msg=resent`);
+    } catch (error) {
+        console.error("Resend OTP Error:", error);
+        return res.status(500).render("auth/verify-otp", {
+            phone: normalizePhone(req.body.phone) || "",
+            purpose: req.body.purpose || "registration",
+            error: "Failed to resend SMS OTP. Please try again.",
+            message: null,
+            cooldownSeconds: 0
+        });
+    }
+});
+
+// ==========================================
+// LOGIN & PASSWORD RECOVERY FLOW
+// ==========================================
+
 router.get("/login", (req, res) => {
     if (req.session.userID) return res.redirect("/");
 
     let message = null;
     if (req.query.msg === "signup-success") {
-        message = "Account created successfully. Please login.";
+        message = "Account created and mobile verified successfully! Please login.";
     } else if (req.query.msg === "password-reset") {
         message = "Password reset successfully. Please login with your new password.";
     }
@@ -177,8 +384,6 @@ router.post("/login", async (req, res) => {
 
         const phone = normalizePhone(loginValue);
 
-        // Phone is the normal login method. Email fallback keeps old accounts
-        // usable until their phone number is added to MongoDB.
         const query = phone
             ? { phone }
             : { email: loginValue.toLowerCase() };
@@ -259,11 +464,25 @@ router.post("/forgot-password", async (req, res) => {
             });
         }
 
-        // Keep the reset phone number only in the current session.
-        // No OTP/SMS service is used in this version.
-        req.session.passwordResetPhone = phone;
+        // Send OTP via MSG91 SMS for password reset
+        const otpResult = await createAndSendOtp({
+            db,
+            phone,
+            purpose: "forgot_password"
+        });
 
-        return res.redirect("/auth/reset-password");
+        if (!otpResult.success) {
+            return res.status(400).render("auth/forgot-password", {
+                error: otpResult.message || "Unable to send SMS OTP. Please try again.",
+                message: null,
+                phone: phoneInput
+            });
+        }
+
+        req.session.pendingOtpPhone = phone;
+        req.session.pendingOtpPurpose = "forgot_password";
+
+        return res.redirect(`/auth/verify-otp?phone=${phone}&purpose=forgot_password`);
     } catch (error) {
         console.error("Forgot Password Error:", error);
         return res.status(500).render("auth/forgot-password", {
@@ -276,8 +495,11 @@ router.post("/forgot-password", async (req, res) => {
 
 router.get("/reset-password", (req, res) => {
     const phone = normalizePhone(req.session.passwordResetPhone);
+    const verified = req.session.passwordResetVerified;
 
-    if (!phone) return res.redirect("/auth/forgot-password");
+    if (!phone || !verified) {
+        return res.redirect("/auth/forgot-password");
+    }
 
     res.render("auth/reset-password", {
         error: null,
@@ -289,10 +511,13 @@ router.post("/reset-password", async (req, res) => {
     try {
         const db = getDB();
         const phone = normalizePhone(req.session.passwordResetPhone);
+        const verified = req.session.passwordResetVerified;
         const password = String(req.body.password || "");
         const confirmPassword = String(req.body.confirmPassword || "");
 
-        if (!phone) return res.redirect("/auth/forgot-password");
+        if (!phone || !verified) {
+            return res.redirect("/auth/forgot-password");
+        }
 
         if (!validPassword(password)) {
             return res.status(400).render("auth/reset-password", {
@@ -312,6 +537,7 @@ router.post("/reset-password", async (req, res) => {
 
         if (!user) {
             delete req.session.passwordResetPhone;
+            delete req.session.passwordResetVerified;
             return res.redirect("/auth/forgot-password");
         }
 
@@ -326,6 +552,7 @@ router.post("/reset-password", async (req, res) => {
         );
 
         delete req.session.passwordResetPhone;
+        delete req.session.passwordResetVerified;
 
         return res.redirect("/auth/login?msg=password-reset");
     } catch (error) {
@@ -334,6 +561,105 @@ router.post("/reset-password", async (req, res) => {
             error: "Unable to reset password. Please try again.",
             phone: normalizePhone(req.session.passwordResetPhone) || ""
         });
+    }
+});
+
+// ==========================================
+// PHONE NUMBER CHANGE VERIFICATION FLOW
+// ==========================================
+
+router.post("/change-phone/request", async (req, res) => {
+    try {
+        if (!req.session.userID) {
+            return res.status(401).json({ ok: false, message: "Please login first" });
+        }
+
+        const newPhone = normalizePhone(req.body.newPhone);
+        if (!newPhone) {
+            return res.status(400).json({ ok: false, message: "Enter a valid 10-digit Indian phone number" });
+        }
+
+        const db = getDB();
+        const existing = await db.collection("users").findOne({ phone: newPhone });
+        if (existing) {
+            return res.status(400).json({ ok: false, message: "This phone number is already in use by another account" });
+        }
+
+        // Send OTP via MSG91 SMS to the NEW phone number
+        const otpResult = await createAndSendOtp({
+            db,
+            phone: newPhone,
+            purpose: "phone_change",
+            metadata: {
+                userId: req.session.userID,
+                newPhone
+            }
+        });
+
+        if (!otpResult.success) {
+            return res.status(400).json({ ok: false, message: otpResult.message });
+        }
+
+        req.session.pendingOtpPhone = newPhone;
+        req.session.pendingOtpPurpose = "phone_change";
+
+        return res.json({
+            ok: true,
+            message: `OTP sent via SMS to new mobile number +91-${newPhone}`,
+            newPhone
+        });
+    } catch (error) {
+        console.error("Change Phone Request Error:", error);
+        return res.status(500).json({ ok: false, message: "Failed to request phone change OTP" });
+    }
+});
+
+router.post("/change-phone/verify", async (req, res) => {
+    try {
+        if (!req.session.userID) {
+            return res.status(401).json({ ok: false, message: "Please login first" });
+        }
+
+        const newPhone = normalizePhone(req.body.newPhone || req.session.pendingOtpPhone);
+        const otp = safeText(req.body.otp);
+
+        if (!newPhone || !otp) {
+            return res.status(400).json({ ok: false, message: "Phone number and OTP are required" });
+        }
+
+        const db = getDB();
+        const verifyResult = await verifyOtp({
+            db,
+            phone: newPhone,
+            otp,
+            purpose: "phone_change"
+        });
+
+        if (!verifyResult.success) {
+            return res.status(400).json({ ok: false, message: verifyResult.message });
+        }
+
+        await db.collection("users").updateOne(
+            { _id: new ObjectId(req.session.userID) },
+            {
+                $set: {
+                    phone: newPhone,
+                    phoneVerified: true,
+                    phoneVerifiedAt: new Date()
+                }
+            }
+        );
+
+        delete req.session.pendingOtpPhone;
+        delete req.session.pendingOtpPurpose;
+
+        return res.json({
+            ok: true,
+            message: `Phone number successfully updated and verified to +91-${newPhone}`
+        });
+    } catch (error) {
+        console.error("Change Phone Verify Error:", error);
+        return res.status(500).json({ ok: false, message: "Failed to verify phone change" });
     }
 });
 

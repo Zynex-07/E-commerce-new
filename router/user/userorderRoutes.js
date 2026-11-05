@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
-const { cancelOrderSafely, isApiRequest } = require("../../services/orderService");
+const {
+    requestCustomerCancellation,
+    isApiRequest
+} = require("../../services/orderService");
 
 function userId(req) {
     return ObjectId.isValid(req.session.userID) ? new ObjectId(req.session.userID) : null;
@@ -73,6 +76,11 @@ router.get("/view/:id", requireUser, async (req, res) => {
     }
 });
 
+/**
+ * Customer order cancellation handler:
+ * - Paid order: creates cancellation request with status "Pending Approval"
+ * - Unpaid order: cancels safely and restores stock immediately
+ */
 async function cancelOrder(req, res) {
     try {
         if (!ObjectId.isValid(req.params.id)) {
@@ -81,11 +89,11 @@ async function cancelOrder(req, res) {
         }
 
         const db = getDB();
-        const result = await cancelOrderSafely({
+        const result = await requestCustomerCancellation({
             db,
             orderId: req.params.id,
             userId: req.session.userID,
-            allowedStatuses: ["Pending", "Paid"]
+            reason: req.body?.reason || req.query?.reason || ""
         });
 
         if (isApiRequest(req)) {
@@ -100,19 +108,20 @@ async function cancelOrder(req, res) {
             return res.status(404).send(result.message);
         }
 
-        // For regular browser form submissions, redirect back to orders list
+        // For browser requests, redirect to orders list to see updated cancellation status
         return res.redirect("/order");
     } catch (error) {
         console.error("Cancel Order Error:", error);
         if (isApiRequest(req)) {
-            return res.status(500).json({ ok: false, message: "Unable to cancel order" });
+            return res.status(500).json({ ok: false, message: "Unable to process cancellation request" });
         }
-        return res.status(500).send("Unable to cancel order");
+        return res.status(500).send("Unable to process cancellation request");
     }
 }
 
 router.post("/cancel/:id", requireUser, cancelOrder);
 router.get("/cancel/:id", requireUser, cancelOrder); // compatibility with older links
+router.post("/cancel-request/:id", requireUser, cancelOrder);
 
 // Quantity changes are intentionally not allowed after an order is created.
 // Users should change quantities in the cart before payment.

@@ -58,7 +58,7 @@ test.after(async () => {
 
 test.describe("AAK Clothing Direct POST & API Order Cancellation Routes", () => {
 
-    test("Direct POST to /order/cancel/:id cancels active order and rejects subsequent POST", async () => {
+    test("Direct POST to /order/cancel/:id requests cancellation for paid order and rejects duplicate request", async () => {
         currentTestUserId = new ObjectId().toString();
 
         const prod = await db.collection("product").insertOne({
@@ -70,12 +70,14 @@ test.describe("AAK Clothing Direct POST & API Order Cancellation Routes", () => 
         const order = await db.collection("orders").insertOne({
             userID: currentTestUserId,
             status: "Paid",
+            paymentId: "pay_test_jacket",
             products: [{ productID: prod.insertedId, qty: 2 }],
             total: 2000,
             _testMarker: "api_endpoint_test"
         });
         const orderId = order.insertedId.toString();
 
+        // 1. Direct POST API request creates a cancellation request with status Pending Approval
         const firstRes = await fetch(`${baseUrl}/order/cancel/${orderId}`, {
             method: "POST",
             headers: { "Accept": "application/json" }
@@ -84,11 +86,17 @@ test.describe("AAK Clothing Direct POST & API Order Cancellation Routes", () => 
         const firstJson = await firstRes.json();
         assert.equal(firstRes.status, 200);
         assert.equal(firstJson.ok, true);
-        assert.equal(firstJson.message, "Order cancelled successfully");
+        assert.equal(firstJson.message, "Cancellation request submitted. Waiting for admin approval.");
 
+        // For paid order, stock is NOT restored yet upon customer request
         let prodCheck = await db.collection("product").findOne({ _id: prod.insertedId });
-        assert.equal(prodCheck.stock, 12);
+        assert.equal(prodCheck.stock, 10, "Stock must NOT be restored yet upon customer request");
 
+        let orderCheck = await db.collection("orders").findOne({ _id: order.insertedId });
+        assert.equal(orderCheck.cancellationStatus, "Pending Approval");
+        assert.equal(orderCheck.status, "Paid");
+
+        // 2. SECOND direct POST API request to cancel the SAME order is rejected
         const secondRes = await fetch(`${baseUrl}/order/cancel/${orderId}`, {
             method: "POST",
             headers: { "Accept": "application/json" }
@@ -97,10 +105,11 @@ test.describe("AAK Clothing Direct POST & API Order Cancellation Routes", () => 
         const secondJson = await secondRes.json();
         assert.equal(secondRes.status, 400);
         assert.equal(secondJson.ok, false);
-        assert.equal(secondJson.message, "Order is already cancelled");
+        assert.match(secondJson.message, /already pending approval/i);
 
+        // Verify stock is still 10 (not restored)
         prodCheck = await db.collection("product").findOne({ _id: prod.insertedId });
-        assert.equal(prodCheck.stock, 12, "Stock must NOT be restored on second POST request");
+        assert.equal(prodCheck.stock, 10);
     });
 
     test("Direct POST to /order/cancel/:id for Delivered order is rejected", async () => {
@@ -252,6 +261,10 @@ test.describe("AAK Clothing Direct POST & API Order Cancellation Routes", () => 
         assert.equal(res.headers.get("location"), "/order");
 
         const prodCheck = await db.collection("product").findOne({ _id: prod.insertedId });
-        assert.equal(prodCheck.stock, 6);
+        assert.equal(prodCheck.stock, 5, "Stock must NOT be restored for Paid order on initial customer cancellation request");
+
+        const orderCheck = await db.collection("orders").findOne({ _id: order.insertedId });
+        assert.equal(orderCheck.cancellationStatus, "Pending Approval");
+        assert.equal(orderCheck.status, "Paid");
     });
 });

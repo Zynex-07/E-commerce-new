@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
+const {
+    sendProductAddedAdminEmail,
+    sendProductUpdatedAdminEmail,
+    sendStockLowAdminEmail,
+    sendOutOfStockAdminEmail,
+    sendBackInStockCustomerEmail
+} = require("../../services/emailService");
 
 router.get("/", async (req, res) => {
     try {
@@ -59,18 +66,49 @@ router.post("/add", async (req, res) => {
         if (!ObjectId.isValid(categoryId)) {
             return res.send("Invalid Category ID");
         }
-        await db.collection("product").insertOne({
-            name: name,
-            price: Number(price),
-            description: description,
-            stock: Math.max(0, Number(stock) || 0),
-            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
+
+        const newStock = Math.max(0, Number(stock) || 0);
+        const newPrice = Math.max(0, Number(price) || 0);
+        const imageList = (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim());
+
+        const insertResult = await db.collection("product").insertOne({
+            name: String(name).trim(),
+            price: newPrice,
+            description: String(description || "").trim(),
+            stock: newStock,
+            images: imageList,
             categoryId: new ObjectId(categoryId),
             bestSeller: bestSeller === "on",
             createdAt: new Date(),
             // Automatically keep a newly added product in "New Stock" for 3 days.
             newUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
         });
+
+        const newProduct = {
+            _id: insertResult.insertedId,
+            name: String(name).trim(),
+            price: newPrice,
+            description: String(description || "").trim(),
+            stock: newStock,
+            images: imageList,
+            categoryId: new ObjectId(categoryId)
+        };
+
+        // Non-blocking admin email notifications
+        sendProductAddedAdminEmail({ product: newProduct }).catch(err => {
+            console.error("[Email Notification Error] Product added notification:", err?.message || err);
+        });
+
+        if (newStock === 0) {
+            sendOutOfStockAdminEmail({ product: newProduct }).catch(err => {
+                console.error("[Email Notification Error] Out-of-stock notification:", err?.message || err);
+            });
+        } else if (newStock <= 5) {
+            sendStockLowAdminEmail({ product: newProduct, currentStock: newStock }).catch(err => {
+                console.error("[Email Notification Error] Stock low notification:", err?.message || err);
+            });
+        }
+
         res.redirect("/admin/product");
     } catch (error) {
         console.log(error);
@@ -123,12 +161,22 @@ router.post("/update/:id", async (req, res) => {
         if (!ObjectId.isValid(categoryId)) {
             return res.send("Invalid Category ID");
         }
+
+        const existingProduct = await db.collection("product").findOne({ _id: new ObjectId(id) });
+        if (!existingProduct) {
+            return res.status(404).send("Product Not Found");
+        }
+
+        const updatedStock = Math.max(0, Number(stock) || 0);
+        const updatedPrice = Math.max(0, Number(price) || 0);
+        const imageList = (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim());
+
         let updateData = {
             name: String(name || "").trim(),
-            price: Math.max(0, Number(price) || 0),
+            price: updatedPrice,
             description: String(description || "").trim(),
-            stock: Math.max(0, Number(stock) || 0),
-            images: (Array.isArray(images) ? images : [images]).filter(img => String(img || "").trim() !== "").map(img => String(img).trim()),
+            stock: updatedStock,
+            images: imageList,
             categoryId: new ObjectId(categoryId),
             bestSeller: bestSeller === "on"
         };
@@ -140,6 +188,50 @@ router.post("/update/:id", async (req, res) => {
                 $set: updateData
             }
         );
+
+        const updatedProduct = { ...existingProduct, ...updateData, _id: existingProduct._id };
+
+        // Non-blocking admin notification for product update
+        sendProductUpdatedAdminEmail({ product: updatedProduct, changes: updateData }).catch(err => {
+            console.error("[Email Notification Error] Product updated notification:", err?.message || err);
+        });
+
+        // Stock alerts
+        if (updatedStock === 0) {
+            sendOutOfStockAdminEmail({ product: updatedProduct }).catch(err => {
+                console.error("[Email Notification Error] Out-of-stock notification:", err?.message || err);
+            });
+        } else if (updatedStock <= 5) {
+            sendStockLowAdminEmail({ product: updatedProduct, currentStock: updatedStock }).catch(err => {
+                console.error("[Email Notification Error] Low stock notification:", err?.message || err);
+            });
+        }
+
+        // Back-in-stock notification to subscribed customers if restocked from 0
+        if (Number(existingProduct.stock || 0) === 0 && updatedStock > 0) {
+            db.collection("stockNotifications").find({
+                productID: new ObjectId(id),
+                notified: { $ne: true }
+            }).toArray().then(subscribers => {
+                for (const sub of subscribers) {
+                    sendBackInStockCustomerEmail({
+                        product: updatedProduct,
+                        customerEmail: sub.email,
+                        customerName: sub.name || "Customer"
+                    }).then(() => {
+                        return db.collection("stockNotifications").updateOne(
+                            { _id: sub._id },
+                            { $set: { notified: true, notifiedAt: new Date() } }
+                        );
+                    }).catch(subErr => {
+                        console.error(`[Email Notification Error] Back-in-stock alert for ${sub.email}:`, subErr?.message || subErr);
+                    });
+                }
+            }).catch(subListErr => {
+                console.error("[Email Notification Error] Fetching back-in-stock subscribers:", subListErr?.message || subListErr);
+            });
+        }
+
         res.redirect("/admin/product");
     } catch (error) {
         console.log(error);
@@ -203,4 +295,5 @@ router.get("/category/:id", async (req, res) => {
         res.send("Category Product Error");
     }
 });
+
 module.exports = router;

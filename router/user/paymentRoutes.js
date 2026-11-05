@@ -4,6 +4,13 @@ const https = require("https");
 const router = express.Router();
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
+const { processRazorpayWebhook } = require("../../services/orderService");
+const {
+    sendNewOrderCustomerEmail,
+    sendNewOrderAdminEmail,
+    sendStockLowAdminEmail,
+    sendOutOfStockAdminEmail
+} = require("../../services/emailService");
 
 function requireUser(req, res, next) {
     if (!req.session.userID) return res.status(401).json({ ok: false, message: "Please login first" });
@@ -169,6 +176,46 @@ router.post("/verify", requireUser, async (req, res) => {
             throw insertError;
         }
 
+        const createdOrder = {
+            _id: result.insertedId,
+            userID: req.session.userID,
+            userName: user.username || user.name || "Customer",
+            userEmail: user.email || user.address?.email || "",
+            shippingAddress: user.address,
+            products: cart,
+            total,
+            status: "Paid",
+            paymentMethod: "Razorpay",
+            paymentId: razorpay_payment_id,
+            razorpayOrderId: razorpay_order_id,
+            createdAt: new Date()
+        };
+
+        // Asynchronously dispatch Customer & Admin Order Confirmation Emails
+        sendNewOrderCustomerEmail({
+            order: createdOrder,
+            customerEmail: user.email || user.address?.email,
+            customerName: user.username || user.name
+        }).catch(err => console.error("Customer order email error:", err));
+
+        sendNewOrderAdminEmail({
+            order: createdOrder
+        }).catch(err => console.error("Admin order email error:", err));
+
+        // Check each purchased item's remaining stock for Admin alerts
+        for (const item of cart) {
+            db.collection("product").findOne({ _id: new ObjectId(item.productID) })
+                .then(prod => {
+                    if (!prod) return;
+                    if (prod.stock === 0) {
+                        sendOutOfStockAdminEmail({ product: prod }).catch(e => console.error("Out of stock email error:", e));
+                    } else if (prod.stock <= 5) {
+                        sendStockLowAdminEmail({ product: prod, currentStock: prod.stock }).catch(e => console.error("Low stock email error:", e));
+                    }
+                })
+                .catch(err => console.error("Stock check email error:", err));
+        }
+
         await db.collection("users").updateOne({ _id: new ObjectId(req.session.userID) }, { $set: { cartItems: [] } });
         req.session.cartCount = 0;
         delete req.session.razorpayOrder;
@@ -177,6 +224,57 @@ router.post("/verify", requireUser, async (req, res) => {
     } catch (error) {
         console.error("Razorpay Verify/Place Error:", error);
         res.status(400).json({ ok: false, message: error.message });
+    }
+});
+
+/**
+ * Razorpay Webhook Endpoint: POST /payment/webhook
+ * Authenticates X-Razorpay-Signature using dedicated RAZORPAY_WEBHOOK_SECRET and raw request body.
+ * Idempotently processes refund.processed and refund.failed events without duplicate stock restoration.
+ */
+router.post("/webhook", async (req, res) => {
+    try {
+        const signature = req.headers["x-razorpay-signature"];
+        if (!signature) {
+            return res.status(400).json({ ok: false, message: "Missing Razorpay webhook signature header" });
+        }
+
+        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET;
+        if (!webhookSecret) {
+            return res.status(500).json({ ok: false, message: "Webhook secret is not configured" });
+        }
+
+        const rawBody = req.rawBody
+            ? req.rawBody
+            : (typeof req.body === "string" ? Buffer.from(req.body, "utf8") : Buffer.from(JSON.stringify(req.body || {}), "utf8"));
+
+        const expectedSignature = crypto
+            .createHmac("sha256", webhookSecret)
+            .update(rawBody)
+            .digest("hex");
+
+        const expectedBuf = Buffer.from(expectedSignature, "utf8");
+        const receivedBuf = Buffer.from(String(signature), "utf8");
+
+        if (expectedBuf.length !== receivedBuf.length || !crypto.timingSafeEqual(expectedBuf, receivedBuf)) {
+            return res.status(400).json({ ok: false, message: "Invalid webhook signature" });
+        }
+
+        let event = req.body;
+        if (typeof event !== "object" || event === null) {
+            try {
+                event = JSON.parse(rawBody.toString("utf8"));
+            } catch {
+                return res.status(400).json({ ok: false, message: "Invalid JSON in webhook payload" });
+            }
+        }
+
+        const db = getDB();
+        const result = await processRazorpayWebhook({ db, event });
+        return res.status(result.status || 200).json(result);
+    } catch (err) {
+        console.error("Razorpay Webhook Error:", err);
+        return res.status(500).json({ ok: false, message: "Webhook handling error" });
     }
 });
 

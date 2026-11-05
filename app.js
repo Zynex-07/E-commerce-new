@@ -36,7 +36,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({
+    verify: (req, res, buf) => {
+        req.rawBody = buf;
+    }
+}));
 
 const sessionOptions = {
     secret: process.env.SESSION_SECRET || "change-this-session-secret",

@@ -614,6 +614,14 @@
 
                             <option value="">All Status</option>
 
+                            <option value="Pending Approval" <%=status==="Pending Approval" ? "selected" : "" %>>
+                                Pending Approval (Cancellation Requests)
+                            </option>
+
+                            <option value="Paid" <%=status==="Paid" ? "selected" : "" %>>
+                                Paid
+                            </option>
+
                             <option value="Pending" <%=status==="Pending" ? "selected" : "" %>>
                                 Pending
                             </option>
@@ -707,6 +715,20 @@
                                                 <%= order.status %>
                                             </span>
 
+                                            <% if(order.cancellationStatus === "Pending Approval"){ %>
+                                                <span class="status" style="background:#fef08a;color:#854d0e;display:block;margin-top:6px;font-size:11px;font-weight:700">
+                                                    Cancellation Requested
+                                                </span>
+                                            <% } else if(order.refundStatus === "Requires Reconciliation"){ %>
+                                                <span class="status" style="background:#fef3c7;color:#b45309;display:block;margin-top:6px;font-size:11px;font-weight:700">
+                                                    Reconcile Needed
+                                                </span>
+                                            <% } else if(order.refund && order.refund.refundId){ %>
+                                                <span class="status" style="background:#ecfdf3;color:#027a48;display:block;margin-top:6px;font-size:11px;font-weight:700">
+                                                    Refunded
+                                                </span>
+                                            <% } %>
+
                                         </td>
 
                                         <td>
@@ -718,7 +740,21 @@
                                                     View
                                                 </a>
 
-                                                <% if(order.status==="Pending" ){ %>
+                                                <% if(order.cancellationStatus === "Pending Approval"){ %>
+
+                                                    <form method="POST" action="/admin/order/approve-cancellation/<%= order._id %>" style="display:inline" onsubmit="return confirm('Approve cancellation and issue FULL refund of ₹<%= order.total %> via Razorpay?')">
+                                                        <button type="submit" class="btn" style="background:#16a34a;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px">
+                                                            <i class="fa-solid fa-check"></i> Approve
+                                                        </button>
+                                                    </form>
+
+                                                    <form method="POST" action="/admin/order/reject-cancellation/<%= order._id %>" style="display:inline" onsubmit="return confirm('Reject customer cancellation request?')">
+                                                        <button type="submit" class="btn" style="background:#dc2626;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px">
+                                                            <i class="fa-solid fa-xmark"></i> Reject
+                                                        </button>
+                                                    </form>
+
+                                                <% } else if(order.status==="Pending" ){ %>
 
                                                     <a href="/admin/order/delivered/<%= order._id %>"
                                                         class="btn deliver-btn">
@@ -727,12 +763,26 @@
                                                     </a>
 
                                                     <a href="/admin/order/cancel/<%= order._id %>"
-                                                        class="btn cancel-btn">
+                                                        class="btn cancel-btn" onclick="return confirm('Cancel this pending order?')">
                                                         <i class="fa-solid fa-xmark"></i>
                                                         Cancel
                                                     </a>
 
-                                                    <% } %>
+                                                <% } else if(order.status==="Paid" ){ %>
+
+                                                    <a href="/admin/order/delivered/<%= order._id %>"
+                                                        class="btn deliver-btn">
+                                                        <i class="fa-solid fa-truck"></i>
+                                                        Delivered
+                                                    </a>
+
+                                                    <a href="/admin/order/cancel/<%= order._id %>"
+                                                        class="btn cancel-btn" onclick="return confirm('Cancel this paid order and issue a FULL refund of ₹<%= order.total %> via Razorpay?')">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                        Cancel & Refund
+                                                    </a>
+
+                                                <% } %>
 
                                             </div>
 

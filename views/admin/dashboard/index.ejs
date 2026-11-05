@@ -10,6 +10,17 @@
 <body><%- include("../../partials/admin/navbar") %><%- include("../../partials/admin/sidebar") %>
 <main class="main-content">
 <div class="head"><div><h1>Dashboard</h1><p>Welcome back! Here's what's happening with your store.</p></div><div class="month"><i class="fa-regular fa-calendar"></i><%= currentMonthLabel %></div></div>
+
+<% if(typeof pendingApprovalOrders !== 'undefined' && pendingApprovalOrders > 0){ %>
+  <div style="background:#fefce8;border:1px solid #fef08a;border-radius:14px;padding:16px 22px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;color:#854d0e;box-shadow:0 4px 15px rgba(234,179,8,.08);flex-wrap:wrap;gap:12px">
+    <div>
+      <strong style="font-size:15px">⏳ <%= pendingApprovalOrders %> Customer Cancellation Request(s) Pending Approval</strong>
+      <p style="font-size:13px;margin-top:3px;color:#a16207">Customers have requested refunds that require your review and approval.</p>
+    </div>
+    <a href="/admin/order?status=Pending+Approval" style="background:#eab308;color:#000;padding:9px 18px;border-radius:9px;font-weight:700;text-decoration:none;font-size:13px;display:inline-block">Review Requests →</a>
+  </div>
+<% } %>
+
 <section class="stats">
 <div class="stat"><div><h4>Total Orders</h4><strong><%= totalOrders %></strong><small><%= pendingOrders %> pending</small></div><div class="icon"><i class="fa-solid fa-bag-shopping"></i></div></div>
 <div class="stat"><div><h4>Total Products</h4><strong><%= totalProducts %></strong><small>Products added this month</small></div><div class="icon"><i class="fa-solid fa-box"></i></div></div>

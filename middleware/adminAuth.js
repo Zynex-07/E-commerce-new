@@ -3,6 +3,10 @@ function requireAdmin(req, res, next) {
         return next();
     }
 
+    if (req.xhr || req.headers.accept?.includes("application/json") || req.path === "/test-email") {
+        return res.status(401).json({ ok: false, message: "Unauthorized: Admin session required." });
+    }
+
     return res.redirect("/admin/login");
 }
 

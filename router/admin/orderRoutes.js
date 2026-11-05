@@ -3,7 +3,18 @@ const router = express.Router();
 
 const { getDB } = require("../../config/db");
 const { ObjectId } = require("mongodb");
-const { cancelOrderSafely, isApiRequest } = require("../../services/orderService");
+const {
+    approveCancellationAndRefund,
+    rejectCancellationRequest,
+    adminDirectCancelOrder,
+    reconcileOrderRefund,
+    isApiRequest
+} = require("../../services/orderService");
+const {
+    sendOrderStatusUpdateCustomerEmail,
+    sendOrderShippedCustomerEmail,
+    sendOrderDeliveredCustomerEmail
+} = require("../../services/emailService");
 
 router.get("/", async (req, res) => {
     try {
@@ -15,25 +26,34 @@ router.get("/", async (req, res) => {
             .find()
             .sort({ createdAt: -1 })
             .toArray();
+
         if (category) {
             orders = orders.filter(order =>
-                order.products.some(product =>
-                    product.category === category
-                )
+                Array.isArray(order.products) &&
+                order.products.some(product => product.category === category)
             );
         }
+
         if (status) {
-            orders = orders.filter(order =>
-                order.status === status
-            );
+            if (status === "Pending Approval" || status === "cancellation_requests") {
+                orders = orders.filter(order => order.cancellationStatus === "Pending Approval");
+            } else {
+                orders = orders.filter(order => order.status === status);
+            }
         }
+
+        const pendingApprovalCount = await db.collection("orders").countDocuments({
+            cancellationStatus: "Pending Approval"
+        });
+
         res.render("admin/orders/index", {
             orders,
             category,
-            status
+            status,
+            pendingApprovalCount
         });
     } catch (error) {
-        console.log(error);
+        console.error("Order Fetch Error:", error);
         res.send("Order Fetch Error");
     }
 });
@@ -54,11 +74,119 @@ router.get("/view/:id", async (req, res) => {
             order
         });
     } catch (error) {
-        console.log(error);
+        console.error("View Order Error:", error);
         res.send("View Order Error");
     }
 });
 
+/**
+ * Admin approves customer's cancellation request -> initiates FULL Razorpay refund.
+ */
+router.post("/approve-cancellation/:id", async (req, res) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            if (isApiRequest(req)) return res.status(400).json({ ok: false, message: "Invalid Order ID" });
+            return res.status(400).send("Invalid Order ID");
+        }
+
+        const db = getDB();
+        const result = await approveCancellationAndRefund({
+            db,
+            orderId: req.params.id,
+            adminUser: req.session?.adminUsername || req.session?.adminEmail || "admin"
+        });
+
+        if (isApiRequest(req)) {
+            return res.status(result.status).json({
+                ok: result.success,
+                code: result.code,
+                message: result.message,
+                refund: result.refund
+            });
+        }
+
+        if (!result.success) {
+            return res.status(result.status).send(result.message);
+        }
+
+        return res.redirect(`/admin/order/view/${req.params.id}`);
+    } catch (error) {
+        console.error("Admin Approve Cancellation Error:", error);
+        if (isApiRequest(req)) return res.status(500).json({ ok: false, message: "Approval Error" });
+        res.status(500).send("Approval Error");
+    }
+});
+
+/**
+ * Admin rejects customer's cancellation request -> order remains active, stock untouched.
+ */
+router.post("/reject-cancellation/:id", async (req, res) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            if (isApiRequest(req)) return res.status(400).json({ ok: false, message: "Invalid Order ID" });
+            return res.status(400).send("Invalid Order ID");
+        }
+
+        const db = getDB();
+        const result = await rejectCancellationRequest({
+            db,
+            orderId: req.params.id,
+            adminUser: req.session?.adminUsername || req.session?.adminEmail || "admin",
+            reason: req.body?.reason || "Rejected by administrator"
+        });
+
+        if (isApiRequest(req)) {
+            return res.status(result.status).json({
+                ok: result.success,
+                code: result.code,
+                message: result.message
+            });
+        }
+
+        if (!result.success) {
+            return res.status(result.status).send(result.message);
+        }
+
+        return res.redirect(`/admin/order/view/${req.params.id}`);
+    } catch (error) {
+        console.error("Admin Reject Cancellation Error:", error);
+        if (isApiRequest(req)) return res.status(500).json({ ok: false, message: "Reject Error" });
+        res.status(500).send("Reject Error");
+    }
+});
+
+/**
+ * Admin reconciles an uncertain refund attempt with Razorpay.
+ */
+router.post("/reconcile-refund/:id", async (req, res) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            if (isApiRequest(req)) return res.status(400).json({ ok: false, message: "Invalid Order ID" });
+            return res.status(400).send("Invalid Order ID");
+        }
+
+        const db = getDB();
+        const result = await reconcileOrderRefund({
+            db,
+            orderId: req.params.id,
+            adminUser: req.session?.adminUsername || req.session?.adminEmail || "admin"
+        });
+
+        if (isApiRequest(req)) {
+            return res.status(result.status || 200).json(result);
+        }
+
+        return res.redirect(`/admin/order/view/${req.params.id}`);
+    } catch (error) {
+        console.error("Admin Reconcile Refund Error:", error);
+        if (isApiRequest(req)) return res.status(500).json({ ok: false, message: "Reconcile Error" });
+        res.status(500).send("Reconcile Error");
+    }
+});
+
+/**
+ * Admin status dropdown update handler.
+ */
 router.post("/status/:id", async (req, res) => {
     try {
         if (!ObjectId.isValid(req.params.id)) {
@@ -85,20 +213,20 @@ router.post("/status/:id", async (req, res) => {
             return res.status(400).send("Cannot change status of a cancelled order");
         }
 
-        // If transitioning to Cancelled, safely restore stock and update status
+        // If transitioning to Cancelled: use admin direct cancel (which refunds paid orders & restores stock safely)
         if (newStatus === "Cancelled") {
-            const result = await cancelOrderSafely({
+            const result = await adminDirectCancelOrder({
                 db,
                 orderId: req.params.id,
-                userId: null,
-                allowedStatuses: ["Pending", "Paid", "Processing"]
+                adminUser: req.session?.adminUsername || req.session?.adminEmail || "admin"
             });
 
             if (isApiRequest(req)) {
                 return res.status(result.status).json({
                     ok: result.success,
                     code: result.code,
-                    message: result.message
+                    message: result.message,
+                    refund: result.refund
                 });
             }
 
@@ -119,9 +247,32 @@ router.post("/status/:id", async (req, res) => {
             { _id: orderId },
             { $set: { status: newStatus } }
         );
+
+        const updatedOrderObj = { ...order, status: newStatus };
+        if (newStatus === "Shipped") {
+            sendOrderShippedCustomerEmail({
+                order: updatedOrderObj,
+                customerEmail: order.userEmail || order.shippingAddress?.email,
+                customerName: order.userName
+            }).catch(e => console.error("Order shipped email error:", e));
+        } else if (newStatus === "Delivered") {
+            sendOrderDeliveredCustomerEmail({
+                order: updatedOrderObj,
+                customerEmail: order.userEmail || order.shippingAddress?.email,
+                customerName: order.userName
+            }).catch(e => console.error("Order delivered email error:", e));
+        } else {
+            sendOrderStatusUpdateCustomerEmail({
+                order: updatedOrderObj,
+                newStatus,
+                customerEmail: order.userEmail || order.shippingAddress?.email,
+                customerName: order.userName
+            }).catch(e => console.error("Order status update email error:", e));
+        }
+
         res.redirect("/admin/order/view/" + req.params.id);
     } catch (error) {
-        console.log(error);
+        console.error("Status Update Error:", error);
         if (isApiRequest(req)) return res.status(500).json({ ok: false, message: "Status Update Error" });
         res.send("Status Update Error");
     }
@@ -147,12 +298,17 @@ router.get("/delivered/:id", async (req, res) => {
         );
         res.redirect("/admin/order");
     } catch (error) {
-        console.log(error);
+        console.error("Delivered Update Error:", error);
         res.send("Delivered Update Error");
     }
 });
 
-async function handleAdminCancel(req, res) {
+/**
+ * Admin direct cancellation handler:
+ * - Paid order: full refund via Razorpay, status Cancelled, stock restored once.
+ * - Unpaid order: safe cancellation, stock restored once.
+ */
+async function handleAdminDirectCancel(req, res) {
     try {
         if (!ObjectId.isValid(req.params.id)) {
             if (isApiRequest(req)) return res.status(400).json({ ok: false, message: "Invalid Order ID" });
@@ -160,18 +316,18 @@ async function handleAdminCancel(req, res) {
         }
 
         const db = getDB();
-        const result = await cancelOrderSafely({
+        const result = await adminDirectCancelOrder({
             db,
             orderId: req.params.id,
-            userId: null,
-            allowedStatuses: ["Pending", "Paid", "Processing"]
+            adminUser: req.session?.adminUsername || req.session?.adminEmail || "admin"
         });
 
         if (isApiRequest(req)) {
             return res.status(result.status).json({
                 ok: result.success,
                 code: result.code,
-                message: result.message
+                message: result.message,
+                refund: result.refund
             });
         }
 
@@ -179,16 +335,20 @@ async function handleAdminCancel(req, res) {
             return res.status(404).send(result.message);
         }
 
+        if (!result.success) {
+            return res.status(result.status).send(result.message);
+        }
+
         res.redirect("/admin/order");
     } catch (error) {
-        console.log(error);
+        console.error("Admin Cancel Order Error:", error);
         if (isApiRequest(req)) return res.status(500).json({ ok: false, message: "Cancel Order Error" });
         res.send("Cancel Order Error");
     }
 }
 
-// Support both GET (existing links) and direct POST/API requests
-router.get("/cancel/:id", handleAdminCancel);
-router.post("/cancel/:id", handleAdminCancel);
+// Support both GET and POST for admin direct cancel
+router.get("/cancel/:id", handleAdminDirectCancel);
+router.post("/cancel/:id", handleAdminDirectCancel);
 
 module.exports = router;
